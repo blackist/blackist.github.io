@@ -1,0 +1,122 @@
+<!DOCTYPE html><html><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="google-site-verification" content="j7EfvIy-Za9TGhiDJkXeytlm2G2kgq6YjsGrvpWFNKE"><meta name="baidu-site-verification" content="kYIXSLA06A"><meta name="description" content="Always Be Coding."><title>零售行业优惠规则分析 | 董亮亮的开发笔记</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/8.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">零售行业优惠规则分析</h1><a id="logo" href="/.">董亮亮的开发笔记</a><p class="description">安卓和后台开发</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 主页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">零售行业优惠规则分析</h1><div class="post-meta">2019年01月02日<span> | 作者：</span><a href="https://blackist.org">董亮亮</a><span> | </span><span class="category"><a href="/categories/公共领域/">公共领域 </a></span><span class="post-time"><span class="post-meta-item-text"> | </span><span class="post-meta-item-icon"><i class="fa fa-keyboard-o"></i><span class="post-count"> 1.3k</span><span class="post-meta-item-text"> words</span></span></span><span class="post-time"> | <span class="post-meta-item-icon"><i class="fa fa-eye"></i><span class="post-count"> 4</span><span class="post-meta-item-text"> views</span></span></span></div><a class="disqus-comment-count" data-disqus-identifier="2019/01/02/public-comsumer-promotion-rule/" href="/2019/01/02/public-comsumer-promotion-rule/#disqus_thread"></a><div class="post-content"><h2 id="1-优惠规则5要素"><a href="#1-优惠规则5要素" class="headerlink" title="1 优惠规则5要素"></a>1 优惠规则5要素</h2><h3 id="1-1-满足优惠条件的动作"><a href="#1-1-满足优惠条件的动作" class="headerlink" title="1.1 满足优惠条件的动作"></a>1.1 满足优惠条件的动作</h3><p>这个要素，是指触发优惠规则的动作，主要包括买和满两种。</p>
+<p><strong>注</strong>：</p>
+<ul>
+<li>在数学上，买是满的一种特殊情况，只不过做文本串分析时，要同时考虑到这两种文本描述。</li>
+<li>在电商行业，触发优惠的动作还包括：晒单、微博分享、微信关注、给好评、收藏、新用户注册、手机下单等行为，这里我只叙述与商品和订单相关的，与其它行为（注册、营销、手机下单等）相关的暂忽略。</li>
+<li>抽奖，中奖要看运气，所以这时也暂不讨论</li>
+</ul>
+<a id="more"></a>
+<h4 id="1-1-1-买"><a href="#1-1-1-买" class="headerlink" title="1.1.1 买"></a>1.1.1 买</h4><p>只要买就优惠，如买赠（买1送1）、买立减（买此商品立减5元）</p>
+<h4 id="1-1-2-满"><a href="#1-1-2-满" class="headerlink" title="1.1.2 满"></a>1.1.2 满</h4><p>如满88减18</p>
+<h3 id="1-2-优惠条件作用对象"><a href="#1-2-优惠条件作用对象" class="headerlink" title="1.2 优惠条件作用对象"></a>1.2 优惠条件作用对象</h3><p>这个要素，是指满的对象（上文已解释，买其实是满的一种特殊情况，故此处叙述时合并），满什么条件，主要有三种：</p>
+<h4 id="1-2-1-订单金额（抵扣前金额）"><a href="#1-2-1-订单金额（抵扣前金额）" class="headerlink" title="1.2.1 订单金额（抵扣前金额）"></a>1.2.1 订单金额（抵扣前金额）</h4><p>如满88元减18元</p>
+<h4 id="1-2-2-实付金额（抵扣后金额）"><a href="#1-2-2-实付金额（抵扣后金额）" class="headerlink" title="1.2.2 实付金额（抵扣后金额）"></a>1.2.2 实付金额（抵扣后金额）</h4><p>如实付100元再返20元代金券</p>
+<h4 id="1-2-3-商品数量"><a href="#1-2-3-商品数量" class="headerlink" title="1.2.3 商品数量"></a>1.2.3 商品数量</h4><p>如买二送三，满2件每件165元，39元任选三件</p>
+<h3 id="1-3-优惠方式"><a href="#1-3-优惠方式" class="headerlink" title="1.3 优惠方式"></a>1.3 优惠方式</h3><p>这个要素是指，商家以什么方式给予消费者优惠。</p>
+<h4 id="1-3-1-减"><a href="#1-3-1-减" class="headerlink" title="1.3.1 减"></a>1.3.1 减</h4><p>在订单金额中减去部分金额，如满减，买立减，实付减</p>
+<h4 id="1-3-2-折"><a href="#1-3-2-折" class="headerlink" title="1.3.2 折"></a>1.3.2 折</h4><p>订单金额或者商品单价打个折扣。如满188打8折，第二件半价。</p>
+<p>折其实也是减的一种特殊情况，做文本串分析时当两种情况</p>
+<h4 id="1-3-3-送-赠"><a href="#1-3-3-送-赠" class="headerlink" title="1.3.3 送/赠"></a>1.3.3 送/赠</h4><p>订单中赠送，或者订单完成后再赠送。如买1送1，买奶粉送奶瓶，买奶粉送京券</p>
+<h4 id="1-3-4-换购"><a href="#1-3-4-换购" class="headerlink" title="1.3.4 换购"></a>1.3.4 换购</h4><p>满99元即可加1元换购超值礼品</p>
+<h3 id="1-4-回馈内容"><a href="#1-4-回馈内容" class="headerlink" title="1.4 回馈内容"></a>1.4 回馈内容</h3><h4 id="1-4-1-现金"><a href="#1-4-1-现金" class="headerlink" title="1.4.1 现金"></a>1.4.1 现金</h4><ul>
+<li>满减、满折就是减了现金</li>
+</ul>
+<h4 id="1-4-2-可折算成现金几无使用限制的卡-券-积分"><a href="#1-4-2-可折算成现金几无使用限制的卡-券-积分" class="headerlink" title="1.4.2 可折算成现金几无使用限制的卡/券/积分"></a>1.4.2 可折算成现金几无使用限制的卡/券/积分</h4><ul>
+<li>赠送天猫积分、集分宝也等于赠送现金</li>
+<li>京券、京东积分也等于现金</li>
+</ul>
+<h4 id="1-4-3-同主体商品"><a href="#1-4-3-同主体商品" class="headerlink" title="1.4.3 同主体商品"></a>1.4.3 同主体商品</h4><p>这条是指，赠送的商品与消费者购买的商品是同一个商品（可能保质期和生产批次略有不同，但总体上价值是一样的）</p>
+<p>如一号店的德运全脂牛奶，买一升，赠一升，属于赠送同主体的商品。</p>
+<h4 id="1-4-4-其它小赠品"><a href="#1-4-4-其它小赠品" class="headerlink" title="1.4.4 其它小赠品"></a>1.4.4 其它小赠品</h4><p>如买鞋送袜子，买奶粉送奶粉勺。</p>
+<p>把同主体商品拿出来单独说，和其它小赠品区分开，是因为同主体商品有利于计算实际到手价，德运全指牛奶买1送1，就等于是5折了，但如果买1升德运牛奶送5克奥利奥饼干，就不方便衡量饼干的价值进而计算到手价。</p>
+<h4 id="1-4-5-不可折算成现金的卡-券-积分"><a href="#1-4-5-不可折算成现金的卡-券-积分" class="headerlink" title="1.4.5 不可折算成现金的卡/券/积分"></a>1.4.5 不可折算成现金的卡/券/积分</h4><ul>
+<li>送有限制条件的满减券、折扣券</li>
+<li>送一号店积分</li>
+<li>送淘金币</li>
+<li>送航空公司里程等等</li>
+</ul>
+<p>这类回馈有的价值较高（如有限制条件的券），有的如同鸡肋（如淘金币、一号店积分）不好统一衡量价值，也不能拿来参与到手价计算</p>
+<h3 id="1-5-是否有限制"><a href="#1-5-是否有限制" class="headerlink" title="1.5 是否有限制"></a>1.5 是否有限制</h3><p>是否有限制也影响到手价的计算</p>
+<h4 id="1-5-1-有限制"><a href="#1-5-1-有限制" class="headerlink" title="1.5.1 有限制"></a>1.5.1 有限制</h4><ul>
+<li>满150减15，每个订单仅限使用一次</li>
+<li>买1送1，每个收货地址仅限5件</li>
+<li>实付200再返10元，最高返200元</li>
+</ul>
+<h4 id="1-5-2-无限制"><a href="#1-5-2-无限制" class="headerlink" title="1.5.2 无限制"></a>1.5.2 无限制</h4><p>这个不多解释了</p>
+<h2 id="2-常用优惠规则"><a href="#2-常用优惠规则" class="headerlink" title="2 常用优惠规则"></a>2 常用优惠规则</h2><p>上述5个因素，排列组合最多超过200种，但考虑到有些组合不可能存在，如“回馈内容”中的两种“赠品”只可能和“优惠方式”中的“送赠”组合，而不可能和“折、减”组合，实际常用的优惠方式约为几十种（有无限制我就不一一罗列了，读者朋友自行把下面优惠规则总数乘以二）：</p>
+<h3 id="2-1-减折类（6种）"><a href="#2-1-减折类（6种）" class="headerlink" title="2.1 减折类（6种）"></a>2.1 减折类（6种）</h3><p>满折类的优惠条件主要是满N件和满N元，一般不会跟“实付xx元”搭配：</p>
+<ul>
+<li>买立减（买一件）</li>
+<li>买立折（买一件）</li>
+<li>满N件减x元 </li>
+<li>满N件打x折</li>
+<li>满N元减x元</li>
+<li>满N元打x折</li>
+</ul>
+<h4 id="2-2-送（可折算现金）卡-券-积分、不可折算现金的卡-券-积分、其它小赠品（12种）"><a href="#2-2-送（可折算现金）卡-券-积分、不可折算现金的卡-券-积分、其它小赠品（12种）" class="headerlink" title="2.2 送（可折算现金）卡/券/积分、不可折算现金的卡/券/积分、其它小赠品（12种）"></a>2.2 送（可折算现金）卡/券/积分、不可折算现金的卡/券/积分、其它小赠品（12种）</h4><ul>
+<li>买即送（买一件）</li>
+<li>满N件送xx</li>
+<li>满N元送xx</li>
+<li>实付N元送xx</li>
+</ul>
+<p>在有的促销文案里，送虚拟卡券积分也叫满返。</p>
+<p>以上四种场景乘以赠送的三种东西，就是12种。</p>
+<h4 id="2-3-换购（4种）"><a href="#2-3-换购（4种）" class="headerlink" title="2.3 换购（4种）"></a>2.3 换购（4种）</h4><ul>
+<li>买此商品即享换购资格</li>
+<li>满N件即享换购资格</li>
+<li>满N元即享换购资格</li>
+<li>实付N元即享换购资格</li>
+</ul>
+<h4 id="2-4-送同主体商品（3种）"><a href="#2-4-送同主体商品（3种）" class="headerlink" title="2.4 送同主体商品（3种）"></a>2.4 送同主体商品（3种）</h4><ul>
+<li>买N送M</li>
+<li>满N元再送M件</li>
+<li>实付N元再送M件</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://github.com/qinjx/30min_guides/blob/master/promotion_rule.md" target="_blank" rel="noopener">https://github.com/qinjx/30min_guides/blob/master/promotion_rule.md</a></p>
+<p>（完）</p>
+</div><div><ul class="post-copyright"><li class="post-copyright-license"><strong>版权声明: 自由转载-非商用-非衍生-保持署名</strong><a href="https://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh">（创意共享3.0许可证）</a></li><li class="post-copyright-author"><strong>发表日期: </strong><span>2019年01月02日</span></li><li class="post-copyright-project"><strong>开源项目: </strong><img src="http://pic.blackist.top/social_icon_github.png" style="width:20px"><a href="https://github.com/blackist">Github</a></li><li class="post-copyright-github"><strong>社交媒体:  </strong><img src="http://pic.blackist.top/social_icon_twitter.png" style="width:20px"><a href="https://twitter.com/liangl_dong">Twitter, </a><img src="http://pic.blackist.top/social_icon_wechat.png" style="width:20px"><a href="http://pic.blackist.top/blackist-wechat-pub.jpg">公众号</a></li></ul></div><br><script type="text/javascript" src="/js/share.js?v=0.0.0" async></script><a class="article-share-link" data-url="https://blackist.org/2019/01/02/public-comsumer-promotion-rule/" data-id="cjxj52gcp004w7cu6v01bobxn" data-qrcode="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACtUlEQVR42u3a224CMQwFQP7/p1upT0jAcmzHtJVmnxCXJBOktdfO7RZfXz/X/ev769V3rkd7HOH6O9djji48PDy81tKvh7vmPU6cb0fyab6GJ1uAh4eHt8ZLgsGrTXn1ThIGqhuUrxkPDw/vL/DypSfLTZB4eHh4/513/au8cFBN3/NiBx4eHt4neXlpoMrIb/G9UsWxWgseHh5eZz2FBtjvvl7v7+Hh4eG1uuq9RldSSsg/Ha0TDw8Pb4GXT5CHjd6neQCofh8PDw9vj9dr9lfLBJMWVzLCk9/i4eHhLfB6z/WT5tb8qEEyFx4eHt4er5fCzhtgeQg5cNPHw8PDO8TrxYpqUnu9QVX29YwHCrh4eHh4AS+/lSdJdjXhPpXWv+zv4eHh4S3zEtIkPMxbaIWtwcPDw/sgr5pAV5v6vVJvef14eHh4C7x8uHmxdVLCmDTS8PDw8D7Jq5Yhqon1qRHePAzg4eHhLfDmt+kkGPQObFX/gMIzBB4eHl6Llx+K6t3uq0cE8s2KSs94eHh4a7xJW6vaGDtQXMhHxsPDw1vgVZc7KVtMGmx5uCok1nh4eHhj3qmkNj+I0DvyVS4K4+Hh4S3z8kHzo1G9pHwSZqL+Hh4eHl6Ll7fkm/20ATUPA29CAh4eHt5RXnXQaqE2SdB7Aab5T+Lh4eEt86qtrEkTKwdUSxt4eHh4G7zqQateWSFZ9MZRBjw8PLw9Xj5cL73uhZN5UMHDw8M7yzs1cbVlVS3R9sq7eHh4eBu8Xssqb57NjxdszIKHh4c3n6VXis2nn29ZHjAKZVw8PDy8MS8vlfbS3xxfjWBvxsfDw8P7M7zqjXvS9BqFJTw8PLxf5fVaVnnzrBqKDqfUeHh4eAvFiF5TKi8uTMaPMm48PDy8Q7xeAywpOlSLF9VycDI7Hh4e3lHeN+v2c6ivXawfAAAAAElFTkSuQmCC">Share</a><div class="tags"><a href="/tags/公共领域/">公共领域</a><a href="/tags/个人思考/">个人思考</a></div><div class="post-nav"><a class="pre" href="/2019/01/02/public-how-to-buy-car-seat/">怎样挑选合适的安全座椅</a><a class="next" href="/2019/01/02/dev-ios-quiz/">iOS开发60分钟入门</a></div><div id="disqus_thread"><div class="btn_click_load"><button class="disqus_click_btn">阅读评论（请确保 Disqus 可以正常加载）</button></div><script type="text/javascript">var disqus_config = function () {
+    this.page.url = 'https://blackist.org/2019/01/02/public-comsumer-promotion-rule/';
+    this.page.identifier = '2019/01/02/public-comsumer-promotion-rule/';
+    this.page.title = '零售行业优惠规则分析';
+  };</script><script type="text/javascript" id="disqus-lazy-load-script">$.ajax({
+url: 'https://disqus.com/next/config.json',
+timeout: 2500,
+type: 'GET',
+success: function(){
+  var d = document;
+  var s = d.createElement('script');
+  s.src = '//blackist.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', + new Date());
+  (d.head || d.body).appendChild(s);
+  $('.disqus_click_btn').css('display', 'none');
+},
+error: function() {
+  $('.disqus_click_btn').css('display', 'block');
+}
+});</script><script type="text/javascript" id="disqus-click-load">$('.btn_click_load').click(() => {  //click to load comments
+    (() => { // DON'T EDIT BELOW THIS LINE
+        var d = document;
+        var s = d.createElement('script');
+        s.src = '//blackist.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', + new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+    $('.disqus_click_btn').css('display','none');
+});</script><script type="text/javascript" id="disqus-count-script">$(function() {
+     var xhr = new XMLHttpRequest();
+     xhr.open('GET', '//disqus.com/next/config.json', true);
+     xhr.timeout = 2500;
+     xhr.onreadystatechange = function () {
+       if (xhr.readyState === 4 && xhr.status === 200) {
+         $('.post-meta .post-comments-count').show();
+         var s = document.createElement('script');
+         s.id = 'dsq-count-scr';
+         s.src = 'https://blackist.disqus.com/count.js';
+         s.async = true;
+         (document.head || document.body).appendChild(s);
+       }
+     };
+     xhr.ontimeout = function () { xhr.abort(); };
+     xhr.send(null);
+   });
+</script></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="https://blackist.org"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> Categories</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/FrontEnd/">FrontEnd</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JavaWeb/">JavaWeb</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Life/">Life</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Nodejs/">Nodejs</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OPS/">OPS</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/公共领域/">公共领域</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/分布式/">分布式</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/年终总结/">年终总结</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a><span class="category-list-count">1</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> Tags</i></div><div class="tagcloud"><a href="/tags/jni/" style="font-size: 15px;">jni</a> <a href="/tags/开发/" style="font-size: 15px;">开发</a> <a href="/tags/UI/" style="font-size: 15px;">UI</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/spring/" style="font-size: 15px;">spring</a> <a href="/tags/javaweb/" style="font-size: 15px;">javaweb</a> <a href="/tags/springboot/" style="font-size: 15px;">springboot</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/Ubuntu/" style="font-size: 15px;">Ubuntu</a> <a href="/tags/js/" style="font-size: 15px;">js</a> <a href="/tags/nodejs/" style="font-size: 15px;">nodejs</a> <a href="/tags/allJoyn/" style="font-size: 15px;">allJoyn</a> <a href="/tags/RMC/" style="font-size: 15px;">RMC</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/WebSocket/" style="font-size: 15px;">WebSocket</a> <a href="/tags/命令行/" style="font-size: 15px;">命令行</a> <a href="/tags/职业/" style="font-size: 15px;">职业</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/Server/" style="font-size: 15px;">Server</a> <a href="/tags/成长之路/" style="font-size: 15px;">成长之路</a> <a href="/tags/写作/" style="font-size: 15px;">写作</a> <a href="/tags/公共领域/" style="font-size: 15px;">公共领域</a> <a href="/tags/文档规范/" style="font-size: 15px;">文档规范</a> <a href="/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/tags/NDK/" style="font-size: 15px;">NDK</a> <a href="/tags/JNI/" style="font-size: 15px;">JNI</a> <a href="/tags/源码/" style="font-size: 15px;">源码</a> <a href="/tags/发布/" style="font-size: 15px;">发布</a> <a href="/tags/前端/" style="font-size: 15px;">前端</a> <a href="/tags/vue/" style="font-size: 15px;">vue</a> <a href="/tags/android/" style="font-size: 15px;">android</a> <a href="/tags/加密/" style="font-size: 15px;">加密</a> <a href="/tags/md5/" style="font-size: 15px;">md5</a> <a href="/tags/音视频/" style="font-size: 15px;">音视频</a> <a href="/tags/MediaCodec/" style="font-size: 15px;">MediaCodec</a> <a href="/tags/API/" style="font-size: 15px;">API</a> <a href="/tags/sqlite/" style="font-size: 15px;">sqlite</a> <a href="/tags/orm/" style="font-size: 15px;">orm</a> <a href="/tags/开发技术/" style="font-size: 15px;">开发技术</a> <a href="/tags/组件化/" style="font-size: 15px;">组件化</a> <a href="/tags/server/" style="font-size: 15px;">server</a> <a href="/tags/License/" style="font-size: 15px;">License</a> <a href="/tags/Tools/" style="font-size: 15px;">Tools</a> <a href="/tags/koa/" style="font-size: 15px;">koa</a> <a href="/tags/RESTful/" style="font-size: 15px;">RESTful</a> <a href="/tags/OPS/" style="font-size: 15px;">OPS</a> <a href="/tags/2018/" style="font-size: 15px;">2018</a> <a href="/tags/2019/" style="font-size: 15px;">2019</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/个人思考/" style="font-size: 15px;">个人思考</a> <a href="/tags/开源协议/" style="font-size: 15px;">开源协议</a> <a href="/tags/开源/" style="font-size: 15px;">开源</a> <a href="/tags/校友录/" style="font-size: 15px;">校友录</a> <a href="/tags/测试/" style="font-size: 15px;">测试</a> <a href="/tags/monkey/" style="font-size: 15px;">monkey</a> <a href="/tags/Docker/" style="font-size: 15px;">Docker</a> <a href="/tags/MVP/" style="font-size: 15px;">MVP</a> <a href="/tags/java7/" style="font-size: 15px;">java7</a> <a href="/tags/IoC/" style="font-size: 15px;">IoC</a> <a href="/tags/面向对象/" style="font-size: 15px;">面向对象</a> <a href="/tags/hash/" style="font-size: 15px;">hash</a> <a href="/tags/分布式/" style="font-size: 15px;">分布式</a> <a href="/tags/ui/" style="font-size: 15px;">ui</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> Recent</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/06/27/java-oo-equals/">Java中'==' 和 equals()</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/26/java-hash/">Hash在Java中的应用</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/23/javaweb-ar-introduce/">校友录设计</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/java-java7-ioc/">依赖注入</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/22/distributed-outline/">分布式-开启SpringBoot微服务之旅</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/05/03/ops-docker-basic/">Docker入门</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/31/android-modulize-mvp/">Android组件化-MVP设计模式</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/21/android-modulize-ui-theme/">Android组件化-UI统一&主题变色</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/14/javaweb-ar-style/">校友录-网站样式设计</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/03/13/android-test-monkey-test/">Android测试-Monkey Test</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-comment-o"> Recent Comments</i></div><script type="text/javascript" src="//blackist.disqus.com/recent_comments_widget.js?num_items=5&amp;hide_avatars=1&amp;avatar_size=32&amp;excerpt_length=20&amp;hide_mods=1"></script></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> Blogroll</i></div><ul></ul><a href="https://yuti.site/" title="Pretty Girl" target="_blank">Pretty Girl</a><ul></ul><a href="https://github.com/blackist" title="GitHub" target="_blank">GitHub</a><ul></ul><a href="https://blackist.org" title="Website" target="_blank">Website</a><ul></ul><a href="https://twitter.com/liangl_dong" title="Twitter" target="_blank">Twitter</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">董亮亮的开发笔记.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.3.5/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.3.5/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
