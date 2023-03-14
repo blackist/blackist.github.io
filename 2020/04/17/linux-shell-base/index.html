@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Dong_small.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Dong_medium.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Dong_small.ico">
+  <link rel="mask-icon" href="/images/Dong_small.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blackist.org","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.12.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="接触过一些 shell 脚本，做服务端运维时也时常用到，是时候专门学习一下了。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux Shell 脚本基础">
+<meta property="og:url" content="https://blackist.org/2020/04/17/linux-shell-base/index.html">
+<meta property="og:site_name" content="Thinking in Coding">
+<meta property="og:description" content="接触过一些 shell 脚本，做服务端运维时也时常用到，是时候专门学习一下了。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-04-17T11:30:17.000Z">
+<meta property="article:modified_time" content="2022-08-24T03:09:53.363Z">
+<meta property="article:author" content="董猿外">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="运维">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blackist.org/2020/04/17/linux-shell-base/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blackist.org/2020/04/17/linux-shell-base/","path":"2020/04/17/linux-shell-base/","title":"Linux Shell 脚本基础"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Linux Shell 脚本基础 | Thinking in Coding</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Thinking in Coding</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80"><span class="nav-text">基础</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Here-Script"><span class="nav-text">Here Script</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Variables"><span class="nav-text">Variables</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Environment-Variables"><span class="nav-text">Environment Variables</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E6%9B%BF%E6%8D%A2%E5%92%8C%E5%B8%B8%E9%87%8F"><span class="nav-text">命令替换和常量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E6%9B%BF%E6%8D%A2"><span class="nav-text">命令替换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E9%87%8F"><span class="nav-text">常量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BD%E6%95%B0"><span class="nav-text">函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E5%8F%82%E6%95%B0"><span class="nav-text">函数参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#date-%E6%A0%BC%E5%BC%8F%E5%8C%96"><span class="nav-text">date 格式化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%81%E6%8E%A7%E5%88%B6"><span class="nav-text">流控制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#if"><span class="nav-text">if</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Exit-Status"><span class="nav-text">Exit Status</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#test"><span class="nav-text">test</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#exit"><span class="nav-text">exit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#test-for-superuser"><span class="nav-text">test for superuser</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Watching-your-script"><span class="nav-text">Watching your script</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%94%AE%E7%9B%98%E8%BE%93%E5%85%A5%E5%92%8C%E7%AE%97%E6%9C%AF"><span class="nav-text">键盘输入和算术</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#read"><span class="nav-text">read</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%97%E6%9C%AF"><span class="nav-text">算术</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%81%E6%8E%A7%E5%88%B62"><span class="nav-text">流控制2</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#case"><span class="nav-text">case</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AA%E7%8E%AF"><span class="nav-text">循环</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#while"><span class="nav-text">while</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#util"><span class="nav-text">util</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E8%8F%9C%E5%8D%95"><span class="nav-text">自定义菜单</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%8D%E7%BD%AE%E5%8F%82%E6%95%B0"><span class="nav-text">位置参数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E9%80%89%E9%A1%B9"><span class="nav-text">命令行选项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#shift"><span class="nav-text">shift</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%A4%84%E7%90%86%E5%99%A8"><span class="nav-text">命令行处理器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#for-%E5%BE%AA%E7%8E%AF"><span class="nav-text">for 循环</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E4%BD%8D%E7%BD%AE%E5%8F%82%E6%95%B0"><span class="nav-text">处理位置参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E6%96%87%E4%BB%B6%E5%88%97%E8%A1%A8"><span class="nav-text">处理文件列表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#home-space"><span class="nav-text">home_space</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E5%AE%83"><span class="nav-text">其它</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%B2%81%E6%A3%92%E6%80%A7"><span class="nav-text">鲁棒性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#clean-up-%E5%8A%9F%E8%83%BD"><span class="nav-text">clean_up 功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E7%9A%84%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6"><span class="nav-text">安全的临时文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="董猿外"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">董猿外</p>
+  <div class="site-description" itemprop="description">Coding in Thinking.</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">78</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">78</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/blackist" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;blackist" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/liangl.dong@gmail.com" title="E-Mail → liangl.dong@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/liangl_dong" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;liangl_dong" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blackist.org/2020/04/17/linux-shell-base/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="董猿外">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Thinking in Coding">
+      <meta itemprop="description" content="Coding in Thinking.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Linux Shell 脚本基础 | Thinking in Coding">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux Shell 脚本基础
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-04-17 19:30:17" itemprop="dateCreated datePublished" datetime="2020-04-17T19:30:17+08:00">2020-04-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-08-24 11:09:53" itemprop="dateModified" datetime="2022-08-24T11:09:53+08:00">2022-08-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/OPS/" itemprop="url" rel="index"><span itemprop="name">OPS</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>接触过一些 shell 脚本，做服务端运维时也时常用到，是时候专门学习一下了。</p>
+<span id="more"></span>
+
+<h2 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h2><h3 id="Here-Script"><a href="#Here-Script" class="headerlink" title="Here Script"></a>Here Script</h3><p>使用 _EOF_ 将多行语句作为单句，避免转义字符的麻烦：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">echos</span> </span><br><span class="line">echo &quot;&lt;html&gt;&quot;</span><br><span class="line">echo &quot;&lt;head&gt;&quot;</span><br><span class="line">echo &quot;&lt;/head&gt;&quot;</span><br><span class="line">echo &quot;&lt;/html&gt;&quot;</span><br><span class="line"></span><br><span class="line">echo &quot;&lt;html&gt;</span><br><span class="line"> &lt;head&gt;</span><br><span class="line"> &lt;/head&gt;</span><br><span class="line"> &lt;/html&gt;&quot;</span><br><span class="line"></span><br><span class="line">cat &lt;&lt; _EOF_</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;/html&gt;</span><br><span class="line">_EOF_</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Variables"><a href="#Variables" class="headerlink" title="Variables"></a>Variables</h3><p>Rules: </p>
+<ol>
+<li>Names must start with a letter.</li>
+<li>A name must not contain embedded spaces. Use underscores instead.</li>
+<li>You cannot use punctuation marks.</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line">title=&quot;System Information for&quot;</span><br><span class="line">echo $title</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Environment-Variables"><a href="#Environment-Variables" class="headerlink" title="Environment Variables"></a>Environment Variables</h3><p>脚本文件启动前，系统已预设一些环境变量，在命令行中使用 <code>printenv</code> 查看这些变量：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">[root@bhc004 ~]<span class="comment"># printenv</span></span><br><span class="line">XDG_SESSION_ID=87</span><br><span class="line">HOSTNAME=bhc004</span><br><span class="line">TERM=linux</span><br><span class="line">SHELL=/bin/bash</span><br><span class="line">HISTSIZE=10000</span><br><span class="line">SSH_CLIENT=125.117.180.232 57544 22</span><br><span class="line">SSH_TTY=/dev/pts/0</span><br><span class="line">USER=root</span><br><span class="line">LS_COLORS=rs=0:di=01;34:<span class="built_in">ln</span>=01;``````.spx=01;36:*.xspf=01;36:</span><br><span class="line">MAIL=/var/spool/mail/root</span><br><span class="line">PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/local/jdk/bin</span><br><span class="line">PWD=/root</span><br><span class="line">LANG=en_US.UTF-8</span><br><span class="line">HISTCONTROL=ignoredups</span><br><span class="line">SHLVL=1</span><br><span class="line">HOME=/root</span><br><span class="line">LOGNAME=root</span><br><span class="line">SSH_CONNECTION=125.117.180.232 57544 192.168.0.182 22</span><br><span class="line">LESSOPEN=||/usr/bin/lesspipe.sh %s</span><br><span class="line">XDG_RUNTIME_DIR=/run/user/0</span><br><span class="line">HISTTIMEFORMAT=%F %T root </span><br><span class="line">_=/usr/bin/printenv</span><br></pre></td></tr></table></figure>
+
+<p>在 shell 中可以使用这些环境变量 <code>echo $HOSTNAME</code>。</p>
+<h2 id="命令替换和常量"><a href="#命令替换和常量" class="headerlink" title="命令替换和常量"></a>命令替换和常量</h2><p>Command Substitution and Constants</p>
+<h3 id="命令替换"><a href="#命令替换" class="headerlink" title="命令替换"></a>命令替换</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo Updated on $(date +&quot;%x %r %Z&quot;) by $USER</span><br></pre></td></tr></table></figure>
+
+<p><code>$(date +&quot;%x %r %Z&quot;)</code> 中 <code>$()</code> 告诉 shell 替换附带命令的执行结果，即插入 <code>date +&quot;%x %r %Z</code> 的执行结果（当前时间）。</p>
+<blockquote>
+<p>Be aware that there is an older, alternate syntax for “$(command)” that uses the backtick character “`“. This older form is compatible with the original Bourne shell (sh). I tend not to use the older form since I am teaching modern <code>bash</code> here, not <code>sh</code>, and besides, I think backticks are ugly. The bash shell fully supports scripts written for sh, so the following forms are equivalent:</p>
+<p>$(command)     `command`</p>
+</blockquote>
+<p>把命令执行结果赋值给变量：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">right_now=$(date +&quot;%x %r %z&quot;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="常量"><a href="#常量" class="headerlink" title="常量"></a>常量</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">RIGHT_NOW=$(date +&quot;%x %r %Z&quot;)</span><br><span class="line">TIME_STAMP=&quot;Updated on $RIGHT_NOW by $USER&quot;</span><br></pre></td></tr></table></figure>
+
+<p>很少用，使用大写字母定义常量名（非强制）。</p>
+<h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><p>自定义函数</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">### Functions</span></span></span><br><span class="line">show_uptime() &#123;</span><br><span class="line">    echo &quot;&lt;h2&gt;System uptime&lt;/h2&gt;&quot;</span><br><span class="line">    echo &quot;&lt;pre&gt;&quot;</span><br><span class="line">    uptime</span><br><span class="line">    echo &quot;&lt;/pre&gt;&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">drive_space() &#123;</span><br><span class="line">    echo &quot;&lt;h2&gt;Filesystem space&lt;/h2&gt;&quot;</span><br><span class="line">    echo &quot;&lt;pre&gt;&quot;</span><br><span class="line">    df</span><br><span class="line">    echo &quot;&lt;/pre&gt;&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">cat &lt;&lt; _EOF_</span><br><span class="line"><span class="meta prompt_">  $</span><span class="language-bash">(show_uptime)</span></span><br><span class="line"><span class="meta prompt_">  $</span><span class="language-bash">(drive_space)</span></span><br><span class="line">_EOF_</span><br></pre></td></tr></table></figure>
+
+<h3 id="函数参数"><a href="#函数参数" class="headerlink" title="函数参数"></a>函数参数</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">function generate_instance_conf() &#123;</span><br><span class="line">  echo &quot;configuring server $1&quot;</span><br><span class="line">&#125;</span><br><span class="line">generate_instance_conf server1</span><br></pre></td></tr></table></figure>
+
+<p>输出：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">configuring server server1</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="date-格式化"><a href="#date-格式化" class="headerlink" title="date 格式化"></a>date 格式化</h3><p>Following are the list of available options for date command :</p>
+<table>
+<thead>
+<tr>
+<th align="left">Format option</th>
+<th align="left">Part of Date</th>
+<th align="left">Desciption</th>
+<th align="left">Example Output</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">date +%a</td>
+<td align="left">Weekday</td>
+<td align="left">Name of weekday in short (like Sun, Mon, Tue, Wed, Thu, Fri, Sat)</td>
+<td align="left">Mon</td>
+</tr>
+<tr>
+<td align="left">date +%A</td>
+<td align="left">Weekday</td>
+<td align="left">Name of weekday in full (like Sunday, Monday, Tuesday)</td>
+<td align="left">Monday</td>
+</tr>
+<tr>
+<td align="left">date +%b</td>
+<td align="left">Month</td>
+<td align="left">Name of Month in short (like Jan, Feb, Mar )</td>
+<td align="left">Jan</td>
+</tr>
+<tr>
+<td align="left">date +%B</td>
+<td align="left">Month</td>
+<td align="left">Month name in full short (like January, February)</td>
+<td align="left">January</td>
+</tr>
+<tr>
+<td align="left">date +%d</td>
+<td align="left">Day</td>
+<td align="left">Day of month (e.g., 01)</td>
+<td align="left">04</td>
+</tr>
+<tr>
+<td align="left">date +%D</td>
+<td align="left">MM&#x2F;DD&#x2F;YY</td>
+<td align="left">Current Date; shown in MM&#x2F;DD&#x2F;YY</td>
+<td align="left">02&#x2F;18&#x2F;18</td>
+</tr>
+<tr>
+<td align="left">date +%F</td>
+<td align="left">YYYY-MM-DD</td>
+<td align="left">Date; shown in YYYY-MM-DD</td>
+<td align="left">2018-01-19</td>
+</tr>
+<tr>
+<td align="left">date +%H</td>
+<td align="left">Hour</td>
+<td align="left">Hour in 24-hour clock format</td>
+<td align="left">18</td>
+</tr>
+<tr>
+<td align="left">date +%I</td>
+<td align="left">Hour</td>
+<td align="left">Hour in 12-hour clock format</td>
+<td align="left">10</td>
+</tr>
+<tr>
+<td align="left">date +%j</td>
+<td align="left">Day</td>
+<td align="left">Day of year (001..366)</td>
+<td align="left">152</td>
+</tr>
+<tr>
+<td align="left">date +%m</td>
+<td align="left">Month</td>
+<td align="left">Number of month (01..12) (01 is January)</td>
+<td align="left">05</td>
+</tr>
+<tr>
+<td align="left">date +%M</td>
+<td align="left">Minutes</td>
+<td align="left">Minutes (00..59)</td>
+<td align="left">52</td>
+</tr>
+<tr>
+<td align="left">date +%S</td>
+<td align="left">Seconds</td>
+<td align="left">Seconds (00..59)</td>
+<td align="left">18</td>
+</tr>
+<tr>
+<td align="left">date +%N</td>
+<td align="left">Nanoseconds</td>
+<td align="left">Nanoseconds (000000000..999999999)</td>
+<td align="left">300231695</td>
+</tr>
+<tr>
+<td align="left">date +%T</td>
+<td align="left">HH:MM:SS</td>
+<td align="left">Time as HH:MM:SS (Hours in 24 Format)</td>
+<td align="left">18:55:42</td>
+</tr>
+<tr>
+<td align="left">date +%u</td>
+<td align="left">Day of Week</td>
+<td align="left">Day of week (1..7); 1 is Monday</td>
+<td align="left">7</td>
+</tr>
+<tr>
+<td align="left">date +%U</td>
+<td align="left">Week</td>
+<td align="left">Displays week number of year, with Sunday as first day of week (00..53)</td>
+<td align="left">23</td>
+</tr>
+<tr>
+<td align="left">date +%Y</td>
+<td align="left">Year</td>
+<td align="left">Displays full year i.e. YYYY</td>
+<td align="left">2018</td>
+</tr>
+<tr>
+<td align="left">date +%Z</td>
+<td align="left">Timezone</td>
+<td align="left">Time zone abbreviation (Ex: IST, GMT)</td>
+<td align="left">IST</td>
+</tr>
+</tbody></table>
+<p>You may use any of the above-mentioned format options (first column) for the date command in the aforementioned syntax.</p>
+<h2 id="流控制"><a href="#流控制" class="headerlink" title="流控制"></a>流控制</h2><h3 id="if"><a href="#if" class="headerlink" title="if"></a>if</h3><p><code>if</code> 语法如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">if commands; then</span><br><span class="line">commands</span><br><span class="line">[elif commands; then</span><br><span class="line">commands...]</span><br><span class="line">[else</span><br><span class="line">commands]</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<h3 id="Exit-Status"><a href="#Exit-Status" class="headerlink" title="Exit Status"></a>Exit Status</h3><p>退出状态，即命令执行后会给系统一个值，0-255，0 代表 success：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@bhc004 ~]<span class="comment"># true</span></span><br><span class="line">[root@bhc004 ~]<span class="comment"># echo $?</span></span><br><span class="line">0</span><br><span class="line">[root@bhc004 ~]<span class="comment"># false</span></span><br><span class="line">[root@bhc004 ~]<span class="comment"># echo $?</span></span><br><span class="line">1</span><br></pre></td></tr></table></figure>
+
+<h3 id="test"><a href="#test" class="headerlink" title="test"></a>test</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">First form</span></span><br><span class="line">test expression</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Second form</span></span><br><span class="line">[ expression ]</span><br></pre></td></tr></table></figure>
+
+<p>test 命令和 if 命令一起完成 true &#x2F; false 判断，当表达式为 true，test 以 0 退出；为 false，test 以 1 退出。</p>
+<p>例如：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">if [ -f .bash_profile ]; then</span><br><span class="line">    echo &quot;You have a .bash_profile. Things are fine.&quot;</span><br><span class="line">else</span><br><span class="line">    echo &quot;Yikes! You have no .bash_profile!&quot;</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<p>表达式“-f .bash_profile”表示 .bash_profile 是一个文件，若为 true，则执行 <code>then</code> 后的命令；否则执行 else 后的命令。</p>
+<p>test 可以评估的表达式如下：</p>
+<table>
+<thead>
+<tr>
+<th><strong>Expression</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-d <em>file</em></td>
+<td>True if <em>file</em> is a directory.</td>
+</tr>
+<tr>
+<td>-e <em>file</em></td>
+<td>True if <em>file</em> exists.</td>
+</tr>
+<tr>
+<td>-f <em>file</em></td>
+<td>True if <em>file</em> exists and is a regular file.</td>
+</tr>
+<tr>
+<td>-L <em>file</em></td>
+<td>True if <em>file</em> is a symbolic link.</td>
+</tr>
+<tr>
+<td>-r <em>file</em></td>
+<td>True if <em>file</em> is a file readable by you.</td>
+</tr>
+<tr>
+<td>-w <em>file</em></td>
+<td>True if <em>file</em> is a file writable by you.</td>
+</tr>
+<tr>
+<td>-x <em>file</em></td>
+<td>True if <em>file</em> is a file executable by you.</td>
+</tr>
+<tr>
+<td><em>file1</em> -nt <em>file2</em></td>
+<td>True if <em>file1</em> is newer than (according to modification time) <em>file2</em></td>
+</tr>
+<tr>
+<td><em>file1</em> -ot <em>file2</em></td>
+<td>True if <em>file1</em> is older than <em>file2</em></td>
+</tr>
+<tr>
+<td>-z <em>string</em></td>
+<td>True if <em>string</em> is empty.</td>
+</tr>
+<tr>
+<td>-n <em>string</em></td>
+<td>True if <em>string</em> is not empty.</td>
+</tr>
+<tr>
+<td><em>string1</em> &#x3D; <em>string2</em></td>
+<td>True if <em>string1</em> equals <em>string2.</em></td>
+</tr>
+<tr>
+<td><em>string1</em> !&#x3D; <em>string2</em></td>
+<td>True if <em>string1</em> does not equal <em>string2.</em></td>
+</tr>
+</tbody></table>
+<p>不同的书写格式：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Alternate form</span></span><br><span class="line">if [ -f .bash_profile ]</span><br><span class="line">then</span><br><span class="line">    echo &quot;You have a .bash_profile. Things are fine.&quot;</span><br><span class="line">else</span><br><span class="line">    echo &quot;Yikes! You have no .bash_profile!&quot;</span><br><span class="line">fi</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Another alternate form</span></span><br><span class="line">if [ -f .bash_profile ]</span><br><span class="line">then echo &quot;You have a .bash_profile. Things are fine.&quot;</span><br><span class="line">else echo &quot;Yikes! You have no .bash_profile!&quot;</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<h3 id="exit"><a href="#exit" class="headerlink" title="exit"></a>exit</h3><p>exit 命令可以立即结束此脚本，并设置退出状态：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exit 0</span><br></pre></td></tr></table></figure>
+
+<h3 id="test-for-superuser"><a href="#test-for-superuser" class="headerlink" title="test for superuser"></a>test for superuser</h3><p><code>id</code> 命令可以查看当前用户信息：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@bhc004 ~]<span class="comment"># id</span></span><br><span class="line">uid=0(root) gid=0(root) <span class="built_in">groups</span>=0(root)</span><br><span class="line">[root@bhc004 ~]<span class="comment"># id -u</span></span><br><span class="line">0</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">if [ $(id -u) != &quot;0&quot; ]; then</span><br><span class="line">    # &gt;&amp;2 输出到标准错误</span><br><span class="line">    echo &quot;You must be the superuser to run this script&quot; &gt;&amp;2</span><br><span class="line">    # 1 向操作系统表示脚本执行不成功</span><br><span class="line">    exit 1</span><br><span class="line">else</span><br><span class="line">    echo &quot;superuser&quot;</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<h3 id="Watching-your-script"><a href="#Watching-your-script" class="headerlink" title="Watching your script"></a>Watching your script</h3><p>在第一行加 <code>+x</code> 监控脚本执行状态：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash -x</span></span><br></pre></td></tr></table></figure>
+
+<p>或者，使用 <code>set -x</code> 和 <code>set +x</code>监控一段代码：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">number=1</span><br><span class="line"></span><br><span class="line">set -x</span><br><span class="line">if [ $number = &quot;1&quot; ]; then</span><br><span class="line">    echo &quot;Number equals 1&quot;</span><br><span class="line">else</span><br><span class="line">    echo &quot;Number does not equal 1&quot;</span><br><span class="line">fi</span><br><span class="line">set +x</span><br></pre></td></tr></table></figure>
+
+<h2 id="键盘输入和算术"><a href="#键盘输入和算术" class="headerlink" title="键盘输入和算术"></a>键盘输入和算术</h2><p>用户交互。</p>
+<h3 id="read"><a href="#read" class="headerlink" title="read"></a>read</h3><p>从键盘输入并赋值给变量：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">echo -n &quot;Enter some text &gt; &quot;</span><br><span class="line">read text</span><br><span class="line">echo &quot;You entered: $text&quot;</span><br></pre></td></tr></table></figure>
+
+<p><code>-n</code> 使输入和字符串在同一行。read 有 <code>-t</code>、<code>-s</code> 等参数：</p>
+<ul>
+<li><code>-t</code> 表示在指定时间内获得响应，当无论用户是否输入都要继续执行时使用；</li>
+<li><code>is</code> 表示不显示输入的内容；当输入密码时使用；</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">echo -n &quot;Hurry up and type something! &gt; &quot;</span><br><span class="line">if read -t 3 response; then</span><br><span class="line">    echo &quot;Great, you made it in time!&quot;</span><br><span class="line">else</span><br><span class="line">    echo &quot;Sorry, you are too slow!&quot;</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<h3 id="算术"><a href="#算术" class="headerlink" title="算术"></a>算术</h3><p>使用双括号计算算术表达式：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">first_num=0</span><br><span class="line">second_num=0</span><br><span class="line"></span><br><span class="line">echo -n &quot;Enter the first number --&gt; &quot;</span><br><span class="line">read first_num</span><br><span class="line">echo -n &quot;Enter the second number -&gt; &quot;</span><br><span class="line">read second_num</span><br><span class="line"></span><br><span class="line">echo &quot;first number + second number = $((first_num + second_num))&quot;</span><br><span class="line">echo &quot;first number - second number = $((first_num - second_num))&quot;</span><br><span class="line">echo &quot;first number * second number = $((first_num * second_num))&quot;</span><br><span class="line">echo &quot;first number / second number = $((first_num / second_num))&quot;</span><br><span class="line">echo &quot;first number % second number = $((first_num % second_num))&quot;</span><br><span class="line">echo &quot;first number raised to the&quot;</span><br><span class="line">echo &quot;power of the second number   = $((first_num ** second_num))&quot;</span><br></pre></td></tr></table></figure>
+
+<p>括号内的变量不需要 <code>$</code> 就可以引用，</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">number=0</span><br><span class="line"></span><br><span class="line">echo -n &quot;Enter a number &gt; &quot;</span><br><span class="line">read number</span><br><span class="line"></span><br><span class="line">echo &quot;Number is $number&quot;</span><br><span class="line">if [ $((number % 2)) -eq 0 ]; then</span><br><span class="line">    echo &quot;Number is even&quot;</span><br><span class="line">else</span><br><span class="line">    echo &quot;Number is odd&quot;</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<h2 id="流控制2"><a href="#流控制2" class="headerlink" title="流控制2"></a>流控制2</h2><p>更过分支：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">echo -n &quot;Enter a number between 1 and 3 inclusive &gt; &quot;</span><br><span class="line">read character</span><br><span class="line">if [ &quot;$character&quot; = &quot;1&quot; ]; then</span><br><span class="line">    echo &quot;You entered one.&quot;</span><br><span class="line">elif [ &quot;$character&quot; = &quot;2&quot; ]; then</span><br><span class="line">    echo &quot;You entered two.&quot;</span><br><span class="line">elif [ &quot;$character&quot; = &quot;3&quot; ]; then</span><br><span class="line">    echo &quot;You entered three.&quot;</span><br><span class="line">else</span><br><span class="line">    echo &quot;You did not enter a number between 1 and 3.&quot;</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<p>使用 case 优化分支结构</p>
+<h3 id="case"><a href="#case" class="headerlink" title="case"></a>case</h3><p>case 语句格式如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">case word in</span><br><span class="line">    patterns ) commands ;;</span><br><span class="line">esac</span><br></pre></td></tr></table></figure>
+
+<p>改造如上语句：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">echo -n &quot;Enter a number between 1 and 3 inclusive &gt; &quot;</span><br><span class="line">read character</span><br><span class="line">case $character in</span><br><span class="line">    1 ) echo &quot;You entered one.&quot;</span><br><span class="line">        ;;</span><br><span class="line">    2 ) echo &quot;You entered two.&quot;</span><br><span class="line">        ;;</span><br><span class="line">    3 ) echo &quot;You entered three.&quot;</span><br><span class="line">        ;;</span><br><span class="line">    * ) echo &quot;You did not enter a number between 1 and 3.&quot;</span><br><span class="line">esac</span><br></pre></td></tr></table></figure>
+
+<p>case 也可以匹配表达式：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">echo -n &quot;Type a digit or a letter &gt; &quot;</span><br><span class="line">read character</span><br><span class="line">case $character in</span><br><span class="line">                                # Check for letters</span><br><span class="line">    [[:lower:]] | [[:upper:]] ) echo &quot;You typed the letter $character&quot;</span><br><span class="line">                                ;;</span><br><span class="line"></span><br><span class="line">                                # Check for digits</span><br><span class="line">    [0-9] )                     echo &quot;You typed the digit $character&quot;</span><br><span class="line">                                ;;</span><br><span class="line"></span><br><span class="line">                                # Check for anything else</span><br><span class="line">    * )                         echo &quot;You did not type a letter or a digit&quot;</span><br><span class="line">esac</span><br></pre></td></tr></table></figure>
+
+<p><code>*</code> 通常用来检测无效输入。</p>
+<h3 id="循环"><a href="#循环" class="headerlink" title="循环"></a>循环</h3><h4 id="while"><a href="#while" class="headerlink" title="while"></a>while</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line"></span><br><span class="line">number=0</span><br><span class="line">while [ &quot;$number&quot; -lt 10 ]; do</span><br><span class="line">    echo &quot;Number = $number&quot;</span><br><span class="line">    number=$((number + 1))</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<h4 id="util"><a href="#util" class="headerlink" title="util"></a>util</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">number=0</span><br><span class="line">until [ &quot;$number&quot; -ge 10 ]; do</span><br><span class="line">    echo &quot;Number = $number&quot;</span><br><span class="line">    number=$((number + 1))</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<h4 id="自定义菜单"><a href="#自定义菜单" class="headerlink" title="自定义菜单"></a>自定义菜单</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">selection=</span><br><span class="line">until [ &quot;$selection&quot; = &quot;0&quot; ]; do</span><br><span class="line">    echo &quot;</span><br><span class="line">    PROGRAM MENU</span><br><span class="line">    1 - Display free disk space</span><br><span class="line">    2 - Display free memory</span><br><span class="line"></span><br><span class="line">    0 - exit program</span><br><span class="line">&quot;</span><br><span class="line">    echo -n &quot;Enter selection: &quot;</span><br><span class="line">    read selection</span><br><span class="line">    echo &quot;&quot;</span><br><span class="line">    case $selection in</span><br><span class="line">        1 ) df ;;</span><br><span class="line">        2 ) free ;;</span><br><span class="line">        0 ) exit ;;</span><br><span class="line">        * ) echo &quot;Please enter 1, 2, or 0&quot;</span><br><span class="line">    esac</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<h2 id="位置参数"><a href="#位置参数" class="headerlink" title="位置参数"></a>位置参数</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">echo &quot;Positional Parameters&quot;</span><br><span class="line">echo &#x27;$0 = &#x27; $0</span><br><span class="line">echo &#x27;$1 = &#x27; $1</span><br><span class="line">echo &#x27;$2 = &#x27; $2</span><br><span class="line">echo &#x27;$3 = &#x27; $3</span><br><span class="line"></span><br><span class="line">if [ &quot;$1&quot; != &quot;&quot; ]; then</span><br><span class="line">    echo &quot;Positional parameter 1 contains something&quot;</span><br><span class="line">else</span><br><span class="line">    echo &quot;Positional parameter 1 is empty&quot;</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<h3 id="命令行选项"><a href="#命令行选项" class="headerlink" title="命令行选项"></a>命令行选项</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">interactive=</span><br><span class="line">filename=~/sysinfo_page.html</span><br><span class="line"></span><br><span class="line">while [ &quot;$1&quot; != &quot;&quot; ]; do</span><br><span class="line">    case $1 in</span><br><span class="line">        -f | --file )           shift</span><br><span class="line">                                filename=$1</span><br><span class="line">                                ;;</span><br><span class="line">        -i | --interactive )    interactive=1</span><br><span class="line">                                ;;</span><br><span class="line">        -h | --help )           usage</span><br><span class="line">                                exit</span><br><span class="line">                                ;;</span><br><span class="line">        * )                     usage</span><br><span class="line">                                exit 1</span><br><span class="line">    esac</span><br><span class="line">    shift</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<h3 id="shift"><a href="#shift" class="headerlink" title="shift"></a>shift</h3><p><code>shift</code> 是内建命令，每次调用 <code>shift</code> 使所有参数的索引减一，即 $2 变成 $1，$3 变成 $2：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">echo &quot;You start with $# positional parameters&quot;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Loop until all parameters are used up</span></span><br><span class="line">while [ &quot;$1&quot; != &quot;&quot; ]; do</span><br><span class="line">    echo &quot;Parameter 1 equals $1&quot;</span><br><span class="line">    echo &quot;You now have $# positional parameters&quot;</span><br><span class="line"></span><br><span class="line">    # Shift all the parameters down by one</span><br><span class="line">    shift</span><br><span class="line"></span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<h3 id="命令行处理器"><a href="#命令行处理器" class="headerlink" title="命令行处理器"></a>命令行处理器</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">sysinfo_page - A script to produce a system information HTML file</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">#### Constants</span></span></span><br><span class="line"></span><br><span class="line">TITLE=&quot;System Information for $HOSTNAME&quot;</span><br><span class="line">RIGHT_NOW=$(date +&quot;%x %r %Z&quot;)</span><br><span class="line">TIME_STAMP=&quot;Updated on $RIGHT_NOW by $USER&quot;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">#### Functions</span></span></span><br><span class="line"></span><br><span class="line">system_info()</span><br><span class="line">&#123;</span><br><span class="line">    echo &quot;&lt;h2&gt;System release info&lt;/h2&gt;&quot;</span><br><span class="line">    echo &quot;&lt;p&gt;Function not yet implemented&lt;/p&gt;&quot;</span><br><span class="line"></span><br><span class="line">&#125;   # end of system_info</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">show_uptime()</span><br><span class="line">&#123;</span><br><span class="line">    echo &quot;&lt;h2&gt;System uptime&lt;/h2&gt;&quot;</span><br><span class="line">    echo &quot;&lt;pre&gt;&quot;</span><br><span class="line">    uptime</span><br><span class="line">    echo &quot;&lt;/pre&gt;&quot;</span><br><span class="line"></span><br><span class="line">&#125;   # end of show_uptime</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">drive_space()</span><br><span class="line">&#123;</span><br><span class="line">    echo &quot;&lt;h2&gt;Filesystem space&lt;/h2&gt;&quot;</span><br><span class="line">    echo &quot;&lt;pre&gt;&quot;</span><br><span class="line">    df</span><br><span class="line">    echo &quot;&lt;/pre&gt;&quot;</span><br><span class="line"></span><br><span class="line">&#125;   # end of drive_space</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">home_space()</span><br><span class="line">&#123;</span><br><span class="line">    # Only the superuser can get this information</span><br><span class="line"></span><br><span class="line">    if [ &quot;$(id -u)&quot; = &quot;0&quot; ]; then</span><br><span class="line">        echo &quot;&lt;h2&gt;Home directory space by user&lt;/h2&gt;&quot;</span><br><span class="line">        echo &quot;&lt;pre&gt;&quot;</span><br><span class="line">        echo &quot;Bytes Directory&quot;</span><br><span class="line">        du -s /home/* | sort -nr</span><br><span class="line">        echo &quot;&lt;/pre&gt;&quot;</span><br><span class="line">    fi</span><br><span class="line"></span><br><span class="line">&#125;   # end of home_space</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">write_page()</span><br><span class="line">&#123;</span><br><span class="line">    cat &lt;&lt;- _EOF_</span><br><span class="line">    &lt;html&gt;</span><br><span class="line">        &lt;head&gt;</span><br><span class="line">        &lt;title&gt;$TITLE&lt;/title&gt;</span><br><span class="line">        &lt;/head&gt;</span><br><span class="line">        &lt;body&gt;</span><br><span class="line">        &lt;h1&gt;$TITLE&lt;/h1&gt;</span><br><span class="line">        &lt;p&gt;$TIME_STAMP&lt;/p&gt;</span><br><span class="line">        $(system_info)</span><br><span class="line">        $(show_uptime)</span><br><span class="line">        $(drive_space)</span><br><span class="line">        $(home_space)</span><br><span class="line">        &lt;/body&gt;</span><br><span class="line">    &lt;/html&gt;</span><br><span class="line">_EOF_</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">usage()</span><br><span class="line">&#123;</span><br><span class="line">    echo &quot;usage: sysinfo_page [[[-f file ] [-i]] | [-h]]&quot;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment">#### Main</span></span></span><br><span class="line"></span><br><span class="line">interactive=</span><br><span class="line">filename=~/sysinfo_page.html</span><br><span class="line"></span><br><span class="line">while [ &quot;$1&quot; != &quot;&quot; ]; do</span><br><span class="line">    case $1 in</span><br><span class="line">        -f | --file )           shift</span><br><span class="line">                                filename=$1</span><br><span class="line">                                ;;</span><br><span class="line">        -i | --interactive )    interactive=1</span><br><span class="line">                                ;;</span><br><span class="line">        -h | --help )           usage</span><br><span class="line">                                exit</span><br><span class="line">                                ;;</span><br><span class="line">        * )                     usage</span><br><span class="line">                                exit 1</span><br><span class="line">    esac</span><br><span class="line">    shift</span><br><span class="line">done</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Test code to verify <span class="built_in">command</span> line processing</span></span><br><span class="line"></span><br><span class="line">if [ &quot;$interactive&quot; = &quot;1&quot; ]; then</span><br><span class="line">	response=</span><br><span class="line"></span><br><span class="line">    echo -n &quot;Enter name of output file [$filename] &gt; &quot;</span><br><span class="line">    read response</span><br><span class="line">    if [ -n &quot;$response&quot; ]; then</span><br><span class="line">        filename=$response</span><br><span class="line">    fi</span><br><span class="line"></span><br><span class="line">    if [ -f $filename ]; then</span><br><span class="line">        echo -n &quot;Output file exists. Overwrite? (y/n) &gt; &quot;</span><br><span class="line">        read response</span><br><span class="line">        if [ &quot;$response&quot; != &quot;y&quot; ]; then</span><br><span class="line">            echo &quot;Exiting program.&quot;</span><br><span class="line">            exit 1</span><br><span class="line">        fi</span><br><span class="line">    fi</span><br><span class="line">fi</span><br><span class="line">echo &quot;output file = $filename&quot;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Write page (comment out until testing is complete)</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">write_page &gt; <span class="variable">$filename</span></span></span><br></pre></td></tr></table></figure>
+
+<h2 id="for-循环"><a href="#for-循环" class="headerlink" title="for 循环"></a>for 循环</h2><h3 id="处理位置参数"><a href="#处理位置参数" class="headerlink" title="处理位置参数"></a>处理位置参数</h3><p>for 命令可以处理命令行参数列表：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">for i in &quot;$@&quot;; do</span><br><span class="line">    echo $i</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<h3 id="处理文件列表"><a href="#处理文件列表" class="headerlink" title="处理文件列表"></a>处理文件列表</h3><p>比较两个文件夹中的文件：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">cmp_dir - program to compare two directories</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Check <span class="keyword">for</span> required arguments</span></span><br><span class="line">if [ $# -ne 2 ]; then</span><br><span class="line">    echo &quot;usage: $0 directory_1 directory_2&quot; 1&gt;&amp;2</span><br><span class="line">    exit 1</span><br><span class="line">fi</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Make sure both arguments are directories</span></span><br><span class="line">if [ ! -d $1 ]; then</span><br><span class="line">    echo &quot;$1 is not a directory!&quot; 1&gt;&amp;2</span><br><span class="line">    exit 1</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">if [ ! -d $2 ]; then</span><br><span class="line">    echo &quot;$2 is not a directory!&quot; 1&gt;&amp;2</span><br><span class="line">    exit 1</span><br><span class="line">fi</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Process each file <span class="keyword">in</span> directory_1, comparing it to directory_2</span></span><br><span class="line">missing=0</span><br><span class="line">for filename in $1/*; do</span><br><span class="line">    fn=$(basename &quot;$filename&quot;)</span><br><span class="line">    if [ -f &quot;$filename&quot; ]; then</span><br><span class="line">        if [ ! -f &quot;$2/$fn&quot; ]; then</span><br><span class="line">            echo &quot;$fn is missing from $2&quot;</span><br><span class="line">            missing=$((missing + 1))</span><br><span class="line">        fi</span><br><span class="line">    fi</span><br><span class="line">done</span><br><span class="line">echo &quot;$missing files missing&quot;</span><br></pre></td></tr></table></figure>
+
+<h3 id="home-space"><a href="#home-space" class="headerlink" title="home_space"></a>home_space</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">home_space()</span><br><span class="line">&#123;</span><br><span class="line">    echo &quot;&lt;h2&gt;Home directory space by user&lt;/h2&gt;&quot;</span><br><span class="line">    echo &quot;&lt;pre&gt;&quot;</span><br><span class="line">    format=&quot;%8s%10s%10s   %-s\n&quot;</span><br><span class="line">    printf &quot;$format&quot; &quot;Dirs&quot; &quot;Files&quot; &quot;Blocks&quot; &quot;Directory&quot;</span><br><span class="line">    printf &quot;$format&quot; &quot;----&quot; &quot;-----&quot; &quot;------&quot; &quot;---------&quot;</span><br><span class="line">    if [ $(id -u) = &quot;0&quot; ]; then</span><br><span class="line">        dir_list=&quot;/home/*&quot;</span><br><span class="line">    else</span><br><span class="line">        dir_list=$HOME</span><br><span class="line">    fi</span><br><span class="line">    for home_dir in $dir_list; do</span><br><span class="line">        total_dirs=$(find $home_dir -type d | wc -l)</span><br><span class="line">        total_files=$(find $home_dir -type f | wc -l)</span><br><span class="line">        total_blocks=$(du -s $home_dir)</span><br><span class="line">        printf &quot;$format&quot; $total_dirs $total_files $total_blocks</span><br><span class="line">    done</span><br><span class="line">    echo &quot;&lt;/pre&gt;&quot;</span><br><span class="line"></span><br><span class="line">&#125;   # end of home_space</span><br></pre></td></tr></table></figure>
+
+<p>使用 printf 格式化输出，参考：</p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="http://www.gnu.org/software/gawk/manual/html_node/Control-Letters.html#Control-Letters">GNU Awk User’s Guide - Control Letters</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="http://www.gnu.org/software/gawk/manual/html_node/Format-Modifiers.html#Format-Modifiers">GNU Awk User’s Guide - Format Modifiers</a></p>
+</li>
+</ul>
+<h2 id="其它"><a href="#其它" class="headerlink" title="其它"></a>其它</h2><h3 id="鲁棒性"><a href="#鲁棒性" class="headerlink" title="鲁棒性"></a>鲁棒性</h3><p>提高 shell 脚本的鲁棒性，处理 exit status，否则会发生意想不到的事情。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd $some_directory</span><br><span class="line">rm *</span><br></pre></td></tr></table></figure>
+
+<p>若 $some_directory 不存在，进入指定目录失败，则删除当前工作文件夹下的所有文件，-_-</p>
+<h3 id="clean-up-功能"><a href="#clean-up-功能" class="headerlink" title="clean_up 功能"></a>clean_up 功能</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Program to <span class="built_in">print</span> a text file with headers and footers</span></span><br><span class="line"></span><br><span class="line">TEMP_FILE=/tmp/printfile.txt</span><br><span class="line"></span><br><span class="line">clean_up() &#123;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">	# </span><span class="language-bash">Perform program <span class="built_in">exit</span> housekeeping</span></span><br><span class="line">	rm $TEMP_FILE</span><br><span class="line">	exit</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">trap clean_up SIGHUP SIGINT SIGTERM</span><br><span class="line"></span><br><span class="line">pr $1 &gt; $TEMP_FILE</span><br><span class="line"></span><br><span class="line">echo -n &quot;Print file? [y/n]: &quot;</span><br><span class="line">read</span><br><span class="line">if [ &quot;$REPLY&quot; = &quot;y&quot; ]; then</span><br><span class="line">	lpr $TEMP_FILE</span><br><span class="line">fi</span><br><span class="line">clean_up</span><br></pre></td></tr></table></figure>
+
+<p>结束一个脚本时，应清理一些文件：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Program to <span class="built_in">print</span> a text file with headers and footers</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Usage: printfile file</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Create a temporary file name that gives preference</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">to the user<span class="string">&#x27;s local tmp directory and has a name</span></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="string">that is resistant to &quot;temp race attacks&quot;</span></span></span><br><span class="line"></span><br><span class="line">if [ -d &quot;~/tmp&quot; ]; then</span><br><span class="line">	TEMP_DIR=~/tmp</span><br><span class="line">else</span><br><span class="line">	TEMP_DIR=/tmp</span><br><span class="line">fi</span><br><span class="line">TEMP_FILE=$TEMP_DIR/printfile.$$.$RANDOM</span><br><span class="line">PROGNAME=$(basename $0)</span><br><span class="line"></span><br><span class="line">usage() &#123;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">	# </span><span class="language-bash"><span class="string">Display usage message on standard error</span></span></span><br><span class="line">	echo &quot;Usage: $PROGNAME file&quot; 1&gt;&amp;2</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">clean_up() &#123;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">	# </span><span class="language-bash"><span class="string">Perform program exit housekeeping</span></span></span><br><span class="line"><span class="meta prompt_">	# </span><span class="language-bash"><span class="string">Optionally accepts an exit status</span></span></span><br><span class="line">	rm -f $TEMP_FILE</span><br><span class="line">	exit $1</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">error_exit() &#123;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">	# </span><span class="language-bash"><span class="string">Display error message and exit</span></span></span><br><span class="line">	echo &quot;$&#123;PROGNAME&#125;: $&#123;1:-&quot;Unknown Error&quot;&#125;&quot; 1&gt;&amp;2</span><br><span class="line">	clean_up 1</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">trap clean_up SIGHUP SIGINT SIGTERM</span><br><span class="line"></span><br><span class="line">if [ $# != &quot;1&quot; ]; then</span><br><span class="line">	usage</span><br><span class="line">	error_exit &quot;one file to print must be specified&quot;</span><br><span class="line">fi</span><br><span class="line">if [ ! -f &quot;$1&quot; ]; then</span><br><span class="line">	error_exit &quot;file $1 cannot be read&quot;</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">pr $1 &gt; $TEMP_FILE || error_exit &quot;cannot format file&quot;</span><br><span class="line"></span><br><span class="line">echo -n &quot;Print file? [y/n]: &quot;</span><br><span class="line">read</span><br><span class="line">if [ &quot;$REPLY&quot; = &quot;y&quot; ]; then</span><br><span class="line">	lpr $TEMP_FILE || error_exit &quot;cannot print file&quot;</span><br><span class="line">fi</span><br><span class="line">clean_up</span><br></pre></td></tr></table></figure>
+
+<h3 id="安全的临时文件"><a href="#安全的临时文件" class="headerlink" title="安全的临时文件"></a>安全的临时文件</h3><p><code>/tmp</code> 会有很多程序放置临时文件在里面，文件名重复会覆盖内容（可预测，predictable）；</p>
+<p>建议创建本地临时文件夹 <code>~/tmp</code>，即用户目录下的子目录；</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TEMP_FILE=$TEMP_DIR/printfile.$$.$RANDOM</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>$TEMP_DIR 是  <code>/tmp</code> 或 <code>~/tmp</code></li>
+<li>printfile 是应用程序的名字</li>
+<li>$$ 是 shell 变量，将 process id(pid) 嵌入文件名</li>
+<li>$RANDOM 是追加随机数</li>
+</ul>
+<p>这样就生成了唯一且不易重复的文件名，例如 <code>tomcat</code> ：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">tomcat.5141431142496395497.9000</span><br><span class="line">tomcat.6486338835837423954.9000</span><br><span class="line">tomcat.8674130370990688323.9000</span><br><span class="line">tomcat-docbase.2197772788338189182.9000</span><br><span class="line">tomcat-docbase.30706145223021005.9000</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="http://linuxcommand.org/lc3_writing_shell_scripts.php">http://linuxcommand.org/lc3_writing_shell_scripts.php</a></p>
+<p>（完）</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>董猿外
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blackist.org/2020/04/17/linux-shell-base/" title="Linux Shell 脚本基础">https://blackist.org/2020/04/17/linux-shell-base/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/%E8%BF%90%E7%BB%B4/" rel="tag"># 运维</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/04/03/redis-cluster-masterandslave/" rel="prev" title="Redis 主从集群及自启动配置">
+                  <i class="fa fa-chevron-left"></i> Redis 主从集群及自启动配置
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/04/17/linux-redis-cluster-shell/" rel="next" title="Shell 脚本自动部署 Redis 集群">
+                  Shell 脚本自动部署 Redis 集群 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">自由转载-非商用-非衍生-保持署名（<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN/">创意共享4.0许可证</a>）</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.7.2/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"blackist","repo":"blackist.github.io","client_id":"506775736a1ab7d38a56","client_secret":"b1c3f0dc07680f22f07a585fc81cd5288adb6729","admin_user":"blackist","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.7.2/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"5881fed66dfe151f35f9e9d055af1ebc"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

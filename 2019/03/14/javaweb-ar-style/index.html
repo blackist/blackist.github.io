@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Dong_small.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Dong_medium.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Dong_small.ico">
+  <link rel="mask-icon" href="/images/Dong_small.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blackist.org","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.12.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="校友录项目网站样式设计简要说明。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="校友录-网站样式设计">
+<meta property="og:url" content="https://blackist.org/2019/03/14/javaweb-ar-style/index.html">
+<meta property="og:site_name" content="Thinking in Coding">
+<meta property="og:description" content="校友录项目网站样式设计简要说明。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blogres.blackist.org/spring-ar-style-portal-index.png">
+<meta property="og:image" content="https://blogres.blackist.org/spring-ar-style-portal-index-header.png">
+<meta property="og:image" content="https://blogres.blackist.org/spring-ar-style-portal-index-style.png">
+<meta property="og:image" content="https://blogres.blackist.org/spring-ar-style-portal-profile.png">
+<meta property="og:image" content="https://blogres.blackist.org/spring-ar-style-portal-bootstrap.png">
+<meta property="og:image" content="https://blogres.blackist.org/spring-ar-style-portal-bootstrap-button.png">
+<meta property="og:image" content="https://blogres.blackist.org/spring-ar-style-portal-bootstrap-pager.png">
+<meta property="og:image" content="https://blogres.blackist.org/spring-ar-style-manage-index-header.png">
+<meta property="og:image" content="https://blogres.blackist.org/spring-ar-style-manage-index-footer.png">
+<meta property="og:image" content="https://blogres.blackist.org/spring-ar-style-manage-index-sidebar.png">
+<meta property="og:image" content="https://blogres.blackist.org/spring-ar-style-manage-amazeui.png">
+<meta property="og:image" content="https://blogres.blackist.org/spring-ar-style-manage-amazeui-form.png">
+<meta property="og:image" content="https://blogres.blackist.org/spring-ar-style-manage-amazeui-website.png">
+<meta property="article:published_time" content="2019-03-14T11:22:46.000Z">
+<meta property="article:modified_time" content="2023-01-05T06:23:24.168Z">
+<meta property="article:author" content="董猿外">
+<meta property="article:tag" content="javaweb">
+<meta property="article:tag" content="开源">
+<meta property="article:tag" content="校友录">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blogres.blackist.org/spring-ar-style-portal-index.png">
+
+
+<link rel="canonical" href="https://blackist.org/2019/03/14/javaweb-ar-style/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blackist.org/2019/03/14/javaweb-ar-style/","path":"2019/03/14/javaweb-ar-style/","title":"校友录-网站样式设计"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>校友录-网站样式设计 | Thinking in Coding</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Thinking in Coding</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E9%97%A8%E6%88%B7%E7%BD%91%E7%AB%99"><span class="nav-text">一、门户网站</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E9%A6%96%E9%A1%B5%E8%BD%AE%E6%92%AD%E5%9B%BE"><span class="nav-text">1.1 首页轮播图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E5%AF%BC%E8%88%AA%E6%A0%8F%E6%A0%B7%E5%BC%8F"><span class="nav-text">1.2 导航栏样式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Header%E6%A0%B7%E5%BC%8F"><span class="nav-text">Header样式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Nav%E6%A0%B7%E5%BC%8F"><span class="nav-text">Nav样式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-%E8%A1%A8%E5%8D%95%E6%A0%B7%E5%BC%8F"><span class="nav-text">1.3 表单样式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%90%8E%E5%8F%B0%E7%AE%A1%E7%90%86"><span class="nav-text">二、后台管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E9%A6%96%E9%A1%B5%E6%A0%B7%E5%BC%8F"><span class="nav-text">1.1 首页样式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%A1%E7%90%86%E9%A1%B5%E4%B8%BB%E9%A2%98title"><span class="nav-text">管理页主题title</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A1%B5%E8%84%9A"><span class="nav-text">页脚</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BE%A7%E8%BE%B9%E6%A0%8F"><span class="nav-text">侧边栏</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E8%A1%A8%E5%8D%95%E6%A0%B7%E5%BC%8F%E7%AD%89"><span class="nav-text">1.2 表单样式等</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="董猿外"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">董猿外</p>
+  <div class="site-description" itemprop="description">Coding in Thinking.</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">78</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">78</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/blackist" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;blackist" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/liangl.dong@gmail.com" title="E-Mail → liangl.dong@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/liangl_dong" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;liangl_dong" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blackist.org/2019/03/14/javaweb-ar-style/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="董猿外">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Thinking in Coding">
+      <meta itemprop="description" content="Coding in Thinking.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="校友录-网站样式设计 | Thinking in Coding">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          校友录-网站样式设计
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-03-14 19:22:46" itemprop="dateCreated datePublished" datetime="2019-03-14T19:22:46+08:00">2019-03-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-01-05 14:23:24" itemprop="dateModified" datetime="2023-01-05T14:23:24+08:00">2023-01-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Spring/" itemprop="url" rel="index"><span itemprop="name">Spring</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p><a target="_blank" rel="noopener" href="https://github.com/blackist/ar">校友录</a>项目网站样式设计简要说明。</p>
+<span id="more"></span>
+
+<h2 id="一、门户网站"><a href="#一、门户网站" class="headerlink" title="一、门户网站"></a>一、门户网站</h2><h3 id="1-1-首页轮播图"><a href="#1-1-首页轮播图" class="headerlink" title="1.1 首页轮播图"></a>1.1 首页轮播图</h3><p>在 ar-parent\ar-portal\src\main\webapp\WEB-INF\views\portal-main\index.jsp 中有如下代码：</p>
+<p><img src="https://blogres.blackist.org/spring-ar-style-portal-index.png"></p>
+<p>div.carousel中即使首页的轮播图，图片暂不支持后台手动设置，需要存放在 assets&#x2F;images&#x2F;school&#x2F; 下或assets其它文件夹下面。</p>
+<p>图片尺寸建议采用2600x720的。</p>
+<h3 id="1-2-导航栏样式"><a href="#1-2-导航栏样式" class="headerlink" title="1.2 导航栏样式"></a>1.2 导航栏样式</h3><p>导航栏由两部分组成：</p>
+<p><img src="https://blogres.blackist.org/spring-ar-style-portal-index-header.png"></p>
+<p>上面的header，下面的是导航菜单(nav)，这两部分在index.jsp中通过include引入，分别位于 WEB-INF&#x2F;views&#x2F;portal-common&#x2F;header.jsp 和 WEB-INF&#x2F;views&#x2F;portal-common&#x2F;navmenu.jsp。门户网站主要样式在 assets&#x2F;css&#x2F;style.css 中定义。</p>
+<h4 id="Header样式"><a href="#Header样式" class="headerlink" title="Header样式"></a>Header样式</h4><p>在style.css中搜索 .top_bg，找到如下代码：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*-- header_top --*/</span></span><br><span class="line"><span class="selector-class">.top_bg</span> &#123;</span><br><span class="line">	<span class="attribute">background</span>: <span class="number">#666666</span>;</span><br><span class="line">	<span class="attribute">padding</span>: <span class="number">2px</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>background就是header的背景色。</p>
+<h4 id="Nav样式"><a href="#Nav样式" class="headerlink" title="Nav样式"></a>Nav样式</h4><p>在style.css中搜索 .mega_nav，找到如下代码：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.mega_nav</span> &#123;</span><br><span class="line">	<span class="attribute">background-color</span>: <span class="number">#f5f5f5</span>;</span><br><span class="line">	<span class="attribute">box-shadow</span>: <span class="number">0px</span> <span class="number">6px</span> <span class="number">5px</span> <span class="number">#CCCBCB</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>修改background改变Nav整个背景色。Nav中菜单项的颜色在 assets&#x2F;css&#x2F;megamenu.css 中定义，找到如下代码：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.skyblue</span> <span class="selector-tag">li</span> <span class="selector-tag">a</span><span class="selector-class">.color1</span><span class="selector-pseudo">:hover</span>&#123;</span><br><span class="line">	<span class="attribute">background</span>:<span class="number">#204056</span>;</span><br><span class="line">	<span class="attribute">color</span>: <span class="number">#ffffff</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>即可修改菜单项hover的样式，菜单项背景色等可以自行探索。</p>
+<p>修改后导航栏后整体样式如下（一不小心破相了~）：</p>
+<p><img src="https://blogres.blackist.org/spring-ar-style-portal-index-style.png"></p>
+<h3 id="1-3-表单样式"><a href="#1-3-表单样式" class="headerlink" title="1.3 表单样式"></a>1.3 表单样式</h3><p>门户网站表单组件绝大部分使用bootstrap样式：</p>
+<p><img src="https://blogres.blackist.org/spring-ar-style-portal-profile.png"></p>
+<p>可根据bootstrap修改按钮等组件样式，本项目参考了一份模板进行设计，整个模板素材存在 ar\ar-tools\model-portal\Bracket1.5\ 下。</p>
+<p>表单样式：</p>
+<p><img src="https://blogres.blackist.org/spring-ar-style-portal-bootstrap.png"></p>
+<p>按钮样式：</p>
+<p><img src="https://blogres.blackist.org/spring-ar-style-portal-bootstrap-button.png"></p>
+<p>表格及分页器：</p>
+<p><img src="https://blogres.blackist.org/spring-ar-style-portal-bootstrap-pager.png"></p>
+<p>门户网站风格和此模板素材基本保持一致，可参考修改。</p>
+<h2 id="二、后台管理"><a href="#二、后台管理" class="headerlink" title="二、后台管理"></a>二、后台管理</h2><p>后台管理网站样式主要定义在 ar-manage\src\main\webapp\assets\css\admin.css 下。</p>
+<h3 id="1-1-首页样式"><a href="#1-1-首页样式" class="headerlink" title="1.1 首页样式"></a>1.1 首页样式</h3><h4 id="管理页主题title"><a href="#管理页主题title" class="headerlink" title="管理页主题title"></a>管理页主题title</h4><p><img src="https://blogres.blackist.org/spring-ar-style-manage-index-header.png"></p>
+<p>在 WEB-INF&#x2F;views&#x2F;main&#x2F;index.jsp 中搜索如下代码，修改此处即可：</p>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- 导航 --&gt;</span><br><span class="line">&lt;div class=<span class="string">&quot;am-topbar-brand&quot;</span>&gt;</span><br><span class="line">    &lt;strong&gt;信电校友录&lt;/strong&gt;</span><br><span class="line">    &lt;small&gt;后台管理&lt;/small&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="页脚"><a href="#页脚" class="headerlink" title="页脚"></a>页脚</h4><p><img src="https://blogres.blackist.org/spring-ar-style-manage-index-footer.png"></p>
+<p>在 WEB-INF&#x2F;views&#x2F;global&#x2F;footer.jsp 中修改即可：</p>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;footer&gt;</span><br><span class="line">	&lt;hr&gt;</span><br><span class="line">	&lt;p class=<span class="string">&quot;am-padding-left&quot;</span>&gt;</span><br><span class="line">		CopyRight © <span class="number">2015</span> . &lt;a href=<span class="string">&quot;#&quot;</span> target=<span class="string">&quot;_blank&quot;</span>&gt;徐州工程学院信电学院&lt;/a&gt;</span><br><span class="line">	&lt;/p&gt;</span><br><span class="line">&lt;/footer&gt;</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="侧边栏"><a href="#侧边栏" class="headerlink" title="侧边栏"></a>侧边栏</h4><p><img src="https://blogres.blackist.org/spring-ar-style-manage-index-sidebar.png"></p>
+<p>在 WEB-INF&#x2F;views&#x2F;global&#x2F;sidebar.jsp 中修改即可：</p>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- 公告 bookmark --&gt;</span><br><span class="line">&lt;div class=<span class="string">&quot;am-panel am-panel-default admin-sidebar-panel&quot;</span>&gt;</span><br><span class="line">    &lt;div class=<span class="string">&quot;am-panel-bd&quot;</span>&gt;</span><br><span class="line">        &lt;p&gt;</span><br><span class="line">            &lt;span class=<span class="string">&quot;am-icon-bookmark&quot;</span>&gt;&lt;/span&gt; 公告</span><br><span class="line">        &lt;/p&gt;</span><br><span class="line">        &lt;p&gt;时光静好，与君语；细水流年，与君同。—— 信电校友录&lt;/p&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">&lt;/div&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&lt;!-- 社群 wiki --&gt;</span><br><span class="line">&lt;div class=<span class="string">&quot;am-panel am-panel-default admin-sidebar-panel&quot;</span>&gt;</span><br><span class="line">    &lt;div class=<span class="string">&quot;am-panel-bd&quot;</span>&gt;</span><br><span class="line">        &lt;p&gt;</span><br><span class="line">            &lt;span class=<span class="string">&quot;am-icon-tag&quot;</span>&gt;&lt;/span&gt; 社群</span><br><span class="line">        &lt;/p&gt;</span><br><span class="line">        &lt;p&gt;欢迎来到信电校友录后台管理!&lt;/p&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-2-表单样式等"><a href="#1-2-表单样式等" class="headerlink" title="1.2 表单样式等"></a>1.2 表单样式等</h3><p>后台管理网站整站风格参考一套AmazeUI素材，素材存在 ar\ar-tools\model-admin\ 下，</p>
+<p><img src="https://blogres.blackist.org/spring-ar-style-manage-amazeui.png"></p>
+<p><img src="https://blogres.blackist.org/spring-ar-style-manage-amazeui-form.png"></p>
+<p>按钮等组件样式可参考<a target="_blank" rel="noopener" href="http://amazeui.org/">Amaze官网</a>：</p>
+<p><img src="https://blogres.blackist.org/spring-ar-style-manage-amazeui-website.png"></p>
+<p>（完）</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>董猿外
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blackist.org/2019/03/14/javaweb-ar-style/" title="校友录-网站样式设计">https://blackist.org/2019/03/14/javaweb-ar-style/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/javaweb/" rel="tag"># javaweb</a>
+              <a href="/tags/%E5%BC%80%E6%BA%90/" rel="tag"># 开源</a>
+              <a href="/tags/%E6%A0%A1%E5%8F%8B%E5%BD%95/" rel="tag"># 校友录</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/03/13/android-test-monkey-test/" rel="prev" title="Android测试-Monkey Test">
+                  <i class="fa fa-chevron-left"></i> Android测试-Monkey Test
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/03/21/android-modulize-ui-theme/" rel="next" title="Android组件化-UI统一&主题变色">
+                  Android组件化-UI统一&主题变色 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">自由转载-非商用-非衍生-保持署名（<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN/">创意共享4.0许可证</a>）</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.7.2/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"blackist","repo":"blackist.github.io","client_id":"506775736a1ab7d38a56","client_secret":"b1c3f0dc07680f22f07a585fc81cd5288adb6729","admin_user":"blackist","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.7.2/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"ba8d1c4a40cb2f483d6a69507e2138c7"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

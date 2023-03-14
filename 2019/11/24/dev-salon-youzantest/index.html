@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Dong_small.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Dong_medium.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Dong_small.ico">
+  <link rel="mask-icon" href="/images/Dong_small.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blackist.org","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.12.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="明年就要毕业了，三月份我会去有赞领薪水，这是职场的第一站。有赞在杭州每年会组织一次测试技术沙龙，今年是第三次，作为准有赞新青年，我去现场支持了一下。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2019 有赞测试沙龙">
+<meta property="og:url" content="https://blackist.org/2019/11/24/dev-salon-youzantest/index.html">
+<meta property="og:site_name" content="Thinking in Coding">
+<meta property="og:description" content="明年就要毕业了，三月份我会去有赞领薪水，这是职场的第一站。有赞在杭州每年会组织一次测试技术沙龙，今年是第三次，作为准有赞新青年，我去现场支持了一下。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blogres.blackist.org/dev-201911241311-544.jpg">
+<meta property="og:image" content="https://blogres.blackist.org/dev-201911241356-739.jpg">
+<meta property="og:image" content="https://blogres.blackist.org/dev-201911241714-762.jpg">
+<meta property="og:image" content="https://blogres.blackist.org/dev-201911241713-732.jpg">
+<meta property="og:image" content="https://blogres.blackist.org/dev-201911241745-875.jpg">
+<meta property="og:image" content="https://blogres.blackist.org/dev-201911241840-447.jpg">
+<meta property="article:published_time" content="2019-11-24T04:41:28.000Z">
+<meta property="article:modified_time" content="2023-01-05T06:23:24.180Z">
+<meta property="article:author" content="董猿外">
+<meta property="article:tag" content="开发">
+<meta property="article:tag" content="测试">
+<meta property="article:tag" content="沙龙">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blogres.blackist.org/dev-201911241311-544.jpg">
+
+
+<link rel="canonical" href="https://blackist.org/2019/11/24/dev-salon-youzantest/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blackist.org/2019/11/24/dev-salon-youzantest/","path":"2019/11/24/dev-salon-youzantest/","title":"2019 有赞测试沙龙"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>2019 有赞测试沙龙 | Thinking in Coding</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Thinking in Coding</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B2%99%E9%BE%99%E6%B5%81%E7%A8%8B"><span class="nav-text">沙龙流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E5%9C%BA%E7%99%BD"><span class="nav-text">开场白</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E5%9C%BA"><span class="nav-text">第一场</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%94%E5%9C%BA"><span class="nav-text">第五场</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E5%9C%BA"><span class="nav-text">第二场</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E5%9C%BA"><span class="nav-text">第三场</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E5%9B%9B%E5%9C%BA"><span class="nav-text">第四场</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%88%91%E7%9A%84%E6%84%9F%E5%8F%97"><span class="nav-text">我的感受</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E-DevOps"><span class="nav-text">关于 DevOps</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E-%E5%AE%9E%E6%97%B6%E8%B4%A8%E9%87%8F"><span class="nav-text">关于 实时质量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E-K8s"><span class="nav-text">关于 K8s</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PPT"><span class="nav-text">PPT</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="董猿外"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">董猿外</p>
+  <div class="site-description" itemprop="description">Coding in Thinking.</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">78</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">78</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/blackist" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;blackist" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/liangl.dong@gmail.com" title="E-Mail → liangl.dong@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/liangl_dong" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;liangl_dong" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blackist.org/2019/11/24/dev-salon-youzantest/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="董猿外">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Thinking in Coding">
+      <meta itemprop="description" content="Coding in Thinking.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="2019 有赞测试沙龙 | Thinking in Coding">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          2019 有赞测试沙龙
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-11-24 12:41:28" itemprop="dateCreated datePublished" datetime="2019-11-24T12:41:28+08:00">2019-11-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-01-05 14:23:24" itemprop="dateModified" datetime="2023-01-05T14:23:24+08:00">2023-01-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">开发</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>明年就要毕业了，三月份我会去有赞领薪水，这是职场的第一站。有赞在杭州每年会组织一次测试技术沙龙，今年是第三次，作为准有赞新青年，我去现场支持了一下。</p>
+<span id="more"></span>
+
+<h2 id="沙龙流程"><a href="#沙龙流程" class="headerlink" title="沙龙流程"></a>沙龙流程</h2><h3 id="开场白"><a href="#开场白" class="headerlink" title="开场白"></a>开场白</h3><p>祝幽老师作开场白，一如既往的幽默生动，一些高大上的词汇让我耳目一些【红海蓝海】【全链路压测】【大数据测试】【equals测试】。</p>
+<p><img src="https://blogres.blackist.org/dev-201911241311-544.jpg"></p>
+<p>第一次见祝幽老师是在有赞 OpenDay 的时候，他作为有赞首席架构师为我们简介了有赞的系统架构，让我中台一词多了几分认知。他讲话一直很风趣，讲起东西也是明明白白，看来程序员小哥确实是很好交往的人。</p>
+<h3 id="第一场"><a href="#第一场" class="headerlink" title="第一场"></a>第一场</h3><p>持续交付负责人王娟，在有赞推动 DevOps 平台建设的人，这点我很是佩服，待会儿我讲下我的感悟。</p>
+<p><img src="https://blogres.blackist.org/dev-201911241356-739.jpg"></p>
+<h3 id="第五场"><a href="#第五场" class="headerlink" title="第五场"></a>第五场</h3><p>从个人受影响的角度，第五场分享干货满满，分享人是阿里 CBU 的测开专家靖远（花名）。其团队理念如下：</p>
+<blockquote>
+<p><strong>实时质量</strong> - 运行含测试，实时可反馈。</p>
+</blockquote>
+<p>双十一这种大促场景，促销页面每天会有两三百各版本，如果按照常规移动端测试流程，团队内十分钟左右测试一个页面，这也是很难完成的任务。阿里搭建了内部的基于规则的校验平台，运营人员输入校验规则对新版本页面进行测试，测试秒级完成。当然，这也依赖其团队背后的强大的移动测试软硬件平台。</p>
+<p><img src="https://blogres.blackist.org/dev-201911241714-762.jpg"></p>
+<h3 id="第二场"><a href="#第二场" class="headerlink" title="第二场"></a>第二场</h3><p>有赞的方金和是测试平台开发负责人，他介绍了测试平台工作流引擎、任务调度、与 Jenkins&#x2F;Docker 的集成。</p>
+<p><img src="https://blogres.blackist.org/dev-201911241713-732.jpg"></p>
+<h3 id="第三场"><a href="#第三场" class="headerlink" title="第三场"></a>第三场</h3><p>有赞的测试环境有1000台虚拟机+3000个容器，测试平台的运维也是个挑战，运维负责人王波分享了运维的经验。</p>
+<p><img src="https://blogres.blackist.org/dev-201911241745-875.jpg"></p>
+<h3 id="第四场"><a href="#第四场" class="headerlink" title="第四场"></a>第四场</h3><p>然后，酷家乐测试组风飞介绍了搜索服务和质量体系，让我印比较深刻的是数据订正。为了拿到礼物，我厚着脸皮问了一个问题，说是通过同一个数据的修改发送到同一个线程处理，这个线程是怎么处理的。分享人说是类似将数据 ID 哈希到线程上。</p>
+<p><img src="https://blogres.blackist.org/dev-201911241840-447.jpg"></p>
+<h2 id="我的感受"><a href="#我的感受" class="headerlink" title="我的感受"></a>我的感受</h2><p>主要是对一些概念的了解更充分了，视野被开拓了。</p>
+<h3 id="关于-DevOps"><a href="#关于-DevOps" class="headerlink" title="关于 DevOps"></a>关于 DevOps</h3><p>这个词在网上经常看到，经过王娟的介绍，对 DevOps 在团队中的落地实施有了更充分的认识。再者就是会后和其他两个哥们聊天，探讨了 DevOps 在一个公司落地的难度。最终得到结论，王娟大姐是个“狠人”，哈哈哈哈！！！ 这就是句玩笑话，但也是对团队合作的感叹。</p>
+<p>因为，一个新的开发模式、给合作模式的落地，牵扯到多方团队，共识是这件事情的基础，然后就是推动人要有具体可实施的方案。王娟大姐在公司内部提倡、推广、并最终落地 DevOps 持续交付平台，这其中得付出了多少努力啊！</p>
+<h3 id="关于-实时质量"><a href="#关于-实时质量" class="headerlink" title="关于 实时质量"></a>关于 实时质量</h3><p>阿里的靖远，给我一种沉稳、干练、经验丰富的感觉，基于规则校验的测试平台也是刷新了我的认知。在这个平台里，一切测试皆规则，包括兼容性测试。这说明测试已经被高度抽象，而不仅仅是技术和模式的进步。</p>
+<p>在 Q&amp;A 环节，靖远回答问题更是逻辑清晰、言简意赅，慢慢的干货，这就是我长期努力的榜样啊。</p>
+<h3 id="关于-K8s"><a href="#关于-K8s" class="headerlink" title="关于 K8s"></a>关于 K8s</h3><p>有赞大规模的测试环境，包含 3000 个容器，想必整个测试平台都在 K8s 的笼罩之下了。话说最近在写硕士论文，研究方向就是 K8s 的资源调度负载均衡，之前我没怎么接触过 K8s，其实这也是倒逼自己学习。</p>
+<p>这两年因为客观原因，一直在做安卓开发，在自己喜欢的后台开发方面落下了不少知识。还没熟练掌握 Springboot、Docker、SpringCloud、Dubbox，直接上手 K8s 还是心里虚虚的，不过为了论文还得硬刚，争取入职前把这些补上。</p>
+<h2 id="PPT"><a href="#PPT" class="headerlink" title="PPT"></a>PPT</h2><p>这次沙龙的 PPT 我上传了，后台回复 [2019测试沙龙] 获取。</p>
+<p>有赞的 PPT 风格还是挺好看的，靖远的那份干货满满，有需自取。</p>
+<p>（完）</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>董猿外
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blackist.org/2019/11/24/dev-salon-youzantest/" title="2019 有赞测试沙龙">https://blackist.org/2019/11/24/dev-salon-youzantest/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%BC%80%E5%8F%91/" rel="tag"># 开发</a>
+              <a href="/tags/%E6%B5%8B%E8%AF%95/" rel="tag"># 测试</a>
+              <a href="/tags/%E6%B2%99%E9%BE%99/" rel="tag"># 沙龙</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/10/09/java-nio-buffer-channel-selector/" rel="prev" title="NIO - Buffer、Channel 和 Selector">
+                  <i class="fa fa-chevron-left"></i> NIO - Buffer、Channel 和 Selector
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/11/28/life-25thingsToLetGoBefore25/" rel="next" title="25 岁之前赶走 25 件事情">
+                  25 岁之前赶走 25 件事情 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">自由转载-非商用-非衍生-保持署名（<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN/">创意共享4.0许可证</a>）</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.7.2/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"blackist","repo":"blackist.github.io","client_id":"506775736a1ab7d38a56","client_secret":"b1c3f0dc07680f22f07a585fc81cd5288adb6729","admin_user":"blackist","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.7.2/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"2b6227b3f4c9481dc0451cbb04f9c476"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

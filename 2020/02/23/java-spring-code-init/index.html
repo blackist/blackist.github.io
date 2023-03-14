@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Dong_small.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Dong_medium.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Dong_small.ico">
+  <link rel="mask-icon" href="/images/Dong_small.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blackist.org","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.12.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="古希腊语言中，学习一词即为闲暇之意，闲下来了就去学习是一种很好的状态。趁着 2020 年春节假期，过一把闻名已久的 Spring 源码之瘾。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring源码（一）导入">
+<meta property="og:url" content="https://blackist.org/2020/02/23/java-spring-code-init/index.html">
+<meta property="og:site_name" content="Thinking in Coding">
+<meta property="og:description" content="古希腊语言中，学习一词即为闲暇之意，闲下来了就去学习是一种很好的状态。趁着 2020 年春节假期，过一把闻名已久的 Spring 源码之瘾。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blogres.blackist.org/202002242323_560.png">
+<meta property="og:image" content="https://blogres.blackist.org/202002242324_759.png">
+<meta property="og:image" content="https://blogres.blackist.org/202002242326_983.png">
+<meta property="og:image" content="https://blogres.blackist.org/202002271544_78.png">
+<meta property="og:image" content="https://blogres.blackist.org/202002242345_754.png">
+<meta property="og:image" content="https://blogres.blackist.org/202002242352_987.png">
+<meta property="og:image" content="https://blogres.blackist.org/202002242353_606.png">
+<meta property="og:image" content="https://blogres.blackist.org/202002242356_487.png">
+<meta property="og:image" content="https://blogres.blackist.org/202002251016_651.png">
+<meta property="og:image" content="https://blogres.blackist.org/202002231936_202.png">
+<meta property="og:image" content="https://blogres.blackist.org/202002231410_342.png">
+<meta property="og:image" content="https://blogres.blackist.org/202002251030_268.png">
+<meta property="article:published_time" content="2020-02-23T06:08:02.000Z">
+<meta property="article:modified_time" content="2023-01-05T06:23:24.168Z">
+<meta property="article:author" content="董猿外">
+<meta property="article:tag" content="开发">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="spring">
+<meta property="article:tag" content="源码">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blogres.blackist.org/202002242323_560.png">
+
+
+<link rel="canonical" href="https://blackist.org/2020/02/23/java-spring-code-init/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blackist.org/2020/02/23/java-spring-code-init/","path":"2020/02/23/java-spring-code-init/","title":"Spring源码（一）导入"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Spring源码（一）导入 | Thinking in Coding</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Thinking in Coding</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E4%B8%8B%E8%BD%BD"><span class="nav-text">源码下载</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%98%E6%96%B9%E8%B5%84%E6%96%99"><span class="nav-text">官方资料</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD%E8%BF%87%E7%A8%8B"><span class="nav-text">下载过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E5%AF%BC%E5%85%A5"><span class="nav-text">源码导入</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="nav-text">环境配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IDEA-%E5%AF%BC%E5%85%A5%E6%BA%90%E7%A0%81"><span class="nav-text">IDEA 导入源码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E4%BB%A3%E7%A0%81"><span class="nav-text">测试代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B0%E5%BB%BA-Gradle-%E6%A8%A1%E5%9D%97"><span class="nav-text">新建 Gradle 模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E4%BB%A3%E7%A0%81-1"><span class="nav-text">测试代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E8%AF%91%E9%94%99%E8%AF%AF"><span class="nav-text">编译错误</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#gradle-%E9%85%8D%E7%BD%AE"><span class="nav-text">gradle 配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E9%97%AE%E9%A2%98"><span class="nav-text">其他问题</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="董猿外"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">董猿外</p>
+  <div class="site-description" itemprop="description">Coding in Thinking.</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">78</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">78</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/blackist" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;blackist" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/liangl.dong@gmail.com" title="E-Mail → liangl.dong@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/liangl_dong" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;liangl_dong" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blackist.org/2020/02/23/java-spring-code-init/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="董猿外">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Thinking in Coding">
+      <meta itemprop="description" content="Coding in Thinking.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Spring源码（一）导入 | Thinking in Coding">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Spring源码（一）导入
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-02-23 14:08:02" itemprop="dateCreated datePublished" datetime="2020-02-23T14:08:02+08:00">2020-02-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-01-05 14:23:24" itemprop="dateModified" datetime="2023-01-05T14:23:24+08:00">2023-01-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Spring/" itemprop="url" rel="index"><span itemprop="name">Spring</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>古希腊语言中，学习一词即为闲暇之意，闲下来了就去学习是一种很好的状态。趁着 2020 年春节假期，过一把闻名已久的 Spring 源码之瘾。</p>
+<span id="more"></span>
+
+<h2 id="源码下载"><a href="#源码下载" class="headerlink" title="源码下载"></a>源码下载</h2><h3 id="官方资料"><a href="#官方资料" class="headerlink" title="官方资料"></a>官方资料</h3><p>阅读源码的关键资料，当然是官方文档和官方源代码：</p>
+<p>Spring Framework 官网文档：<a target="_blank" rel="noopener" href="https://docs.spring.io/spring-framework/docs/current/spring-framework-reference/core.html">https://docs.spring.io/spring-framework/docs/current/spring-framework-reference/core.html</a></p>
+<p><img src="https://blogres.blackist.org/202002242323_560.png"></p>
+<p>Spring Framework 开放源代码：<a target="_blank" rel="noopener" href="https://github.com/spring-projects/spring-framework">https://github.com/spring-projects/spring-framework</a></p>
+<p><img src="https://blogres.blackist.org/202002242324_759.png"></p>
+<h3 id="下载过程"><a href="#下载过程" class="headerlink" title="下载过程"></a>下载过程</h3><p>Windows 10 安装 Git，从 github 克隆的话比较慢，我借助<a target="_blank" rel="noopener" href="https://gitee.com/">码云</a>从 github 导出了一份，再从码云上拉取，速度好极了。码云还提供手动同步 github 源码的功能，我搬运的一份：<a target="_blank" rel="noopener" href="https://gitee.com/blackist/spring-framework">https://gitee.com/blackist/spring-framework</a></p>
+<p><img src="https://blogres.blackist.org/202002242326_983.png"></p>
+<p>克隆下来的源码只有 master 分支，为阅读指定版本的源码 5.0.x，需要拉取指定分支：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git fetch origin 5.0.x:5.0.x</span><br></pre></td></tr></table></figure>
+
+<p>即拉取远程的 5.0.x 到本地，然后手动切换至 5.0.x 再导入：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout 5.0.x</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="源码导入"><a href="#源码导入" class="headerlink" title="源码导入"></a>源码导入</h2><h3 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h3><ul>
+<li>java version “1.8.0_162”</li>
+<li>IntelliJ IDEA 2018.3</li>
+</ul>
+<p>源码工程是基于 Gradle 构建的， gradle 版本由源码配置文件指定。</p>
+<h3 id="IDEA-导入源码"><a href="#IDEA-导入源码" class="headerlink" title="IDEA 导入源码"></a>IDEA 导入源码</h3><p>首先执行 gradlew 编译任务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gradlew.bat cleanIdea :spring-oxm:compileTestJava</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://blogres.blackist.org/202002271544_78.png"></p>
+<p>Import project -&gt; Import project from external model (选择 gradle) -&gt; Next … Finish</p>
+<p>IDEA 会根据 .&#x2F;gradle&#x2F;wrapper&#x2F;gradle-wrapper.properties 中指定版本下载 gradle，gradle 路径为 {user}&#x2F;.gradle&#x2F;wrapper&#x2F;dists，各版本的 gradle 都会在这里（搞安卓开发的小伙伴有没有很熟悉）。</p>
+<p><img src="https://blogres.blackist.org/202002242345_754.png"></p>
+<p>等待 gradle 构建完成。</p>
+<h2 id="测试代码"><a href="#测试代码" class="headerlink" title="测试代码"></a>测试代码</h2><h3 id="新建-Gradle-模块"><a href="#新建-Gradle-模块" class="headerlink" title="新建 Gradle 模块"></a>新建 Gradle 模块</h3><p>为进行简洁的测试，新建一个 Gradle 模块，在模块中依赖 spring-beans、spring-aop 等模块，可更直观的阅读源码。</p>
+<p>右键项目 -&gt; New -&gt; Module，</p>
+<p><img src="https://blogres.blackist.org/202002242352_987.png"></p>
+<p>选择 Gradle，</p>
+<p><img src="https://blogres.blackist.org/202002242353_606.png"></p>
+<p>ArtifactId 填写自定义名称 code-quiz 等等，Module Name 也会默认是 code-quiz，Finish。</p>
+<p><img src="https://blogres.blackist.org/202002242356_487.png"></p>
+<p>新建模块的结构如上，这个 build.gradle 就类似 maven 的 pom.xml，是此模块的配置文件。在 dependencies 中依赖 spring-core、spring-beans，就可以实现 IoC了。当然，也可以直接依赖 spring-context 实现 IoC，但我从最基本的模块开始学习。</p>
+<h3 id="测试代码-1"><a href="#测试代码-1" class="headerlink" title="测试代码"></a>测试代码</h3><p>新建 java bean，通过 xml 文件配置 bean，并新建工厂获取 bean。</p>
+<p><img src="https://blogres.blackist.org/202002251016_651.png"></p>
+<p>资源文件 quiz-bean.xml 放在 resources 目录下，并配置 QuizBean 的信息：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;ISO-8859-1&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span></span><br><span class="line"><span class="tag">		<span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">		<span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans</span></span></span><br><span class="line"><span class="string"><span class="tag">                       https://www.springframework.org/schema/beans/spring-beans-3.0.xsd&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">	<span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;quizBean&quot;</span> <span class="attr">class</span>=<span class="string">&quot;bean.QuizBean&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>新建 XmlFactoryBeanTests 进行测试：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">XmlBeanFactoryTests</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line"></span><br><span class="line">		<span class="type">BeanFactory</span> <span class="variable">factory</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">XmlBeanFactory</span>(<span class="keyword">new</span> <span class="title class_">ClassPathResource</span>(<span class="string">&quot;bean/quiz-beans.xml&quot;</span>));</span><br><span class="line">		<span class="type">QuizBean</span> <span class="variable">quizBean</span> <span class="operator">=</span> (QuizBean) factory.getBean(<span class="string">&quot;quizBean&quot;</span>);</span><br><span class="line">		System.out.println(quizBean.getName());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="编译错误"><a href="#编译错误" class="headerlink" title="编译错误"></a>编译错误</h3><p>运行 XmlBeanFactoryTests 中的 main 函数，会出现如下编译错误：</p>
+<p><img src="https://blogres.blackist.org/202002231936_202.png"></p>
+<p>原因：为了避免第三方 class 冲突，spring 把最新的 cglib 和 objenesis 重新打包 jar 并没有放在源码里。</p>
+<p><img src="https://blogres.blackist.org/202002231410_342.png"></p>
+<p>解决办法：在命令行中执行 gradle 的构建任务 objenesisRepackJar 和 cglibRepackJar。但需要先配置 gradle 环境变量。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gradle objenesisRepackJar cglibRepackJar</span><br></pre></td></tr></table></figure>
+
+<h4 id="gradle-配置"><a href="#gradle-配置" class="headerlink" title="gradle 配置"></a>gradle 配置</h4><p>配置 gradle 环境变量类似于 maven，就是将 gradle 的下载路径配置到系统的环境变量，但不同的 gradle 工程往往 gradle 版本不一样，因此配置固定版本的 gradle 到环境变量会给其他项目带来不便。</p>
+<p>gradle 项目构建时，一般会生成一个 gradlew 的 bash 脚本文件，它会根据项目所需的 gradle 去默认目录使用 gradle 命令，因此直接执行如下命令即可：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gradlew objenesisRepackJar cglibRepackJar</span><br></pre></td></tr></table></figure>
+
+<p>执行结果如下：</p>
+<p><img src="https://blogres.blackist.org/202002251030_268.png"></p>
+<h4 id="其他问题"><a href="#其他问题" class="headerlink" title="其他问题"></a>其他问题</h4><ol>
+<li>执行 gradlew 命令时，提示 ERROR: JAVA_HOME is set to an invalid directory: C:\Program Files\Java\jdk1.8.0_ 131，原因是 JDK 路径确实有问题，我安装过两个 JDK，以前的版本删除了，但环境变量没改，给IU改几颗。</li>
+<li>main 函数中工厂基于 xml 文件构建，代码运行时提示找不到 xml，以为路径问题，反复折腾无效，偶然间重启电脑解决了问题，估计是 idea 工程缓存问题。</li>
+</ol>
+<p>慢慢读源码啦。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/a704397849/article/details/102760379">https://blog.csdn.net/a704397849/article/details/102760379</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/u010999809/article/details/94293328">https://blog.csdn.net/u010999809/article/details/94293328</a></p>
+<p>（完）</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>董猿外
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blackist.org/2020/02/23/java-spring-code-init/" title="Spring源码（一）导入">https://blackist.org/2020/02/23/java-spring-code-init/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%BC%80%E5%8F%91/" rel="tag"># 开发</a>
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/spring/" rel="tag"># spring</a>
+              <a href="/tags/%E6%BA%90%E7%A0%81/" rel="tag"># 源码</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/01/24/life-new-year-2020/" rel="prev" title="告别 2019 拥抱 2020 - 还愿">
+                  <i class="fa fa-chevron-left"></i> 告别 2019 拥抱 2020 - 还愿
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/04/03/redis-cluster-masterandslave/" rel="next" title="Redis 主从集群及自启动配置">
+                  Redis 主从集群及自启动配置 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">自由转载-非商用-非衍生-保持署名（<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN/">创意共享4.0许可证</a>）</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.7.2/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"blackist","repo":"blackist.github.io","client_id":"506775736a1ab7d38a56","client_secret":"b1c3f0dc07680f22f07a585fc81cd5288adb6729","admin_user":"blackist","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.7.2/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"cbfdb86a75777423eef0146c46963d03"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Dong_small.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Dong_medium.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Dong_small.ico">
+  <link rel="mask-icon" href="/images/Dong_small.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blackist.org","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.12.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="实现真正意义上的静默安装，两种方式： 123456pm install -r &lt;test.apk&gt;# 或 通过反射调用 PackageManager.installPackage(...)  使用pm 命令需要满足三个条件，使用反射机制要满足前两个条件  在Manifest.xml根节点中加入 **android:sharedUserId&#x3D;”android.uid.sy">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android APK静默安装">
+<meta property="og:url" content="https://blackist.org/2018/04/30/android-auto-install/index.html">
+<meta property="og:site_name" content="Thinking in Coding">
+<meta property="og:description" content="实现真正意义上的静默安装，两种方式： 123456pm install -r &lt;test.apk&gt;# 或 通过反射调用 PackageManager.installPackage(...)  使用pm 命令需要满足三个条件，使用反射机制要满足前两个条件  在Manifest.xml根节点中加入 **android:sharedUserId&#x3D;”android.uid.sy">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blogres.blackist.org/android-auto-install-package.png">
+<meta property="article:published_time" content="2018-04-30T12:15:26.000Z">
+<meta property="article:modified_time" content="2023-01-05T06:23:24.168Z">
+<meta property="article:author" content="董猿外">
+<meta property="article:tag" content="android">
+<meta property="article:tag" content="源码">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blogres.blackist.org/android-auto-install-package.png">
+
+
+<link rel="canonical" href="https://blackist.org/2018/04/30/android-auto-install/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blackist.org/2018/04/30/android-auto-install/","path":"2018/04/30/android-auto-install/","title":"Android APK静默安装"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Android APK静默安装 | Thinking in Coding</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Thinking in Coding</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#Manifest-xml"><span class="nav-text">Manifest.xml</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D"><span class="nav-text">数字签名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E9%A2%84%E8%A3%85App"><span class="nav-text">系统预装App</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8D%E5%B0%84%E8%B0%83%E7%94%A8-installPackage"><span class="nav-text">反射调用 installPackage()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pm-insatll-%E5%91%BD%E4%BB%A4%E5%AE%89%E8%A3%85"><span class="nav-text">pm insatll 命令安装</span></a></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="董猿外"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">董猿外</p>
+  <div class="site-description" itemprop="description">Coding in Thinking.</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">78</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">78</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/blackist" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;blackist" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/liangl.dong@gmail.com" title="E-Mail → liangl.dong@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/liangl_dong" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;liangl_dong" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blackist.org/2018/04/30/android-auto-install/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="董猿外">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Thinking in Coding">
+      <meta itemprop="description" content="Coding in Thinking.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Android APK静默安装 | Thinking in Coding">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Android APK静默安装
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-04-30 20:15:26" itemprop="dateCreated datePublished" datetime="2018-04-30T20:15:26+08:00">2018-04-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-01-05 14:23:24" itemprop="dateModified" datetime="2023-01-05T14:23:24+08:00">2023-01-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <br>
+
+
+<p>实现真正意义上的静默安装，两种方式：</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">pm install -r &lt;test.apk&gt;</span><br><span class="line"></span><br><span class="line"># 或 通过反射调用 </span><br><span class="line"></span><br><span class="line">PackageManager.installPackage(...)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>使用pm 命令需要满足三个条件，使用反射机制要满足前两个条件</p>
+<ul>
+<li>在Manifest.xml根节点中加入 **android:sharedUserId&#x3D;”android.uid.system” **</li>
+<li>为Apk加上系统平台数字签名</li>
+<li>apk要预装在&#x2F;system&#x2F;app下面</li>
+</ul>
+<p>这些需要在有源码的基础上才可以做到，这些条件可如下实现。</p>
+<span id="more"></span>
+
+
+
+<h4 id="Manifest-xml"><a href="#Manifest-xml" class="headerlink" title="Manifest.xml"></a>Manifest.xml</h4><hr>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">manifest</span> <span class="attr">xmlns:android</span>=<span class="string">&quot;http://schemas.android.com/apk/res/android&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">xmlns:tools</span>=<span class="string">&quot;http://schemas.android.com/tools&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">package</span>=<span class="string">&quot;site.your.package&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:sharedUserId</span>=<span class="string">&quot;android.uid.system&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">manifest</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h4 id="数字签名"><a href="#数字签名" class="headerlink" title="数字签名"></a>数字签名</h4><hr>
+<p>在安卓源码中拿到以下工具</p>
+<ul>
+<li>在android源码下 build&#x2F;target&#x2F;product&#x2F;security 找到两个密钥文件 platform.x509.pem platform.pk8</li>
+<li>out&#x2F;host&#x2F;Linux-x86&#x2F;framework&#x2F;signapk.jar找到系统封装工具signapk.jar</li>
+<li>使用命令给 build 好的apk进行签名</li>
+</ul>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">java -jar signapk.jar /<span class="built_in">path</span>/to/platform.x509.pem /<span class="built_in">path</span>/to/platform.pk8 /<span class="built_in">path</span>/to/test.apk /<span class="built_in">path</span>/to/test-sign.apk</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>test-sign.apk</p>
+<h4 id="系统预装App"><a href="#系统预装App" class="headerlink" title="系统预装App"></a>系统预装App</h4><hr>
+<p>在如下路径创建目录 Test 存放对应的test-sign.apk (视平台而定)</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">android/device/softwinner/common/prebuild/apk/Test/test-sign.apk</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在该目录下创建Android.mk, 编辑</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Example</span></span><br><span class="line">LOCAL_PATH :=<span class="variable">$(<span class="built_in">call</span> my-<span class="built_in">dir</span>)</span></span><br><span class="line"><span class="keyword">include</span> <span class="variable">$(CLEAR_VARS)</span></span><br><span class="line"><span class="comment"># APK_MODULE_NAME(模块的唯一名字)</span></span><br><span class="line">LOCAL_MODULE := Test</span><br><span class="line">LOCAL_MODULE_TAGS := optional</span><br><span class="line">LOCAL_CERTIFICATE := platform</span><br><span class="line">LOCAL_DEX_PREOPT := false</span><br><span class="line">LOCAL_MODULE_CLASS := APPS</span><br><span class="line">LOCAL_MODULE_SUFFIX := <span class="variable">$(COMMON_ANDROID_PACKAGE_SUFFIX)</span></span><br><span class="line">LOCAL_CERTIFICATE :=PRESIGNED</span><br><span class="line"><span class="comment"># apk的文件名</span></span><br><span class="line">LOCAL_SRC_FILES := test-sign.apk</span><br><span class="line"><span class="comment"># 使用@直接引用apk内部的so</span></span><br><span class="line">LOCAL_PREBUILD_JNI_LIBS :=@lib/<span class="variable">$(TARGET_ARCH)</span>/libjni.so</span><br><span class="line"><span class="keyword">include</span> <span class="variable">$(BUILD_PREBUILT)</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在方案mk文件(device&#x2F;vendor-name&#x2F;device-name&#x2F;product-name.mk)中的 PRODUCT_PACKAGES项中加入:</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">PRODUCT_PACKAGES += Test (模块的唯一名字)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>至此, app被提升为系统预装app, 系统启动后进入 adb shell, 可在 &#x2F;system&#x2F;app&#x2F; 下面看到Test.apk。</p>
+<h3 id="反射调用-installPackage"><a href="#反射调用-installPackage" class="headerlink" title="反射调用 installPackage()"></a>反射调用 installPackage()</h3><hr>
+<p>需要在项目根目录建立相关的package 和 class: </p>
+<p><img src="https://blogres.blackist.org/android-auto-install-package.png" alt="静默安装"></p>
+<p>IPackageDeleteObserver:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">IPackageDeleteObserver</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">Stub</span> <span class="keyword">extends</span> <span class="title class_">android</span>.os.Binder <span class="keyword">implements</span> <span class="title class_">android</span>.content.pm.IPackageDeleteObserver &#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="title function_">Stub</span><span class="params">()</span> &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;Stub!&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> android.content.pm.IPackageDeleteObserver <span class="title function_">asInterface</span><span class="params">(android.os.IBinder obj)</span> &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;Stub!&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> android.os.IBinder <span class="title function_">asBinder</span><span class="params">()</span> &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;Stub!&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">onTransact</span><span class="params">(<span class="type">int</span> code, android.os.Parcel data, android.os.Parcel reply, <span class="type">int</span> flags)</span></span><br><span class="line">                <span class="keyword">throws</span> android.os.RemoteException &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;Stub!&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">packageDeleted</span><span class="params">(java.lang.String packageName, <span class="type">int</span> returnCode)</span></span><br><span class="line">            <span class="keyword">throws</span> android.os.RemoteException;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>IPackageInstallObserver:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">IPackageInstallObserver</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">Stub</span> <span class="keyword">extends</span> <span class="title class_">android</span>.os.Binder <span class="keyword">implements</span> <span class="title class_">android</span>.content.pm.IPackageInstallObserver &#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="title function_">Stub</span><span class="params">()</span> &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;Stub!&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> android.content.pm.IPackageInstallObserver <span class="title function_">asInterface</span><span class="params">(android.os.IBinder obj)</span> &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;Stub!&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> android.os.IBinder <span class="title function_">asBinder</span><span class="params">()</span> &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;Stub!&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">onTransact</span><span class="params">(<span class="type">int</span> code, android.os.Parcel data, android.os.Parcel reply, <span class="type">int</span> flags)</span></span><br><span class="line">                <span class="keyword">throws</span> android.os.RemoteException &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;Stub!&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">packageInstalled</span><span class="params">(java.lang.String packageName, <span class="type">int</span> returnCode)</span></span><br><span class="line">            <span class="keyword">throws</span> android.os.RemoteException;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>PackageDeleteObserver:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">PackageDeleteObserver</span> <span class="keyword">extends</span> <span class="title class_">IPackageDeleteObserver</span>.Stub &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">packageDeleted</span><span class="params">(String packageName, <span class="type">int</span> returnCode)</span> <span class="keyword">throws</span> RemoteException &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>PackageInstallObserver:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">PackageInstallObserver</span> <span class="keyword">extends</span> <span class="title class_">IPackageInstallObserver</span>.Stub &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">packageInstalled</span><span class="params">(String packageName, <span class="type">int</span> returnCode)</span> <span class="keyword">throws</span> RemoteException &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>ContextPackageManager(类名自定义):</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ContextPackageManager</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//如果已经存在的包使用这个flag</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">INSTALL_REPLACE_EXISTING</span> <span class="operator">=</span> <span class="number">0x00000002</span>;</span><br><span class="line">    <span class="comment">// install for all user</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">INSTALL_ALL_USERS</span> <span class="operator">=</span> <span class="number">0x00000040</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">installPackage</span><span class="params">(Context context, File apk)</span> &#123;</span><br><span class="line"></span><br><span class="line">        <span class="type">PackageManager</span> <span class="variable">pm</span> <span class="operator">=</span> context.getPackageManager();</span><br><span class="line">        Class&lt;?&gt;[] types = <span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;Uri.class, IPackageInstallObserver.class, <span class="type">int</span>.class, String.class&#125;;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">Method</span> <span class="variable">installPackage</span> <span class="operator">=</span> pm.getClass().getMethod(<span class="string">&quot;installPackage&quot;</span>, types);</span><br><span class="line">            installPackage.invoke(pm, Uri.fromFile(apk), <span class="keyword">new</span> <span class="title class_">PackageInstallObserver</span>(), INSTALL_ALL_USERS, <span class="literal">null</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">updatePackage</span><span class="params">(Context context, File apk)</span> &#123;</span><br><span class="line"></span><br><span class="line">        <span class="type">PackageManager</span> <span class="variable">pm</span> <span class="operator">=</span> context.getPackageManager();</span><br><span class="line">        Class&lt;?&gt;[] types = <span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;Uri.class, IPackageInstallObserver.class, <span class="type">int</span>.class, String.class&#125;;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">Method</span> <span class="variable">installPackage</span> <span class="operator">=</span> pm.getClass().getMethod(<span class="string">&quot;installPackage&quot;</span>, types);</span><br><span class="line">            installPackage.invoke(pm, Uri.fromFile(apk), <span class="keyword">new</span> <span class="title class_">PackageInstallObserver</span>(), INSTALL_REPLACE_EXISTING, <span class="literal">null</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">deletePackage</span><span class="params">(Context context)</span> &#123;</span><br><span class="line"></span><br><span class="line">        <span class="type">PackageManager</span> <span class="variable">pm</span> <span class="operator">=</span> context.getPackageManager();</span><br><span class="line">        Class&lt;?&gt;[] types = <span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;String.class, IPackageDeleteObserver.class, <span class="type">int</span>.class&#125;;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">Method</span> <span class="variable">deletePackage</span> <span class="operator">=</span> pm.getClass().getMethod(<span class="string">&quot;deletePackage&quot;</span>, types);</span><br><span class="line">            deletePackage.invoke(pm, DeviceConfig.PACKAGE_NAME, <span class="keyword">new</span> <span class="title class_">PackageDeleteObserver</span>(), <span class="number">0</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>调用处一行代码即可:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ContextPackageManager.updatePackage(context, <span class="keyword">new</span> <span class="title class_">File</span>(appPath));</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="pm-insatll-命令安装"><a href="#pm-insatll-命令安装" class="headerlink" title="pm insatll 命令安装"></a>pm insatll 命令安装</h3><hr>
+<p>调用pm 命令，如下: </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ShellUtil.executeCommand(<span class="keyword">new</span> <span class="title class_">String</span>[]&#123;<span class="string">&quot;pm install -r /sdcard/.../test.apk&quot;</span>&#125;);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>ShellUtil.executeCommand():</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> <span class="title function_">executeCommand</span><span class="params">(String[] commands)</span> &#123;</span><br><span class="line">	<span class="type">Process</span> <span class="variable">process</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="type">BufferedReader</span> <span class="variable">successResult</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="type">BufferedReader</span> <span class="variable">errorResult</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="type">StringBuilder</span> <span class="variable">successMsg</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="type">StringBuilder</span> <span class="variable">errorMsg</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">        <span class="type">DataOutputStream</span> <span class="variable">os</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            process = Runtime.getRuntime().exec(<span class="string">&quot;sh&quot;</span>);</span><br><span class="line">            os = <span class="keyword">new</span> <span class="title class_">DataOutputStream</span>(process.getOutputStream());</span><br><span class="line">            <span class="keyword">for</span> (String command : commands) &#123;</span><br><span class="line">                <span class="keyword">if</span> (command == <span class="literal">null</span>) &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="comment">// donnot use os.writeBytes(commmand), avoid chinese charset error</span></span><br><span class="line">                os.write(command.getBytes());</span><br><span class="line">                os.writeBytes(<span class="string">&quot;exit\n&quot;</span>);</span><br><span class="line">                os.flush();</span><br><span class="line">            &#125;</span><br><span class="line">            os.writeBytes(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">            os.flush();</span><br><span class="line"></span><br><span class="line">            <span class="type">int</span> <span class="variable">result</span> <span class="operator">=</span> process.waitFor();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (os != <span class="literal">null</span>) &#123;</span><br><span class="line">                    os.close();</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> (successResult != <span class="literal">null</span>) &#123;</span><br><span class="line">                    successResult.close();</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> (errorResult != <span class="literal">null</span>) &#123;</span><br><span class="line">                    errorResult.close();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (process != <span class="literal">null</span>) &#123;</span><br><span class="line">                process.destroy();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>pm静默安装参考<a target="_blank" rel="noopener" href="http://www.trinea.cn/android/android-silent-install/">Trinea</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>董猿外
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blackist.org/2018/04/30/android-auto-install/" title="Android APK静默安装">https://blackist.org/2018/04/30/android-auto-install/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/android/" rel="tag"># android</a>
+              <a href="/tags/%E6%BA%90%E7%A0%81/" rel="tag"># 源码</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/04/30/android-publish-beta-apk/" rel="prev" title="发布android内测版本，并进行在线更新">
+                  <i class="fa fa-chevron-left"></i> 发布android内测版本，并进行在线更新
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/05/10/android-basic-mark/" rel="next" title="Android备忘录">
+                  Android备忘录 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">自由转载-非商用-非衍生-保持署名（<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN/">创意共享4.0许可证</a>）</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.7.2/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"blackist","repo":"blackist.github.io","client_id":"506775736a1ab7d38a56","client_secret":"b1c3f0dc07680f22f07a585fc81cd5288adb6729","admin_user":"blackist","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.7.2/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"f9bcb28ffcbf7e7b7a49418f0058e812"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Dong_small.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Dong_medium.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Dong_small.ico">
+  <link rel="mask-icon" href="/images/Dong_small.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blackist.org","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.12.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Java源代码文件(.java后缀)会被Java编译器编译为字节码文件(.class后缀)，然后由JVM中的类加载器加载各个类的字节码文件，加载完毕之后，交由JVM执行引擎执行。 那在整个程序执行过程中，JVM中怎么存取数据和相关信息呢？ 事实上在JVM中是用一段空间来存储程序执行期间需要用到的数据和相关信息，这段空间一般被称作为Runtime Data Area（运行时数据区），也就是我们常说的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JVM - 运行时内存区域">
+<meta property="og:url" content="https://blackist.org/2019/07/07/java-jvm-jmm/index.html">
+<meta property="og:site_name" content="Thinking in Coding">
+<meta property="og:description" content="Java源代码文件(.java后缀)会被Java编译器编译为字节码文件(.class后缀)，然后由JVM中的类加载器加载各个类的字节码文件，加载完毕之后，交由JVM执行引擎执行。 那在整个程序执行过程中，JVM中怎么存取数据和相关信息呢？ 事实上在JVM中是用一段空间来存储程序执行期间需要用到的数据和相关信息，这段空间一般被称作为Runtime Data Area（运行时数据区），也就是我们常说的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blogres.blackist.org/dev-201907071428-3.png">
+<meta property="article:published_time" content="2019-07-07T12:38:34.000Z">
+<meta property="article:modified_time" content="2023-01-05T06:23:24.209Z">
+<meta property="article:author" content="董猿外">
+<meta property="article:tag" content="开发">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="jvm">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blogres.blackist.org/dev-201907071428-3.png">
+
+
+<link rel="canonical" href="https://blackist.org/2019/07/07/java-jvm-jmm/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blackist.org/2019/07/07/java-jvm-jmm/","path":"2019/07/07/java-jvm-jmm/","title":"JVM - 运行时内存区域"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>JVM - 运行时内存区域 | Thinking in Coding</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Thinking in Coding</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA%E5%9F%9F%E5%8C%85%E6%8B%AC%E5%93%AA%E4%BA%9B"><span class="nav-text">一、运行时数据区域包括哪些</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%90%84%E4%B8%AA%E9%83%A8%E5%88%86%E5%AD%98%E5%82%A8%E7%9A%84%E4%BF%A1%E6%81%AF%E5%92%8C%E8%B4%9F%E8%B4%A3%E7%9A%84%E8%81%8C%E8%83%BD"><span class="nav-text">二、各个部分存储的信息和负责的职能</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E3%80%81%E7%A8%8B%E5%BA%8F%E8%AE%A1%E6%95%B0%E5%99%A8"><span class="nav-text">1、程序计数器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%E3%80%81Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%A0%88"><span class="nav-text">2、Java虚拟机栈</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3%E3%80%81%E6%9C%AC%E5%9C%B0%E6%96%B9%E6%B3%95%E6%A0%88"><span class="nav-text">3、本地方法栈</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4%E3%80%81Java%E5%A0%86"><span class="nav-text">4、Java堆</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5%E3%80%81%E6%96%B9%E6%B3%95%E5%8C%BA"><span class="nav-text">5、方法区</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B0%B8%E4%B9%85%E4%BB%A3%E5%92%8C%E5%85%83%E7%A9%BA%E9%97%B4"><span class="nav-text">永久代和元空间</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Class%E6%96%87%E4%BB%B6%E5%B8%B8%E9%87%8F%E6%B1%A0"><span class="nav-text">Class文件常量池</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E6%97%B6%E5%B8%B8%E9%87%8F%E6%B1%A0"><span class="nav-text">运行时常量池</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%B8%B8%E9%87%8F%E6%B1%A0"><span class="nav-text">字符串常量池</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%93%E5%86%B2%E6%B1%A0"><span class="nav-text">缓冲池</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E7%9B%B4%E6%8E%A5%E5%86%85%E5%AD%98"><span class="nav-text">三、直接内存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E6%80%BB%E7%BB%93"><span class="nav-text">四、总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-text">参考</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83-1"><span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="董猿外"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">董猿外</p>
+  <div class="site-description" itemprop="description">Coding in Thinking.</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">78</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">78</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/blackist" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;blackist" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/liangl.dong@gmail.com" title="E-Mail → liangl.dong@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/liangl_dong" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;liangl_dong" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blackist.org/2019/07/07/java-jvm-jmm/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="董猿外">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Thinking in Coding">
+      <meta itemprop="description" content="Coding in Thinking.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="JVM - 运行时内存区域 | Thinking in Coding">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JVM - 运行时内存区域
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-07-07 20:38:34" itemprop="dateCreated datePublished" datetime="2019-07-07T20:38:34+08:00">2019-07-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-01-05 14:23:24" itemprop="dateModified" datetime="2023-01-05T14:23:24+08:00">2023-01-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>Java源代码文件(.java后缀)会被Java编译器编译为字节码文件(.class后缀)，然后由JVM中的类加载器加载各个类的字节码文件，加载完毕之后，交由<strong>JVM执行引擎</strong>执行。</p>
+<p>那在整个程序执行过程中，JVM中怎么存取数据和相关信息呢？</p>
+<p>事实上在JVM中是用一段空间来存储程序执行期间需要用到的数据和相关信息，这段空间一般被称作为Runtime Data Area（运行时数据区），也就是我们常说的JVM内存。</p>
+<span id="more"></span>
+
+
+
+<h2 id="一、运行时数据区域包括哪些"><a href="#一、运行时数据区域包括哪些" class="headerlink" title="一、运行时数据区域包括哪些"></a>一、运行时数据区域包括哪些</h2><p><img src="https://blogres.blackist.org/dev-201907071428-3.png"></p>
+<p>根据《Java虚拟机规范》的规定，运行时数据区通常包括这几个部分：</p>
+<ul>
+<li><p>**程序计数器(Program Counter Register)**：线程私有的，记录当前线程的行号指示器，为线程的切换提供保障；</p>
+</li>
+<li><p>**Java虚拟机栈(Java Vitual Machine Stack)*<em>：线程私有的，主要存放</em>局部变量表*，操作数栈，动态链接和方法出口等；</p>
+</li>
+<li><p><strong>本地方法栈(Native Method Stack)</strong></p>
+</li>
+<li><p><strong>方法区(Method Area)<strong>：线程共享的，主要存储</strong>类信息、常量池、静态变量、JIT编译后的代码</strong>等数据。方法区理论上来说是堆的逻辑组成部分；<strong>运行时常量池</strong>是方法区的一部分，用于存放编译期生成的各种字面量和符号引用；</p>
+</li>
+<li><p><strong>堆(Heap)<strong>：所有线程共享的，主要用来存储对象。其中，堆可分为：</strong>年轻代和老年代</strong>两块区域。使用NewRatio参数来设定比例。对于年轻代，一个Eden区和两个Suvivor区，使用参数SuvivorRatio来设定大小；</p>
+</li>
+</ul>
+<h2 id="二、各个部分存储的信息和负责的职能"><a href="#二、各个部分存储的信息和负责的职能" class="headerlink" title="二、各个部分存储的信息和负责的职能"></a>二、各个部分存储的信息和负责的职能</h2><h3 id="1、程序计数器"><a href="#1、程序计数器" class="headerlink" title="1、程序计数器"></a>1、程序计数器</h3><p>这个内存区域是Java虚拟机规范中唯一一个没有规定任何OOM（OutOfMemoryError）情况的区域，这是这个区域最大的特点之一，这是因为程序计数器中存储的数据所占空间的大小不会随程序的执行而发生改变，因此，对于程序计数器是不会发生内存溢出现象(OutOfMemory)的。</p>
+<p>这个区域主要是负责记录正在执行的虚拟机字节码指令地址，即当前线程执行的字节码的行号指示器（注意：JVM不是直接执行Java代码，而是执行.class文件，所以只要其他编程语言能翻译成.class文件一样能放入JVM中执行）。 <strong>JVM会给每个线程一个独立的程序计数器</strong>，计数器之间互不影响 ，且通过线程轮流切换并且分配处理器执行时间来实现JVM的多线程。不过当线程执行的是Native方法的时候这个计数器中的值为undefined。</p>
+<h3 id="2、Java虚拟机栈"><a href="#2、Java虚拟机栈" class="headerlink" title="2、Java虚拟机栈"></a>2、Java虚拟机栈</h3><p>和程序计数器一样的是<strong>Java虚拟机栈是线程私有</strong>，生命周期和线程相同。虚拟机栈描述的是<strong>Java方法</strong>执行的内存模型：每个<strong>方法在执行的时候都会创建栈帧</strong>，用来存储局部变量表，操作数栈，动态链接，方法出口等信息，每个方法从调用到执行完成的过程，就对应一个栈帧在虚拟机中入栈到出栈的过程，其中64位长度的long和double类型的数据会占用2个局部变量空间，其余的数据类型只占用1个。 这里需要理解一下的就是为什么要用栈这个结构呢，比如A方法中调用了B方法，虚拟机中是先让A方法的栈帧进入虚拟机栈执行，当执行到调用B方法的语句就让B栈帧进入，执行完之后B栈帧就出栈，A栈就继续执行。这里注意的是如果递归的方法递归的太深很容易抛出下面两种异常，所以递归虽然写起来方便，但是性能会有所下降，并且容易抛出异常。</p>
+<p>Java虚拟机规范中，对这个区域规定了两种异常状况</p>
+<p>i. 线程请求栈的深度大于虚拟机所允许栈的深度，将抛出Stack Overflow Error</p>
+<p>ii. 如果虚拟机栈可以动态扩展且扩展时无法申请到足够的内存，会抛出OutOfMemoryError</p>
+<h3 id="3、本地方法栈"><a href="#3、本地方法栈" class="headerlink" title="3、本地方法栈"></a>3、本地方法栈</h3><p>与虚拟机栈作用相似，不过是虚拟机栈为虚拟机执行Java方法提供，而本地方法为虚拟机使用到的Native方法服务，Native方法多是用C++写的。抛出的异常和虚拟机栈相同。</p>
+<h3 id="4、Java堆"><a href="#4、Java堆" class="headerlink" title="4、Java堆"></a>4、Java堆</h3><p>Java堆是与前面的区域不同的是：这个区域是 <strong>被所有线程共享</strong> 的一块内存区域，用来<strong>存放对象实例，并为对象实例分配好内存</strong>。Java虚拟机规范中这样描述：所有对象实例以及数组都要在堆上分配。Java堆也是垃圾收集器管理的主要区域，也叫”GC堆“。由于现在的垃圾回收算法多是分代收集，所以Java堆里面又可分为：新生代和老年代。 并且根据Java虚拟机规范的规定：Java堆可以处于物理上不连续的内存空间中，只要逻辑上连续即可。有实例没有被分配，且堆无法再扩展的时候会抛出OutOfMemoryError异常，虚拟机调优其实也主要关注的是这个区域。</p>
+<h3 id="5、方法区"><a href="#5、方法区" class="headerlink" title="5、方法区"></a>5、方法区</h3><p>与Java堆一样，<strong>线程共享</strong>，用来存储被虚拟机加载的<strong>类信息、常量、静态变量</strong>。这个区域Java虚拟机规范对其特别宽松，既可以像Java堆那样不需要连续内存，又可以选择固定大小和可扩展。还可以选择不实现垃圾收集，这个区域的内存回收目标主要是针对常量池的回收和对类型的卸载。当无法满足内存分配需求时，将抛出OutOfMemoryError异常。</p>
+<h4 id="永久代和元空间"><a href="#永久代和元空间" class="headerlink" title="永久代和元空间"></a>永久代和元空间</h4><p>方法区是Java虚拟机规范中的定义，是一种规范，而永久代是HotSpot对方法区的一种实现，一个是标准一个是实现，即<strong>使用永久代来实现方法区</strong>；</p>
+<ul>
+<li>存储位置不同，永久代物理上是堆的一部分，和新生代，老年代地址是连续的，而元空间属于本地内存；</li>
+<li>存储内容不同，<strong>元空间(一块区域)存储类的元信息</strong>，<strong>静态变量和常量池等并入堆中</strong>。相当于永久代的数据被分到了堆和元空间中。</li>
+</ul>
+<p>对于Java8， HotSpots取消了永久代， 取代永久代的就是元空间。虚拟机Hotspot已经将这部分存储空间<strong>从使用JVM内存换成使用本地内存</strong>，即这部分不再叫永久代，而是<strong>元空间</strong>。这个元空间实际上是JVM动态规定内存大小。</p>
+<p>这个替换有什么优势呢？因为字符串常量池是存在永久代中，很容易出现性能问题，并且类和方法信息大小难确定，给永久代的的大小指定带来困难，而且GC会对永久代特殊处理，这就增加了GC的复杂性。从JDK1.7开始，<strong>字符串常量池就划分进了堆中</strong>，也使得元空间在内存划分的算法上更趋于合理。</p>
+<h4 id="Class文件常量池"><a href="#Class文件常量池" class="headerlink" title="Class文件常量池"></a><strong>Class文件常量池</strong></h4><p>Class 文件常量池指的是编译生成的 class 字节码文件，其结构中有一项是常量池（Constant Pool Table），用于存放编译期生成的各种<strong>字面量和符号引用</strong>，这部分内容将<strong>在类加载后进入方法区的运行时常量池中存放</strong>。</p>
+<p>这里的字面量是指<strong>字符串字面量和声明为 final 的（基本数据类型）常量值</strong>。</p>
+<ul>
+<li>字符串字面量：除了类中所有双引号括起来的字符串(包括方法体内的)，还包括所有用到的类名、方法的名字和这些类与方法的字符串描述、字段(成员变量)的名称和描述符；</li>
+<li>声明为final的常量值：指的是类的<strong>成员变量</strong>，不包含本地变量，<strong>本地变量是属于方法的</strong>。这些都在常量池的 UTF-8 表中(逻辑上的划分)；</li>
+</ul>
+<h4 id="运行时常量池"><a href="#运行时常量池" class="headerlink" title="运行时常量池"></a>运行时常量池</h4><p>运行时常量池是方法区的一部分，是一块内存区域。Class 文件常量池将在类加载后进入方法区的运行时常量池中存放。<strong>一个类加载到 JVM 中后对应一个运行时常量池</strong>，运行时常量池相对于 Class 文件常量池来说具备动态性，Class 文件常量只是一个静态存储结构，里面的引用都是符号引用。而运行时常量池可以在运行期间<strong>将符号引用解析为直接引用</strong>。可以说运行时常量池就是用来<strong>索引和查找字段和方法名称和描述符</strong>的。给定任意一个方法或字段的索引，通过这个索引最终可得到该方法或字段所属的类型信息和名称及描述符信息，这涉及到方法的调用和字段获取。</p>
+<h4 id="字符串常量池"><a href="#字符串常量池" class="headerlink" title="字符串常量池"></a>字符串常量池</h4><p><strong>字符串常量池是全局</strong>的，JVM 中独此一份，因此也称为全局字符串常量池。</p>
+<p>运行时常量池中的字符串字面量若是成员的，则在类的加载初始化阶段就使用到了字符串常量池；若是本地的，则在使用到的时候（执行此代码时）才会使用到字符串常量池。其实，“使用常量池”对应的字节码是一个 ldc 指令，在给 String 类型的引用赋值的时候会先执行这个指令，看常量池中是否存在这个字符串对象的引用，若有就直接返回这个引用，若没有，就在堆里创建这个字符串对象并在字符串常量池中记录下这个引用（jdk1.7)。</p>
+<p>常量不一定只有编译期才能产生，运行期间也可以将新的常量放入池中。例如<strong>String的Intern()方法</strong>，同样抛出OutOfMemoryError异常。</p>
+<h4 id="缓冲池"><a href="#缓冲池" class="headerlink" title="缓冲池"></a>缓冲池</h4><p>JVM 中除了字符串常量池，8种基本数据类型中除了两种浮点类型剩余的6种基本数据类型的包装类，都使用了缓冲池技术，但是 Byte、Short、Integer、Long、Character 这5种整型的包装类也只是在对应值在 [-128,127] 时才会使用缓冲池，超出此范围仍然会去创建新的对象。其中：</p>
+<ul>
+<li>在 jdk1.6（含）之前也是方法区的一部分，并且其中存放的是字符串的实例；</li>
+<li>在 jdk1.7（含）之后是在堆内存之中，存储的是字符串对象的引用，字符串实例是在堆中；</li>
+<li>jdk1.8 已移除永久代，字符串常量池是在本地内存当中，存储的也只是引用。</li>
+</ul>
+<h2 id="三、直接内存"><a href="#三、直接内存" class="headerlink" title="三、直接内存"></a>三、直接内存</h2><p>这个区域并不是属于运行时数据区域，但是这个区域也会被频繁使用，并且抛出OOM异常。这个区域主要是由于在JDK1.4中新加入了NIO（New Input&#x2F;Output）类，引入了一种基于通道与缓冲区的I&#x2F;O方式，它可以使用Native函数库直接分配堆外内存，通过一个储存在Java堆中的DirectByteBuffer对象作为这块内存的引用进行操作。</p>
+<p>这样能避免在Java堆和Native堆中来回复制数据，从而在一些场景中显著提高性能。直接内存分配不会受到Java堆大小的限制，会受到本机总内存大小及处理器寻址空间的限制。会抛出OutOfMemoryError异常</p>
+<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><p>只有程序计数器不会报出任何相关OOM异常，而Java虚拟机栈有可能会报出OOM或Stack Overflow异常。<strong>Java虚拟机栈主要是存储方法的一些信息</strong>，能让方法顺利的执行，而<strong>Java堆存储的是对象的信息</strong>。虚拟机的垃圾回收算法主要在这一块，并且平常调优的区域也是在这一块。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/xiaotian15/p/6971353.html">https://www.cnblogs.com/xiaotian15/p/6971353.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.tuicool.com/articles/Av6RZnU">https://www.tuicool.com/articles/Av6RZnU</a></p>
+<h2 id="参考-1"><a href="#参考-1" class="headerlink" title="参考"></a>参考</h2><p>（完）</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>董猿外
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blackist.org/2019/07/07/java-jvm-jmm/" title="JVM - 运行时内存区域">https://blackist.org/2019/07/07/java-jvm-jmm/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%BC%80%E5%8F%91/" rel="tag"># 开发</a>
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/jvm/" rel="tag"># jvm</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/07/06/java-jvm-classload-process/" rel="prev" title="JVM - 类加载过程">
+                  <i class="fa fa-chevron-left"></i> JVM - 类加载过程
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/08/28/arithmetic-coordinate-point-segment-dist/" rel="next" title="算法 - PNPoly处理点和多边形">
+                  算法 - PNPoly处理点和多边形 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">自由转载-非商用-非衍生-保持署名（<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN/">创意共享4.0许可证</a>）</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.7.2/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"blackist","repo":"blackist.github.io","client_id":"506775736a1ab7d38a56","client_secret":"b1c3f0dc07680f22f07a585fc81cd5288adb6729","admin_user":"blackist","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.7.2/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"b938864a373d66e008e47bc5007a93f7"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

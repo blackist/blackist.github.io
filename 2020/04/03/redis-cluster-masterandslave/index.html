@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Dong_small.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Dong_medium.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Dong_small.ico">
+  <link rel="mask-icon" href="/images/Dong_small.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blackist.org","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.12.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="在 CentOS 7.6 环境中搭建 Redis 主从集群，并使用 systemctl 配置集群自启动。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis 主从集群及自启动配置">
+<meta property="og:url" content="https://blackist.org/2020/04/03/redis-cluster-masterandslave/index.html">
+<meta property="og:site_name" content="Thinking in Coding">
+<meta property="og:description" content="在 CentOS 7.6 环境中搭建 Redis 主从集群，并使用 systemctl 配置集群自启动。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blogres.blackist.org/202004032345_653.png">
+<meta property="article:published_time" content="2020-04-03T07:40:09.000Z">
+<meta property="article:modified_time" content="2023-01-05T06:23:24.168Z">
+<meta property="article:author" content="董猿外">
+<meta property="article:tag" content="Redis">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blogres.blackist.org/202004032345_653.png">
+
+
+<link rel="canonical" href="https://blackist.org/2020/04/03/redis-cluster-masterandslave/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blackist.org/2020/04/03/redis-cluster-masterandslave/","path":"2020/04/03/redis-cluster-masterandslave/","title":"Redis 主从集群及自启动配置"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Redis 主从集群及自启动配置 | Thinking in Coding</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Thinking in Coding</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis-%E4%B8%8B%E8%BD%BD%E5%AE%89%E8%A3%85"><span class="nav-text">Redis 下载安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4%E9%85%8D%E7%BD%AE"><span class="nav-text">集群配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%A4%9A%E4%B8%AA-Redis-Server-%E5%AE%9E%E4%BE%8B"><span class="nav-text">配置多个 Redis Server 实例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8-Server-%E5%AE%9E%E4%BE%8B"><span class="nav-text">启动 Server 实例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B%E9%9B%86%E7%BE%A4"><span class="nav-text">建立集群</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E9%9B%86%E7%BE%A4"><span class="nav-text">测试集群</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4%E8%87%AA%E5%90%AF%E5%8A%A8"><span class="nav-text">集群自启动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="董猿外"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">董猿外</p>
+  <div class="site-description" itemprop="description">Coding in Thinking.</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">78</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">78</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/blackist" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;blackist" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/liangl.dong@gmail.com" title="E-Mail → liangl.dong@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/liangl_dong" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;liangl_dong" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blackist.org/2020/04/03/redis-cluster-masterandslave/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="董猿外">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Thinking in Coding">
+      <meta itemprop="description" content="Coding in Thinking.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Redis 主从集群及自启动配置 | Thinking in Coding">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Redis 主从集群及自启动配置
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-04-03 15:40:09" itemprop="dateCreated datePublished" datetime="2020-04-03T15:40:09+08:00">2020-04-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-01-05 14:23:24" itemprop="dateModified" datetime="2023-01-05T14:23:24+08:00">2023-01-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">开发</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>在 CentOS 7.6 环境中搭建 Redis 主从集群，并使用 systemctl 配置集群自启动。</p>
+<span id="more"></span>
+
+<h2 id="Redis-下载安装"><a href="#Redis-下载安装" class="headerlink" title="Redis 下载安装"></a>Redis 下载安装</h2><p>采用源码编译安装的方式，下载源码：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget http://download.redis.io/releases/redis-5.0.7.tar.gz -P /usr/local/src</span><br></pre></td></tr></table></figure>
+
+<p>进入到下载目录，解压下载的源码：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /usr/local/src/</span><br><span class="line">tar -zxvf redis-5.0.7.tar.gz</span><br></pre></td></tr></table></figure>
+
+<p>安装 gcc 编译器，使用 make 编译安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> redis-5.0.7</span><br><span class="line">yum install gcc-c++</span><br><span class="line">make MALLOC=libc install</span><br></pre></td></tr></table></figure>
+
+<p>完成上面步骤之后，Redis 相关 bin 文件就已经安装到 <code>/usr/bin/local/bin</code> 目录下了：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">redis-benchmark</span><br><span class="line">redis-check-aof</span><br><span class="line">redis-check-rdb</span><br><span class="line">redis-cli</span><br><span class="line">redis-sentinel -&gt; redis-server</span><br><span class="line">redis-server</span><br></pre></td></tr></table></figure>
+
+<p>启动 Redis 服务器，使用默认的配置文件 <code>/usr/local/src/redis-5.0.7/redis.conf</code>，也可指定配置文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/bin/redis-server ./redis.conf</span><br></pre></td></tr></table></figure>
+
+<p>使用客户端连接 Redis Server，测试是否启动成功：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/bin/redis-cli -h 127.0.0.1 -p 6379 -a password</span><br></pre></td></tr></table></figure>
+
+<p>有时候会有中文乱码，要在 redis-cli 后面加上 <code>--raw</code>。</p>
+<h2 id="集群配置"><a href="#集群配置" class="headerlink" title="集群配置"></a>集群配置</h2><p>在本地启动多个 Redis Server 实例，使用不同的配置文件，占用不同的端口。</p>
+<h3 id="配置多个-Redis-Server-实例"><a href="#配置多个-Redis-Server-实例" class="headerlink" title="配置多个 Redis Server 实例"></a>配置多个 Redis Server 实例</h3><p>在 <code>/usr/local/ </code>下建立 <code>redis-cluster</code> 文件夹，再建子文件夹 <code>7001-7006</code> 以及 <code>700*/data/</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> -p /usr/local/redis-cluster/7000/data \</span><br><span class="line">  /usr/local/redis-cluster/7001/data \</span><br><span class="line">  /usr/local/redis-cluster/7002/data \</span><br><span class="line">  /usr/local/redis-cluster/7003/data \ </span><br><span class="line">  /usr/local/redis-cluster/7004/data \ </span><br><span class="line">  /usr/local/redis-cluster/7005/data</span><br></pre></td></tr></table></figure>
+
+<p>在各实例位置中新建 <code>redis.conf</code>，并配置如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">port 700*</span><br><span class="line">bind 0.0.0.0</span><br><span class="line">dir /usr/local/redis-cluster/700*/data/</span><br><span class="line">cluster-enabled yes</span><br><span class="line">cluster-config-file nodes-700*.conf</span><br><span class="line">cluster-node-timeout 5000</span><br><span class="line">cluster-announce-ip 当前集群IP</span><br><span class="line">appendonly yes</span><br><span class="line">daemonize yes</span><br></pre></td></tr></table></figure>
+
+<h3 id="启动-Server-实例"><a href="#启动-Server-实例" class="headerlink" title="启动 Server 实例"></a>启动 Server 实例</h3><p>启动各 Server 实例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/bin/redis-server /usr/local/redis-cluster/700*/redis.conf</span><br></pre></td></tr></table></figure>
+
+<p>或使用自定义脚本 <code>/var/tmp/redis-cluster.sh</code>，一次性启动多个实例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line">/usr/local/bin/redis-server /usr/local/redis-cluster/7000/redis.conf</span><br><span class="line">/usr/local/bin/redis-server /usr/local/redis-cluster/7001/redis.conf</span><br><span class="line">/usr/local/bin/redis-server /usr/local/redis-cluster/7002/redis.conf</span><br><span class="line">/usr/local/bin/redis-server /usr/local/redis-cluster/7003/redis.conf</span><br><span class="line">/usr/local/bin/redis-server /usr/local/redis-cluster/7004/redis.conf</span><br><span class="line">/usr/local/bin/redis-server /usr/local/redis-cluster/7005/redis.conf</span><br></pre></td></tr></table></figure>
+
+<p>添加执行权限并执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">chmod</span> +x redis-cluster.sh</span><br><span class="line">./redis-cluster.sh</span><br></pre></td></tr></table></figure>
+
+<p>查看各实例进程</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@bbc106 redis-cluster]<span class="comment"># ps -ef | grep redis</span></span><br><span class="line">6446     1  0 03:13 /usr/local/bin/redis-server 0.0.0.0:7000 [cluster]</span><br><span class="line">6553     1  0 03:14 /usr/local/bin/redis-server 0.0.0.0:7001 [cluster]</span><br><span class="line">6577     1  0 03:14 /usr/local/bin/redis-server 0.0.0.0:7002 [cluster]</span><br><span class="line">6585     1  0 03:14 /usr/local/bin/redis-server 0.0.0.0:7003 [cluster]</span><br><span class="line">6595     1  0 03:14 /usr/local/bin/redis-server 0.0.0.0:7004 [cluster]</span><br><span class="line">6605     1  0 03:14 /usr/local/bin/redis-server 0.0.0.0:7005 [cluster]</span><br></pre></td></tr></table></figure>
+
+<h3 id="建立集群"><a href="#建立集群" class="headerlink" title="建立集群"></a>建立集群</h3><p>使用 <code>/usr/local/bin/redis-cli</code> 建立集群：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/bin/redis-cli --cluster create 127.0.0.1:7000 127.0.0.1:7001 127.0.0.1:7002 127.0.0.1:7003 127.0.0.1:7004 127.0.0.1:7005 --cluster-replicas 1</span><br></pre></td></tr></table></figure>
+
+<p>看到如下 log：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; Performing <span class="built_in">hash</span> slots allocation on 6 nodes...</span><br><span class="line">Master[0] -&gt; Slots 0 - 5460</span><br><span class="line">Master[1] -&gt; Slots 5461 - 10922</span><br><span class="line">Master[2] -&gt; Slots 10923 - 16383</span><br><span class="line">...</span><br><span class="line">[OK] All 16384 slots covered.</span><br></pre></td></tr></table></figure>
+
+<h3 id="测试集群"><a href="#测试集群" class="headerlink" title="测试集群"></a>测试集群</h3><p>客户端连接任一节点，并使用 <code>cluster nodes</code> 或 <code>cluster info</code> 查看集群信息：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@bbc106 local]# /usr/local/bin/redis-cli -h 127.0.0.1 -p 7000</span><br><span class="line">127.0.0.1:7000&gt; cluster nodes</span><br></pre></td></tr></table></figure>
+
+<p>集群信息如下图：</p>
+<p><img src="https://blogres.blackist.org/202004032345_653.png"></p>
+<ul>
+<li>119.3.104.4:7000：节点的 IP 和 Port</li>
+<li>master &#x2F; slave：节点在集群中的角色，主节点 &#x2F; 从节点</li>
+<li>0-5460 &#x2F; 10923-16383：节点分配到的槽数</li>
+</ul>
+<h2 id="集群自启动"><a href="#集群自启动" class="headerlink" title="集群自启动"></a>集群自启动</h2><p>使用 systemd 配置集群自启动，首先添加 systemd unit service 配置文件 <code>/usr/lib/systemd/system/redis-cluster.service</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=Redis 5.0 Cluster Service</span><br><span class="line">After=network.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">Type=forking</span><br><span class="line">ExecStart=/usr/local/redis-cluster/redis-cluster.sh</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=default.target</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Description：描述信息</li>
+<li>After：启动顺序</li>
+<li>Type：进程启动类型</li>
+<li>ExecStart：启动脚本</li>
+</ul>
+<p>其中 Redis 进程启动类型和 redis 服务的启动方式有关：</p>
+<table>
+<thead>
+<tr>
+<th><code>redis.conf</code></th>
+<th><code>redis.service</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>daemonize no</code> <code>supervised systemd</code></td>
+<td><code>Type=notify</code></td>
+</tr>
+<tr>
+<td><code>daemonize no</code> <code>supervised no</code></td>
+<td><code>Type=exec</code></td>
+</tr>
+<tr>
+<td><code>daemonize yes</code> <code>supervised no</code></td>
+<td><code>Type=forking</code></td>
+</tr>
+</tbody></table>
+<p>配置开机启动，首先在 &#x2F;etc&#x2F;systemd&#x2F;system&#x2F; 下建立 redis-cluster.service 的软链接：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">ln</span> -s /usr/lib/systemd/system/redis-cluster.service</span><br></pre></td></tr></table></figure>
+
+<p>重新加载 systemd 服务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl daemon-reload</span><br></pre></td></tr></table></figure>
+
+<p>启动 redis 集群服务并设置 开机启动：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl start redis-cluster</span><br><span class="line">sudo systemctl <span class="built_in">enable</span> redis-cluster</span><br></pre></td></tr></table></figure>
+
+<p>重启服务器测试集群自启动：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl reboot</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://www.freedesktop.org/software/systemd/man/systemd.service.html">https://www.freedesktop.org/software/systemd/man/systemd.service.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://gist.github.com/nexdrew/14392032ed6f105474a3">https://gist.github.com/nexdrew/14392032ed6f105474a3</a></p>
+<p><a target="_blank" rel="noopener" href="https://gist.github.com/hackedunit/a53f0b5376b3772d278078f686b04d38">https://gist.github.com/hackedunit/a53f0b5376b3772d278078f686b04d38</a></p>
+<p>（完）</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>董猿外
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blackist.org/2020/04/03/redis-cluster-masterandslave/" title="Redis 主从集群及自启动配置">https://blackist.org/2020/04/03/redis-cluster-masterandslave/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Redis/" rel="tag"># Redis</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/02/23/java-spring-code-init/" rel="prev" title="Spring源码（一）导入">
+                  <i class="fa fa-chevron-left"></i> Spring源码（一）导入
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/04/17/linux-shell-base/" rel="next" title="Linux Shell 脚本基础">
+                  Linux Shell 脚本基础 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">自由转载-非商用-非衍生-保持署名（<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN/">创意共享4.0许可证</a>）</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.7.2/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"blackist","repo":"blackist.github.io","client_id":"506775736a1ab7d38a56","client_secret":"b1c3f0dc07680f22f07a585fc81cd5288adb6729","admin_user":"blackist","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.7.2/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"1d1cd5813e1f07ac510ae63f407a0bed"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>

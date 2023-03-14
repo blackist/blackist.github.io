@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Dong_small.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Dong_medium.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Dong_small.ico">
+  <link rel="mask-icon" href="/images/Dong_small.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blackist.org","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.12.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="声明：本文转自作者coding小生的github开源项目AndroidSourceCodeXS，仅供自己学习备忘。 App 系列（高仿、练手等）SmartRecom：一款干货满满，助你进阶的 App 项目 Android 仿今日头条的开源项目 手把手教你从零开始做一个好看的 APP KeepGank.IO - 又一款开源 Gank.IO 客户端. 欢迎 star 一个用来巩固 Android 基础">
+<meta property="og:type" content="article">
+<meta property="og:title" content="android useful doc">
+<meta property="og:url" content="https://blackist.org/2017/07/28/android-useful-doc/index.html">
+<meta property="og:site_name" content="Thinking in Coding">
+<meta property="og:description" content="声明：本文转自作者coding小生的github开源项目AndroidSourceCodeXS，仅供自己学习备忘。 App 系列（高仿、练手等）SmartRecom：一款干货满满，助你进阶的 App 项目 Android 仿今日头条的开源项目 手把手教你从零开始做一个好看的 APP KeepGank.IO - 又一款开源 Gank.IO 客户端. 欢迎 star 一个用来巩固 Android 基础">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-07-28T07:10:28.000Z">
+<meta property="article:modified_time" content="2022-08-24T03:09:53.353Z">
+<meta property="article:author" content="董猿外">
+<meta property="article:tag" content="android">
+<meta property="article:tag" content="UI">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blackist.org/2017/07/28/android-useful-doc/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blackist.org/2017/07/28/android-useful-doc/","path":"2017/07/28/android-useful-doc/","title":"android useful doc"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>android useful doc | Thinking in Coding</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Thinking in Coding</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#App-%E7%B3%BB%E5%88%97%EF%BC%88%E9%AB%98%E4%BB%BF%E3%80%81%E7%BB%83%E6%89%8B%E7%AD%89%EF%BC%89"><span class="nav-text">App 系列（高仿、练手等）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89-x2F-%E4%BB%BF%E7%B3%BB%E5%88%97"><span class="nav-text">自定义 &#x2F; 仿系列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A1%86%E6%9E%B6-x2F-%E5%BA%93%EF%BC%88%E5%B0%81%E8%A3%85%E4%BD%BF%E7%94%A8%EF%BC%89"><span class="nav-text">框架&#x2F;库（封装使用）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B1%82%E8%81%8C"><span class="nav-text">求职</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%B2%E8%B4%A7"><span class="nav-text">干货</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90"><span class="nav-text">源码分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%81%8C%E5%9C%BA"><span class="nav-text">职场</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB"><span class="nav-text">经验分享</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%8C%E6%95%B4%E7%B3%BB%E5%88%97"><span class="nav-text">完整系列</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#NDK"><span class="nav-text">NDK</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RxJava"><span class="nav-text">RxJava</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F"><span class="nav-text">设计模式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E4%B8%AD%E7%9A%84%E6%8A%80%E6%9C%AF"><span class="nav-text">项目中的技术</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="董猿外"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">董猿外</p>
+  <div class="site-description" itemprop="description">Coding in Thinking.</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">78</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">78</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/blackist" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;blackist" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/liangl.dong@gmail.com" title="E-Mail → liangl.dong@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/liangl_dong" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;liangl_dong" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blackist.org/2017/07/28/android-useful-doc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="董猿外">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Thinking in Coding">
+      <meta itemprop="description" content="Coding in Thinking.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="android useful doc | Thinking in Coding">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          android useful doc
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-07-28 15:10:28" itemprop="dateCreated datePublished" datetime="2017-07-28T15:10:28+08:00">2017-07-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-08-24 11:09:53" itemprop="dateModified" datetime="2022-08-24T11:09:53+08:00">2022-08-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>声明：本文转自作者<a target="_blank" rel="noopener" href="https://github.com/Android-Mu">coding小生</a>的github开源项目<a target="_blank" rel="noopener" href="https://github.com/Android-Mu/AndroidSourceCodeXS">AndroidSourceCodeXS</a>，仅供自己学习备忘。</p>
+<h3 id="App-系列（高仿、练手等）"><a href="#App-系列（高仿、练手等）" class="headerlink" title="App 系列（高仿、练手等）"></a>App 系列（高仿、练手等）</h3><p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/u8oo7cdb-sqtge4jVw8lbg"><strong>SmartRecom：一款干货满满，助你进阶的 App 项目</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/xdFskas_X4FwCqUES-JAjQ"><strong>Android 仿今日头条的开源项目</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/jOW40fpAlNGvrOfQe9vJyA"><strong>手把手教你从零开始做一个好看的 APP</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/twunvTc8IY9tSoC7kc-SXg"><strong>KeepGank.IO - 又一款开源 Gank.IO 客户端. 欢迎 star</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/K6wVgsn4MI0mx2cwKWFPUw"><strong>一个用来巩固 Android 基础的 APP</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/8QcXFaBLsgUiSRH2Gy_szQ"><strong>jsoup爬虫简书首页数据做个小Demo</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/gMzDv_sCJS6Vzx76liI-Rg"><strong>快毕业了，撸一个小项目(新闻段子客户端)</strong></a></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/0hMV7IMei74LTuUmFQ1Snw"><strong>Android 一款十分简洁、优雅的日记APP</strong></a></p>
+<h3 id="自定义-x2F-仿系列"><a href="#自定义-x2F-仿系列" class="headerlink" title="自定义 &#x2F; 仿系列"></a>自定义 &#x2F; 仿系列</h3><p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/XBM7eYuFl7I8mNCTizKuyA"><strong>仿 Nice 首页图片列表 9 图样式，并实现拖拽效果</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/YIYDVyDLeevHRJ0tZfs1_A"><strong>仿简书动态 searchview 的实现，代码就这么多点</strong></a><br><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/76yng2hofs0DBaKq55Ufjg"><br><strong>Android 使用 Path 仿支付宝支付成功失败动画</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/mgU5M9mR_gZa5K-L92ZjBA"><strong>Android 仿 QQ 侧滑菜单</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/dmGzlEYn7fOk1LakiIrEAw"><strong>京东快报轮播公告的实现</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/0WSfWzoX9MnUOj79_P7pig"><strong>[Android] 自定义 View 之仿 QQ 讨论组头像</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/1YjGkgGKpMSYDdkSu18ZUQ"><strong>一步步教你画股票图,K 线图,高仿雪球股票</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/zxSd9AMAItocZJczW4FxDA"><strong>Android 自定义控件(仿天猫搜索框)</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/1IYsvApJERkPU-10keJ8-w"><strong>自定义圆环百分占比 view （label 文字支持自动换行和设置显示行数）</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/Ii1brow3qiEOxrdCHehImw"><strong>Android 仿 instagram 和微博的头像点击加载动画</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/xtw6OjMhn1o4eW8tiHQD5g"><strong>真正的画廊，左右条目可点击居中，左右条目可滑动</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/5eZxtu-_O0_hqW2b_prK_g"><strong>从未如此惊艳！你好，SuperTextView</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/jwxfcvgnoIFViJ6Bcb8V1w"><strong>Android 撸起袖子，自己封装 DialogFragment</strong></a></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/e7otNLqCSBW9rz4ChLx_cg"><strong>类似 QQ 的文件管理器</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/e5cG1soYm7m2KMB2PnTiqw"><strong>Android 模仿微信选择图片</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/ZK7BDlK8dE2oRqieGvBXew"><strong>教你手写一个贝塞尔曲线效果的 Loading View</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/sSIrHOChrgi6ccFKWm80uQ"><strong>仿简书长按文章生成图片效果</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/9AvvuKkiW8tveiEVQ0y5oA"><strong>Android自定义view之属性动画熟悉</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/-Up4UwJiS2UQ_hS5yefd4Q"><strong>Android自定义控件之天气视图</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/SCaWJFRMI4oVIJLOvGYw7Q"><strong>手把手教你打造RecyclerView滚动特效</strong></a></p>
+<h3 id="框架-x2F-库（封装使用）"><a href="#框架-x2F-库（封装使用）" class="headerlink" title="框架&#x2F;库（封装使用）"></a>框架&#x2F;库（封装使用）</h3><p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/VJHbdNc4HmEvk0LNK8tftg"><strong>一步一步带你认识 MVP+Retrofit+Rxjava 并封装（一）</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/7VK9CLvJ-ZMW0dLHs6qJVg"><strong>Android 基于 glide 4.0 封装图片加载库</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/r47F32QY9olF6wVAF3d-0Q"><strong>MVP+多线程+断点续传 实现 app 在线升级库 (手把手教你打造自己的 lib)</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/Dx7u7sxI-lBSCbokKWUHHg"><strong>教你打造 Android 揭面水波动画库-AnimationHelper</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/mbZsvdImJE_RszoK1vMjGg"><strong>【Android】Realm 详解</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/JMd8_62yNhN9VCzlt13PZg"><strong>Retrofit2+okhttp3缓存设置</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/BYtF_Kzy7OWePJRNpfoHWQ"><strong>阿里巴巴推出超强针对布局方案和布局复用的开源框架（vlayout）</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/9WYNEhQ2NpK_dh6fOXeuFQ"><strong>Android 实现一个简单的下载工具</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/Q-H30R1jQinbaB3jYowOZQ"><strong>Android架构那些事之第三方库的隔离</strong></a></p>
+<h3 id="求职"><a href="#求职" class="headerlink" title="求职"></a>求职</h3><p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/N8EcP9dV1LWzkQDNRF2YOg"><strong>2017 年 Android 曲折的求职之路</strong></a></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/HjUOj7M9b94w97ROh8T91g"><strong>2017 Android 暑期实习生面试经验谈</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/86ejicK5BBo3LYoAEBlhaA"><strong>杭州找 Android 工作的点点滴滴</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/wd2vaDa1Pi3DpAXDjbebgA"><strong>那些IT培训出来的Android工程师，希望你面试时涨点记性</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/NiRoLfuN4B2PeNLlQpieNw"><strong>为跳槽的你献计献策（Android）</strong></a></p>
+<h3 id="干货"><a href="#干货" class="headerlink" title="干货"></a>干货</h3><p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/GuiP2dmkM9z8rzzxdn3Pww"><strong>瓶颈：没有技术深度的苦恼</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/0U733-oOv6HTW-tmhWi4Vw"><strong>良心推荐：总结 Android 开发中必备的代码 Review 清单</strong></a></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/bRKqNu6AntHAooCJg2VZJg"><strong>想编程，是勤奋自学还是去培训班学习？</strong></a></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/TBhccRDmI47e2vl8TcX4SA"><strong>编程之旅，致新入行的朋友</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/M6vd26jO4-IccS-DX8k59A"><strong>程序员，你还没有软技能吗？难怪你不幸福</strong></a></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/-O8G1wInED5PhMOo_d6KOg"><strong>2017，你绝对想尝试的新安卓库</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/w_NiEJLx0AECepZ8cRhzsg"><strong>[干货]Android 中的 Calendar，听说你有这样的需求</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/B_I5Q75Bp1z0am-5wqKeXQ"><strong>变革者——献给所有软件开发自学者</strong></a></p>
+<h3 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h3><p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/mkSJKT7zbzcSlY4GQ_v-9Q"><strong>Android 之 Context 底层原理</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/pPrfIq-8yV5CnbIIKprm7Q"><strong>可能是讲解 Binder 机制最好的文章</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/vZsqyfL4ss2sMLr_nZLcow"><strong>全栈级别梳理-Android系统启动流程</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/eZnhFc-U6QW2bfGz3ppYOA"><strong>浅析HandlerThread</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/Xkx4OJ2ed-itqGfzD-538Q"><strong>源码分析之LayoutInflater</strong></a></p>
+<h3 id="职场"><a href="#职场" class="headerlink" title="职场"></a>职场</h3><p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/u9xrlRvSPrH9KYpVWYIxcQ"><strong>程序员如何选择未来的职业路线</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/8jMnBGEoHegQ-rMIj1C2kA"><strong>【转】程序员该如何定位？看这四大方向</strong></a></p>
+<h3 id="经验分享"><a href="#经验分享" class="headerlink" title="经验分享"></a>经验分享</h3><p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/0U3DHX60c2rYHUX01iagMw"><strong>程序员之路-学习经验总结分享</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/0azo-znEXajF2R54g_0q3g"><strong>如何提升你的能力？给年轻程序员的几条建议</strong></a></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/z-BbaMOYkGU0AF8_x6EpJg"><strong>给一年左右经验想去大厂的同学们的一些建议</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/o4ac8J8gC60__9hFkOzvkw"><strong>Android 技术总监应该干的那些事</strong></a></p>
+<h3 id="完整系列"><a href="#完整系列" class="headerlink" title="完整系列"></a>完整系列</h3><h4 id="NDK"><a href="#NDK" class="headerlink" title="NDK"></a>NDK</h4><p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/Lhtk02a3tVeM5Zn5Hrv6Nw"><strong>Android NDK 开发之旅 1–C 语言基础–基本数据类型</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/6VGYIzs32A1KmiNIGrqqQg"><strong>Android NDK 开发之旅 2–C 语言基础–指针</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/-GpOZQaMspA_uNvef0UwnQ"><strong>Android NDK 开发之旅 3 – C 语言基础–内存分配</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/ULWt4FxksS2BvPnkN2745A"><strong>Android NDK 开发之旅 4–C 语言基础–字符串</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/JHA3dZd6YprJtWhRYMLsFA"><strong>Android NDK 开发之旅 5–C 语言基础–结构体</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/_OyWzA1iCRiw2zTamQlOjw"><strong>Android NDK 开发之旅 6–C 语言基础–联合体与枚举</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/uOZ5TGaaGVWgs8lvLn9F-g"><strong>Android NDK 开发之旅 7–C 语言基础–IO</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/xlmo7xypqvDLVoM5H8_Uhg"><strong>Android NDK 开发之旅 8–C 语言基础–预编译</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/LhhLa2x_vG6qRtNb3mek_w"><strong>Android NDK 开发之旅 9–JNI–JNI 开发流程</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/-lhGXHhPIpQ9G1Bo7-5rmw"><strong>Android NDK 开发之旅 10—14</strong></a></p>
+<h4 id="RxJava"><a href="#RxJava" class="headerlink" title="RxJava"></a>RxJava</h4><p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/Az0RzhKCPA0YQUym7RyIcQ"><strong>给初学者的 RxJava2.0 教程</strong></a></p>
+<h4 id="设计模式"><a href="#设计模式" class="headerlink" title="设计模式"></a>设计模式</h4><p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/XpJMsamUYz0YpKjXIcbR3A"><strong>开发中的设计模式总结</strong></a></p>
+<h3 id="项目中的技术"><a href="#项目中的技术" class="headerlink" title="项目中的技术"></a>项目中的技术</h3><p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/D_zp1036eufuYCjPpR4FDw"><strong>Android Kotlin&amp;BLE(低功耗蓝牙) 笔记</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/JTvj6srNjvy4Ex-_ZfVY9Q"><strong>Kotlin Primer·第六章·集合泛型与操作符</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/NXiLi3nGa2sCAUtzzHjurQ"><strong>优雅地刷新 RecyclerView</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/_9D38SOYReTCHzYnpd0tVg"><strong>App 竞品技术分析（系列）</strong></a></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/QNk4UrTfPc9CkiF3b3fdQA"><strong>Glide 加载图片实现进度条效果</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/A9uVEyXEZJ-z7wOSTS5_0Q"><strong>Android 模块化探索与实践</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/j-uSXSVh8bLLuiBH6dk1sA"><strong>Android 让你的布局飞起来</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/6CbpduZKUCgHiy0pp1cahA"><strong>项目需求讨论-RecycleView 分页加载实现分析</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/u0e0OlJuhiJz3ca_fTJgzQ"><strong>Android 搜索结果显示高亮(有数据滑动底部自动刷新)</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/t53INi1kEZggXwLGCioqqA"><strong>Android 通用的下拉刷新，重温事件传递</strong></a></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/W8wRz_qtTTldslVpzgcu0A"><strong>Android 检查版本升级应该怎么做？</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/WcG_LKwPy-qQ-NaY1JyUKg"><strong>Android 夜间模式换肤</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/0nfnbCZMM5bKpaG3169CBw"><strong>Android 选择图片上传功能【支持多选拍照预览等】</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/oz0d5mOfqhgkCe6fjVmvMw"><strong>聊聊安卓 App 里的搜索</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/Oivap3YCeT5IXsVpl7n-lQ"><strong>分享一种 RecyclerView 滑动到底部自动加载的实现方案</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/DMksgHOuGWhztESGfDgucA"><strong>Android 中使用 RecyclerView + SnapHelper 实现类似 ViewPager 效果</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/TYBDXB-cYwkn8fQGSNTu3g"><strong>加快 apk 的构建速度，如何把编译时间从 130 秒降到 17 秒</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/2PoLfcnDYmVRSuhImHJDRQ"><strong>Android 优化 APP 构建速度的 17 条建议</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/EEuhjTWkLNrUBnS_WIISmw"><strong>Android应用瘦身，从18MB到12.5MB</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/kFPDThFZo7ZGOBLUv22myQ"><strong>细细品读！深入浅出，官方文档看ConstraintLayout</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/tRCtm6xf48ujVyjrK71BeA"><strong>安卓中如何给按钮添加点击音效</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/2IIx-KMET2hN5wVi1X86pA"><strong>知乎和简书的夜间模式实现套路</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/IO-nDY_gMBpSRAOqFPKwCg"><strong>学会这两招，再敲代码，才给力</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/RfFIxjHvjodCiihaUpeorw"><strong>使用 Scalpel 3D展示界面布局</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/pJlXVmlPrfcvOPBqqaFvXA"><strong>Android 时间轴的实现（RecyclerView更简单）</strong></a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>董猿外
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://blackist.org/2017/07/28/android-useful-doc/" title="android useful doc">https://blackist.org/2017/07/28/android-useful-doc/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/android/" rel="tag"># android</a>
+              <a href="/tags/UI/" rel="tag"># UI</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/07/16/js-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" rel="prev" title="js 基础知识">
+                  <i class="fa fa-chevron-left"></i> js 基础知识
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/09/11/android-awesome-ui/" rel="next" title="Android UI库">
+                  Android UI库 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">自由转载-非商用-非衍生-保持署名（<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN/">创意共享4.0许可证</a>）</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.7.2/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"blackist","repo":"blackist.github.io","client_id":"506775736a1ab7d38a56","client_secret":"b1c3f0dc07680f22f07a585fc81cd5288adb6729","admin_user":"blackist","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.7.2/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"91107a8722e4d1794aa0bd4f69ce81b2"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>
