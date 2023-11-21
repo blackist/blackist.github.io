@@ -131,16 +131,16 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">78</span>
+          <span class="site-state-item-count">79</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-count">15</span>
         <span class="site-state-item-name">分类</span>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">78</span>
+        <span class="site-state-item-count">80</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
@@ -712,7 +712,7 @@ class Hello &#123;
 <h4 id="批量自动打包"><a href="#批量自动打包" class="headerlink" title="批量自动打包"></a>批量自动打包</h4><p>除App Store外，还有许多其它的iOS应用市场（如91助手，同步推等等），如果一个应用需要发布到很多个应用市场，且他们的代码略有不同（比如说，统计代码不同），按上述方法手工修改源码再打包，再还原，比较容易出错。好消息是，Xcode是有命令行的，我们可以写一个shell脚本，先用se自动修改源码，再调用Xcode的命令行来编译以得到your——app.app目录，最后调用zip、mv等命令把上一个章节讲的ipa打包动作自动执行。</p>
 <h2 id="阅读应用代码"><a href="#阅读应用代码" class="headerlink" title="阅读应用代码"></a>阅读应用代码</h2><h2 id="从头新建一个应用：Hello-World"><a href="#从头新建一个应用：Hello-World" class="headerlink" title="从头新建一个应用：Hello World"></a>从头新建一个应用：Hello World</h2><h2 id="其它"><a href="#其它" class="headerlink" title="其它"></a>其它</h2><h3 id="代码里的控件尺寸"><a href="#代码里的控件尺寸" class="headerlink" title="代码里的控件尺寸"></a>代码里的控件尺寸</h3><p>iOS App里的控件尺寸和字体大小都是指Point，Retina设备（iPhone 4，4S，5；the new Pad）和非Retina设备（iPhone 3GS，iPad，iPad 2）的Point数是一样的，尽管iPhone 4的分辨率是3GS的2倍。比如说，10point在Retina设备里是20 pixel，在非Retina设备（iPhone 3G）上则是10 pixel。</p>
 <p>项目成员间交流时，应使用Point，不要使用pixel。</p>
-<h3 id="SVN操作含有-符号的文件"><a href="#SVN操作含有-符号的文件" class="headerlink" title="SVN操作含有@符号的文件"></a>SVN操作含有@符号的文件</h3><p>iOS应用中经常出现<a href="mailto:&#120;&#x78;&#120;&#120;&#64;&#x32;&#120;&#x2e;&#112;&#x6e;&#x67;">&#120;&#x78;&#120;&#120;&#64;&#x32;&#120;&#x2e;&#112;&#x6e;&#x67;</a>这样的文件名,它们是给retina设备用的高分辨率大图，用svn命令行操作它们的时候会被@符号干扰,解决方案是在svn命令末尾加上一个@符号,如:</p>
+<h3 id="SVN操作含有-符号的文件"><a href="#SVN操作含有-符号的文件" class="headerlink" title="SVN操作含有@符号的文件"></a>SVN操作含有@符号的文件</h3><p>iOS应用中经常出现<a href="mailto:&#120;&#120;&#x78;&#120;&#64;&#x32;&#x78;&#x2e;&#112;&#110;&#103;">&#120;&#120;&#x78;&#120;&#64;&#x32;&#x78;&#x2e;&#112;&#110;&#103;</a>这样的文件名,它们是给retina设备用的高分辨率大图，用svn命令行操作它们的时候会被@符号干扰,解决方案是在svn命令末尾加上一个@符号,如:</p>
 <pre><code>svn del icon@2x.png@
 svn info Default@2x.png@
 </code></pre>
