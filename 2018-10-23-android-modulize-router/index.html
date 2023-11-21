@@ -1,0 +1,725 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/images/Dong_medium.ico">
+  <link rel="icon" href="/images/Dong_medium.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="董猿外">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Android组件化开发项目中，一个很大的问题就是解耦之后组件间的通信，Activity&#x2F;Fragment的跳转切换、组件间数据传递、数据共享等，可以通过广播Broadcast、EventBus等决绝部分问题，不过多数实践证明Broadcast和EventBus随着业务扩张，会使数据传递、代码调用变得难以追踪。阿里的ARouter也是一个用于解决组件间通信的框架，支持跨模块页面跳转、跨模">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android组件化-组件间通信BRouter">
+<meta property="og:url" content="https://blackist.org/2018-10-23-android-modulize-router/index.html">
+<meta property="og:site_name" content="Thinking in Coding">
+<meta property="og:description" content="Android组件化开发项目中，一个很大的问题就是解耦之后组件间的通信，Activity&#x2F;Fragment的跳转切换、组件间数据传递、数据共享等，可以通过广播Broadcast、EventBus等决绝部分问题，不过多数实践证明Broadcast和EventBus随着业务扩张，会使数据传递、代码调用变得难以追踪。阿里的ARouter也是一个用于解决组件间通信的框架，支持跨模块页面跳转、跨模">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blogres.blackist.org/android-modulize-router-brouter-module-pic.png">
+<meta property="og:image" content="https://blogres.blackist.org/android-modulize-router-brouter-action-registers.png">
+<meta property="article:published_time" content="2018-10-23T03:18:43.000Z">
+<meta property="article:modified_time" content="2023-01-05T06:23:24.168Z">
+<meta property="article:author" content="董猿外">
+<meta property="article:tag" content="开发">
+<meta property="article:tag" content="android">
+<meta property="article:tag" content="组件化">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blogres.blackist.org/android-modulize-router-brouter-module-pic.png">
+  
+  
+  
+  <title>Android组件化-组件间通信BRouter - Thinking in Coding</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blackist.org","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":100,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>董猿外</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Android组件化-组件间通信BRouter"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2018-10-23 11:18" pubdate>
+          2018年10月23日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          8.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          72 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Android组件化-组件间通信BRouter</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>Android组件化开发项目中，一个很大的问题就是解耦之后组件间的通信，Activity&#x2F;Fragment的跳转切换、组件间数据传递、数据共享等，可以通过广播Broadcast、EventBus等决绝部分问题，不过多数实践证明Broadcast和EventBus随着业务扩张，会使数据传递、代码调用变得难以追踪。阿里的<a target="_blank" rel="noopener" href="https://github.com/alibaba/ARouter">ARouter</a>也是一个用于解决组件间通信的框架，支持跨模块页面跳转、跨模块API调用、通过URL映射到模块内部、拦截跳转、支持注解等，简单易用。</p>
+<p>个人觉得ARouter功能比较丰富，也感觉有些重量级，包括gradle工程文件配置、注解URL与代码耦合，我曾经接触过一个团队，他们组内非常抵触注解开发，因为他们觉得注解开发方便但会使代码变得难以追踪。加上小小的造轮子热情，组件化开发中我没有引入ARouter，而是手写了一套路由框架<a target="_blank" rel="noopener" href="https://github.com/blackist/BRouter">BRouter</a>，这个框架很大程度上借鉴了<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/200c6cc6adaf">SRouter</a>。</p>
+<span id="more"></span>
+
+<blockquote>
+<p><strong>系列文章</strong></p>
+<p><a href="/2018/10/18/android-modulize-common/">Android组件化-基础框架搭建</a></p>
+<p><a href="/2018/10/23/android-modulize-router/">Android组件化-组件间通信BRouter</a></p>
+<p><a href="/2019/03/21/android-modulize-ui-theme/">Android组件化-风格统一&amp;主题变色</a></p>
+<p><a href="/2019/03/31/android-modulize-mvp/">Android组件化-MVP设计模式</a></p>
+</blockquote>
+<h3 id="BRouter设计思路"><a href="#BRouter设计思路" class="headerlink" title="BRouter设计思路"></a>BRouter设计思路</h3><hr>
+<p>首先创造一个路由中心，每个module都在路由中心进行注册，组件间通信通过向路由中心发出请求，路由中心进行转发并返回处理结果。路由请求指定URL(e.g “&#x2F;modeule&#x2F;…”)并可携带参数，返回值可以是Activity、Fragment、任何数据或者为空。BRouter模型如下：</p>
+<p><img src="https://blogres.blackist.org/android-modulize-router-brouter-module-pic.png" srcset="/img/loading.gif" lazyload></p>
+<p>各模块实现一个BAction，在路由中心通过&lt;path, BAction&gt;存储在一个HashMap中，路由注册以及请求转发都是通过这个HashMap来处理，单模块实现BAction代码如下(e.g app-message)：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MessageAction</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">BAction</span> &#123;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">NAME</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;message&quot;</span>;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> Object <span class="hljs-title function_">startAction</span><span class="hljs-params">(Context context, String path, Bundle param, BEvent event)</span> &#123;<br>        <span class="hljs-keyword">switch</span> (path) &#123;<br><br>            <span class="hljs-keyword">default</span>: &#123;<br>                <span class="hljs-type">Intent</span> <span class="hljs-variable">intent</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Intent</span>(context, MessageActivity.class);<br>                intent.putExtras(param);<br>                intent.setFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);<br>                context.startActivity(intent);<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>    &#125;<br>&#125;<br><br><br></code></pre></td></tr></table></figure>
+
+<p>路由中心在app壳工程中的Application中初始化，实例化每个Action方法到BRouter的路由列表中，如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AppApplication</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">BaseApplication</span> &#123;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onCreate</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-built_in">super</span>.onCreate();<br>    	...<br>    	BRouter.register(MainAction.NAME, <span class="hljs-keyword">new</span> <span class="hljs-title class_">MainAction</span>());<br>    	BRouter.register(MineAction.NAME, <span class="hljs-keyword">new</span> <span class="hljs-title class_">MineAction</span>());<br>    	BRouter.register(MessageAction.NAME, <span class="hljs-keyword">new</span> <span class="hljs-title class_">MessageAction</span>());<br>	    ...<br>    &#125;<br>&#125;	<br><br></code></pre></td></tr></table></figure>
+
+<p>BRouter是单例模式，在多进程情况下，Application会多次初始化，每个进程中都会持有一个BRouter并实例化Action，所以每个BRouter持有一份路由列表，BRouter适用于多进程的。</p>
+<h3 id="BRouter内部原理解析"><a href="#BRouter内部原理解析" class="headerlink" title="BRouter内部原理解析"></a>BRouter内部原理解析</h3><hr>
+<p>BRouter代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">BRouter</span> &#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">volatile</span> BRouter instance;<br>    <span class="hljs-keyword">private</span> HashMap&lt;String, BAction&gt; actions;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-title function_">BRouter</span><span class="hljs-params">()</span> &#123;<br>        actions = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * singleton for multithread.</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> router instance</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> BRouter <span class="hljs-title function_">getInstance</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">if</span> (instance == <span class="hljs-literal">null</span>) &#123;<br>            <span class="hljs-keyword">synchronized</span> (BRouter.class) &#123;<br>                <span class="hljs-keyword">if</span> (instance == <span class="hljs-literal">null</span>) &#123;<br>                    Log.d(<span class="hljs-string">&quot;BRouter&quot;</span>, <span class="hljs-string">&quot;BRouter initing... &quot;</span>);<br>                    instance = <span class="hljs-keyword">new</span> <span class="hljs-title class_">BRouter</span>();<br>                &#125;<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> instance;<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * register action in router pool.</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> name   name of action</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> action action</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">register</span><span class="hljs-params">(String name, BAction action)</span> &#123;<br>        <span class="hljs-keyword">if</span> (getInstance().actions.containsKey(name)) &#123;<br>            <span class="hljs-keyword">return</span>;<br>        &#125;<br>        getInstance().actions.put(name, action);<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * invoke action by router request.</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> context context</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> req     request param</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> router response</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> BRouterRes <span class="hljs-title function_">push</span><span class="hljs-params">(Context context, BRouterReq req)</span> &#123;<br>        <span class="hljs-type">BRouterRes</span> <span class="hljs-variable">res</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BRouterRes</span>();<br>        <span class="hljs-type">BAction</span> <span class="hljs-variable">action</span> <span class="hljs-operator">=</span> getAction(req);<br>        <span class="hljs-keyword">if</span> (action != <span class="hljs-literal">null</span>) &#123;<br>            <span class="hljs-type">Object</span> <span class="hljs-variable">object</span> <span class="hljs-operator">=</span> action.startAction(context, req.getPath(), req.getParam(), <span class="hljs-literal">null</span>);<br>            res.set(object, BRouterRes.CODE.OK);<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            res.set(BRouterRes.CODE.NOT_FOUND);<br>        &#125;<br>        <span class="hljs-keyword">return</span> res;<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * invoke action by router request.</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> context context</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> req     request param</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> event   callback</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> router response</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> BRouterRes <span class="hljs-title function_">push</span><span class="hljs-params">(Context context, BRouterReq req, BEvent event)</span> &#123;<br>        <span class="hljs-type">BRouterRes</span> <span class="hljs-variable">res</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BRouterRes</span>();<br>        <span class="hljs-type">BAction</span> <span class="hljs-variable">action</span> <span class="hljs-operator">=</span> getAction(req);<br>        <span class="hljs-keyword">if</span> (action != <span class="hljs-literal">null</span>) &#123;<br>            <span class="hljs-type">Object</span> <span class="hljs-variable">object</span> <span class="hljs-operator">=</span> action.startAction(context, req.getPath(), req.getParam(), event);<br>            res.set(object, BRouterRes.CODE.OK);<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            res.set(BRouterRes.CODE.NOT_FOUND);<br>        &#125;<br>        <span class="hljs-keyword">return</span> res;<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * get action from router</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> req request</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> action</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> BAction <span class="hljs-title function_">getAction</span><span class="hljs-params">(BRouterReq req)</span> &#123;<br>        <span class="hljs-keyword">if</span> (getInstance().actions.containsKey(req.getAction())) &#123;<br>            <span class="hljs-keyword">return</span> getInstance().actions.get(req.getAction());<br>        &#125;<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>BRouter使用单例模式，默认构造一个HashMap actions作为路由列表，通过register方法向actions添加路由，自定义URL作为key，new Action() 作为value。</p>
+<p><img src="https://blogres.blackist.org/android-modulize-router-brouter-action-registers.png" srcset="/img/loading.gif" lazyload></p>
+<p>组件间通信转化为路由请求，路由请求首先构造请求对象BRouterReq，然后调用BRouter的push方法进行路由转发，并通过BRouterRes进行响应，以app-main开启app-message消息界面为例，</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">BRouterRes</span> <span class="hljs-variable">res</span> <span class="hljs-operator">=</span> BRouter.push(<br>        getApplicationContext(),<br>        BRouterReq.build().action(<span class="hljs-string">&quot;message&quot;</span>).path(<span class="hljs-string">&quot;message/list&quot;</span>)<br>);<br>getFragmentManager().beginTransaction().add((Fragment) res.data(), <span class="hljs-string">&quot;&quot;</span>).commit();<br><br></code></pre></td></tr></table></figure>
+
+<p>路由请求构造方式为 BRouterReq.build().action(URL).param(key, value)，BRouter.push(context, req, callback)进行转发，同步处理可获得返回结果BRouterRes，异步处理可通过BEvent callback实现。MessageAction具体处理逻辑在模块内部实现，如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MessageAction</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">BAction</span> &#123;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">NAME</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;message&quot;</span>;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">MESSAGE_LIST</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;message/list&quot;</span>;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> Object <span class="hljs-title function_">startAction</span><span class="hljs-params">(Context context, String path, Bundle param, BEvent event)</span> &#123;<br>        <span class="hljs-keyword">switch</span> (path) &#123;<br><br>            <span class="hljs-keyword">case</span> MESSAGE_LIST: &#123;<br>                data = <span class="hljs-keyword">new</span> <span class="hljs-title class_">MessageFragment</span>();<br>            &#125;<br>            <span class="hljs-keyword">break</span>;<br><br>            <span class="hljs-keyword">default</span>: &#123;<br>                <span class="hljs-type">Intent</span> <span class="hljs-variable">intent</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Intent</span>(context, MessageActivity.class);<br>                intent.putExtras(param);<br>                intent.setFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);<br>                context.startActivity(intent);<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> data;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>请结果返回MessageFragment实例，在app-main中进行展示。BRouterReq支持多种参数形式，内部通过Bundle对象存储参数，方便参数在activity以及fragment中传递，可以整个Bundle对象直接set进去。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">BRouterReq</span> &#123;<br><br>    <span class="hljs-keyword">private</span> String action;<br><br>    <span class="hljs-keyword">private</span> String path;<br><br>    <span class="hljs-keyword">private</span> Bundle param;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-title function_">BRouterReq</span><span class="hljs-params">()</span> &#123;<br>        param = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Bundle</span>();<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * get instance of request</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> request</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> BRouterReq <span class="hljs-title function_">build</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BRouterReq</span>();<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * set action for request</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> action action</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> request</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> BRouterReq <span class="hljs-title function_">action</span><span class="hljs-params">(String action)</span> &#123;<br>        <span class="hljs-built_in">this</span>.action = action;<br>        <span class="hljs-keyword">return</span> BRouterReq.<span class="hljs-built_in">this</span>;<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * set request path</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> path request path</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> this</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> BRouterReq <span class="hljs-title function_">path</span><span class="hljs-params">(String path)</span> &#123;<br>        <span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.param == <span class="hljs-literal">null</span>) &#123;<br>            <span class="hljs-built_in">this</span>.param = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Bundle</span>();<br>        &#125;<br>        <span class="hljs-built_in">this</span>.path = path == <span class="hljs-literal">null</span> ? <span class="hljs-string">&quot;&quot;</span> : path;<br>        <span class="hljs-keyword">return</span> BRouterReq.<span class="hljs-built_in">this</span>;<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * set bundle param for request</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> data bundle param</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> BRouter Request</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> BRouterReq <span class="hljs-title function_">data</span><span class="hljs-params">(Bundle data)</span> &#123;<br>        <span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.param == <span class="hljs-literal">null</span>) &#123;<br>            <span class="hljs-built_in">this</span>.param = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Bundle</span>();<br>        &#125;<br>        <span class="hljs-keyword">if</span> (data != <span class="hljs-literal">null</span>) &#123;<br>            <span class="hljs-built_in">this</span>.param.putAll(data);<br>        &#125;<br>        <span class="hljs-keyword">return</span> BRouterReq.<span class="hljs-built_in">this</span>;<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * put param into param</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> key   key</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> value value</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> router request</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> BRouterReq <span class="hljs-title function_">data</span><span class="hljs-params">(String key, Object value)</span> &#123;<br>        <span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.param == <span class="hljs-literal">null</span>) &#123;<br>            <span class="hljs-built_in">this</span>.param = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Bundle</span>();<br>        &#125;<br>        <span class="hljs-keyword">if</span> (value == <span class="hljs-literal">null</span>) &#123;<br>            <span class="hljs-built_in">this</span>.param.putString(key, <span class="hljs-literal">null</span>);<br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (value <span class="hljs-keyword">instanceof</span> String) &#123;<br>            <span class="hljs-built_in">this</span>.param.putString(key, value.toString());<br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (value.getClass().equals(<span class="hljs-type">int</span>.class)) &#123;<br>            <span class="hljs-built_in">this</span>.param.putInt(key, (<span class="hljs-type">int</span>) value);<br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (value.getClass().equals(<span class="hljs-type">boolean</span>.class)) &#123;<br>            <span class="hljs-built_in">this</span>.param.putBoolean(key, (<span class="hljs-type">boolean</span>) value);<br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (value.getClass().equals(<span class="hljs-type">float</span>.class)) &#123;<br>            <span class="hljs-built_in">this</span>.param.putLong(key, (<span class="hljs-type">long</span>) value);<br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (value.getClass().equals(<span class="hljs-type">char</span>.class)) &#123;<br>            <span class="hljs-built_in">this</span>.param.putChar(key, (<span class="hljs-type">char</span>) value);<br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (value.getClass().equals(<span class="hljs-type">short</span>.class)) &#123;<br>            <span class="hljs-built_in">this</span>.param.putShort(key, (<span class="hljs-type">short</span>) value);<br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (value <span class="hljs-keyword">instanceof</span> Serializable) &#123;<br>            <span class="hljs-built_in">this</span>.param.putSerializable(key, (Serializable) value);<br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (value <span class="hljs-keyword">instanceof</span> Parcelable) &#123;<br>            <span class="hljs-built_in">this</span>.param.putParcelable(key, (Parcelable) value);<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-built_in">this</span>.param.putString(key, <span class="hljs-literal">null</span>);<br>        &#125;<br><br>        <span class="hljs-keyword">return</span> BRouterReq.<span class="hljs-built_in">this</span>;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">getAction</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> action;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">getPath</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> path != <span class="hljs-literal">null</span> ? path : <span class="hljs-string">&quot;&quot;</span>;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> Bundle <span class="hljs-title function_">getParam</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> param;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>BRouterRes包含路由请求响应的ERROR_CODE、ERROR_MSG以及处理结果data，若调用成功code为OK，调用方可通过code判断请求是否成功，从而形成闭环控制。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">BRouterRes</span> &#123;<br><br>    <span class="hljs-keyword">private</span> CODE code;<br>    <span class="hljs-keyword">private</span> String msg;<br>    <span class="hljs-keyword">private</span> Object data;<br><br>    <span class="hljs-keyword">void</span> <span class="hljs-title function_">set</span><span class="hljs-params">(CODE code)</span> &#123;<br>        <span class="hljs-built_in">this</span>.code = code;<br>        <span class="hljs-built_in">this</span>.msg = code.toString();<br>    &#125;<br><br>    <span class="hljs-keyword">void</span> <span class="hljs-title function_">set</span><span class="hljs-params">(Object data, CODE code)</span> &#123;<br>        <span class="hljs-built_in">this</span>.data = data;<br>        <span class="hljs-built_in">this</span>.code = code;<br>        <span class="hljs-built_in">this</span>.msg = code.toString();<br>    &#125;<br><br>    <span class="hljs-keyword">void</span> <span class="hljs-title function_">set</span><span class="hljs-params">(Object data, CODE code, String msg)</span> &#123;<br>        <span class="hljs-built_in">this</span>.data = data;<br>        <span class="hljs-built_in">this</span>.code = code;<br>        <span class="hljs-built_in">this</span>.msg = msg;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> Object <span class="hljs-title function_">data</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.data;<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * response to string</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> response</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">string</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-type">JSONObject</span> <span class="hljs-variable">res</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">JSONObject</span>();<br>        <span class="hljs-keyword">try</span> &#123;<br>            res.put(<span class="hljs-string">&quot;code&quot;</span>, code.name())<br>                    .put(<span class="hljs-string">&quot;msg&quot;</span>, msg)<br>                    .put(<span class="hljs-string">&quot;data&quot;</span>, data);<br>        &#125; <span class="hljs-keyword">catch</span> (JSONException e) &#123;<br>            e.printStackTrace();<br>        &#125;<br>        <span class="hljs-keyword">return</span> res.toString();<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">enum</span> <span class="hljs-title class_">CODE</span> &#123;<br><br>        OK(<span class="hljs-string">&quot;OK&quot;</span>),<br>        ERROR(<span class="hljs-string">&quot;ERROR&quot;</span>),<br>        NOT_FOUND(<span class="hljs-string">&quot;ACTION_NOT_FOUND&quot;</span>);<br><br>        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> String message;<br><br>        <span class="hljs-comment">/**</span><br><span class="hljs-comment">         * msg passed to enum constrctor for each enum constant</span><br><span class="hljs-comment">         *</span><br><span class="hljs-comment">         * <span class="hljs-doctag">@param</span> msg msg</span><br><span class="hljs-comment">         */</span><br>        CODE(<span class="hljs-keyword">final</span> String msg) &#123;<br>            <span class="hljs-built_in">this</span>.message = msg;<br>        &#125;<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">public</span> String <span class="hljs-title function_">toString</span><span class="hljs-params">()</span> &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.message;<br>        &#125;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="BRouter实践"><a href="#BRouter实践" class="headerlink" title="BRouter实践"></a>BRouter实践</h3><hr>
+<p>BRouter已经自己使用在项目中，基本满足需求且稳定。我的开源项目中也在使用，传送门<a target="_blank" rel="noopener" href="https://github.com/blackist/modulize">Modulize</a>。</p>
+<p>（完）</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Android/" class="category-chain-item">Android</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%BC%80%E5%8F%91/" class="print-no-link">#开发</a>
+      
+        <a href="/tags/android/" class="print-no-link">#android</a>
+      
+        <a href="/tags/%E7%BB%84%E4%BB%B6%E5%8C%96/" class="print-no-link">#组件化</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Android组件化-组件间通信BRouter</div>
+      <div>https://blackist.org/2018-10-23-android-modulize-router/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>董猿外</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2018年10月23日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2018-10-25-android-modulize-push/" title="Android组件化-推送服务">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Android组件化-推送服务</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2018-10-18-android-modulize-common/" title="Android组件化-基础框架搭建">
+                        <span class="hidden-mobile">Android组件化-基础框架搭建</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://lib.baomitu.com/gitalk/1.8.0/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"506775736a1ab7d38a56","clientSecret":"b1c3f0dc07680f22f07a585fc81cd5288adb6729","repo":"blackist.github.io","owner":"blackist","admin":["blackist"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '53e6b957b3dababa981855ebb466e64d'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a>
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

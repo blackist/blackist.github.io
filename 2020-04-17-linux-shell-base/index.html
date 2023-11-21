@@ -1,0 +1,1027 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/images/Dong_medium.ico">
+  <link rel="icon" href="/images/Dong_medium.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="董猿外">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="接触过一些 shell 脚本，做服务端运维时也时常用到，是时候专门学习一下了。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux Shell 脚本基础">
+<meta property="og:url" content="https://blackist.org/2020-04-17-linux-shell-base/index.html">
+<meta property="og:site_name" content="Thinking in Coding">
+<meta property="og:description" content="接触过一些 shell 脚本，做服务端运维时也时常用到，是时候专门学习一下了。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-04-17T11:30:17.000Z">
+<meta property="article:modified_time" content="2022-08-24T03:09:53.363Z">
+<meta property="article:author" content="董猿外">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="运维">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Linux Shell 脚本基础 - Thinking in Coding</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blackist.org","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":100,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>董猿外</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Linux Shell 脚本基础"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-04-17 19:30" pubdate>
+          2020年4月17日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          15k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          127 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Linux Shell 脚本基础</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>接触过一些 shell 脚本，做服务端运维时也时常用到，是时候专门学习一下了。</p>
+<span id="more"></span>
+
+<h2 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h2><h3 id="Here-Script"><a href="#Here-Script" class="headerlink" title="Here Script"></a>Here Script</h3><p>使用 _EOF_ 将多行语句作为单句，避免转义字符的麻烦：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">echos</span> <br>echo &quot;&lt;html&gt;&quot;<br>echo &quot;&lt;head&gt;&quot;<br>echo &quot;&lt;/head&gt;&quot;<br>echo &quot;&lt;/html&gt;&quot;<br><br>echo &quot;&lt;html&gt;<br> &lt;head&gt;<br> &lt;/head&gt;<br> &lt;/html&gt;&quot;<br><br>cat &lt;&lt; _EOF_<br>&lt;html&gt;<br>&lt;head&gt;<br>&lt;/head&gt;<br>&lt;/html&gt;<br>_EOF_<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="Variables"><a href="#Variables" class="headerlink" title="Variables"></a>Variables</h3><p>Rules: </p>
+<ol>
+<li>Names must start with a letter.</li>
+<li>A name must not contain embedded spaces. Use underscores instead.</li>
+<li>You cannot use punctuation marks.</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">!/bin/bash</span><br>title=&quot;System Information for&quot;<br>echo $title<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="Environment-Variables"><a href="#Environment-Variables" class="headerlink" title="Environment Variables"></a>Environment Variables</h3><p>脚本文件启动前，系统已预设一些环境变量，在命令行中使用 <code>printenv</code> 查看这些变量：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs bash">[root@bhc004 ~]<span class="hljs-comment"># printenv</span><br>XDG_SESSION_ID=87<br>HOSTNAME=bhc004<br>TERM=linux<br>SHELL=/bin/bash<br>HISTSIZE=10000<br>SSH_CLIENT=125.117.180.232 57544 22<br>SSH_TTY=/dev/pts/0<br>USER=root<br>LS_COLORS=rs=0:di=01;34:<span class="hljs-built_in">ln</span>=01;``````.spx=01;36:*.xspf=01;36:<br>MAIL=/var/spool/mail/root<br>PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/local/jdk/bin<br>PWD=/root<br>LANG=en_US.UTF-8<br>HISTCONTROL=ignoredups<br>SHLVL=1<br>HOME=/root<br>LOGNAME=root<br>SSH_CONNECTION=125.117.180.232 57544 192.168.0.182 22<br>LESSOPEN=||/usr/bin/lesspipe.sh %s<br>XDG_RUNTIME_DIR=/run/user/0<br>HISTTIMEFORMAT=%F %T root <br>_=/usr/bin/printenv<br></code></pre></td></tr></table></figure>
+
+<p>在 shell 中可以使用这些环境变量 <code>echo $HOSTNAME</code>。</p>
+<h2 id="命令替换和常量"><a href="#命令替换和常量" class="headerlink" title="命令替换和常量"></a>命令替换和常量</h2><p>Command Substitution and Constants</p>
+<h3 id="命令替换"><a href="#命令替换" class="headerlink" title="命令替换"></a>命令替换</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">echo Updated on $(date +&quot;%x %r %Z&quot;) by $USER<br></code></pre></td></tr></table></figure>
+
+<p><code>$(date +&quot;%x %r %Z&quot;)</code> 中 <code>$()</code> 告诉 shell 替换附带命令的执行结果，即插入 <code>date +&quot;%x %r %Z</code> 的执行结果（当前时间）。</p>
+<blockquote>
+<p>Be aware that there is an older, alternate syntax for “$(command)” that uses the backtick character “`“. This older form is compatible with the original Bourne shell (sh). I tend not to use the older form since I am teaching modern <code>bash</code> here, not <code>sh</code>, and besides, I think backticks are ugly. The bash shell fully supports scripts written for sh, so the following forms are equivalent:</p>
+<p>$(command)     `command`</p>
+</blockquote>
+<p>把命令执行结果赋值给变量：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">right_now=$(date +&quot;%x %r %z&quot;)<br></code></pre></td></tr></table></figure>
+
+<h3 id="常量"><a href="#常量" class="headerlink" title="常量"></a>常量</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">RIGHT_NOW=$(date +&quot;%x %r %Z&quot;)<br>TIME_STAMP=&quot;Updated on $RIGHT_NOW by $USER&quot;<br></code></pre></td></tr></table></figure>
+
+<p>很少用，使用大写字母定义常量名（非强制）。</p>
+<h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><p>自定义函数</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">!/bin/bash</span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment">### Functions</span></span><br>show_uptime() &#123;<br>    echo &quot;&lt;h2&gt;System uptime&lt;/h2&gt;&quot;<br>    echo &quot;&lt;pre&gt;&quot;<br>    uptime<br>    echo &quot;&lt;/pre&gt;&quot;<br>&#125;<br><br>drive_space() &#123;<br>    echo &quot;&lt;h2&gt;Filesystem space&lt;/h2&gt;&quot;<br>    echo &quot;&lt;pre&gt;&quot;<br>    df<br>    echo &quot;&lt;/pre&gt;&quot;<br>&#125;<br><br>cat &lt;&lt; _EOF_<br><span class="hljs-meta prompt_">  $</span><span class="language-bash">(show_uptime)</span><br><span class="hljs-meta prompt_">  $</span><span class="language-bash">(drive_space)</span><br>_EOF_<br></code></pre></td></tr></table></figure>
+
+<h3 id="函数参数"><a href="#函数参数" class="headerlink" title="函数参数"></a>函数参数</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell">function generate_instance_conf() &#123;<br>  echo &quot;configuring server $1&quot;<br>&#125;<br>generate_instance_conf server1<br></code></pre></td></tr></table></figure>
+
+<p>输出：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">configuring server server1<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="date-格式化"><a href="#date-格式化" class="headerlink" title="date 格式化"></a>date 格式化</h3><p>Following are the list of available options for date command :</p>
+<table>
+<thead>
+<tr>
+<th align="left">Format option</th>
+<th align="left">Part of Date</th>
+<th align="left">Desciption</th>
+<th align="left">Example Output</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">date +%a</td>
+<td align="left">Weekday</td>
+<td align="left">Name of weekday in short (like Sun, Mon, Tue, Wed, Thu, Fri, Sat)</td>
+<td align="left">Mon</td>
+</tr>
+<tr>
+<td align="left">date +%A</td>
+<td align="left">Weekday</td>
+<td align="left">Name of weekday in full (like Sunday, Monday, Tuesday)</td>
+<td align="left">Monday</td>
+</tr>
+<tr>
+<td align="left">date +%b</td>
+<td align="left">Month</td>
+<td align="left">Name of Month in short (like Jan, Feb, Mar )</td>
+<td align="left">Jan</td>
+</tr>
+<tr>
+<td align="left">date +%B</td>
+<td align="left">Month</td>
+<td align="left">Month name in full short (like January, February)</td>
+<td align="left">January</td>
+</tr>
+<tr>
+<td align="left">date +%d</td>
+<td align="left">Day</td>
+<td align="left">Day of month (e.g., 01)</td>
+<td align="left">04</td>
+</tr>
+<tr>
+<td align="left">date +%D</td>
+<td align="left">MM&#x2F;DD&#x2F;YY</td>
+<td align="left">Current Date; shown in MM&#x2F;DD&#x2F;YY</td>
+<td align="left">02&#x2F;18&#x2F;18</td>
+</tr>
+<tr>
+<td align="left">date +%F</td>
+<td align="left">YYYY-MM-DD</td>
+<td align="left">Date; shown in YYYY-MM-DD</td>
+<td align="left">2018-01-19</td>
+</tr>
+<tr>
+<td align="left">date +%H</td>
+<td align="left">Hour</td>
+<td align="left">Hour in 24-hour clock format</td>
+<td align="left">18</td>
+</tr>
+<tr>
+<td align="left">date +%I</td>
+<td align="left">Hour</td>
+<td align="left">Hour in 12-hour clock format</td>
+<td align="left">10</td>
+</tr>
+<tr>
+<td align="left">date +%j</td>
+<td align="left">Day</td>
+<td align="left">Day of year (001..366)</td>
+<td align="left">152</td>
+</tr>
+<tr>
+<td align="left">date +%m</td>
+<td align="left">Month</td>
+<td align="left">Number of month (01..12) (01 is January)</td>
+<td align="left">05</td>
+</tr>
+<tr>
+<td align="left">date +%M</td>
+<td align="left">Minutes</td>
+<td align="left">Minutes (00..59)</td>
+<td align="left">52</td>
+</tr>
+<tr>
+<td align="left">date +%S</td>
+<td align="left">Seconds</td>
+<td align="left">Seconds (00..59)</td>
+<td align="left">18</td>
+</tr>
+<tr>
+<td align="left">date +%N</td>
+<td align="left">Nanoseconds</td>
+<td align="left">Nanoseconds (000000000..999999999)</td>
+<td align="left">300231695</td>
+</tr>
+<tr>
+<td align="left">date +%T</td>
+<td align="left">HH:MM:SS</td>
+<td align="left">Time as HH:MM:SS (Hours in 24 Format)</td>
+<td align="left">18:55:42</td>
+</tr>
+<tr>
+<td align="left">date +%u</td>
+<td align="left">Day of Week</td>
+<td align="left">Day of week (1..7); 1 is Monday</td>
+<td align="left">7</td>
+</tr>
+<tr>
+<td align="left">date +%U</td>
+<td align="left">Week</td>
+<td align="left">Displays week number of year, with Sunday as first day of week (00..53)</td>
+<td align="left">23</td>
+</tr>
+<tr>
+<td align="left">date +%Y</td>
+<td align="left">Year</td>
+<td align="left">Displays full year i.e. YYYY</td>
+<td align="left">2018</td>
+</tr>
+<tr>
+<td align="left">date +%Z</td>
+<td align="left">Timezone</td>
+<td align="left">Time zone abbreviation (Ex: IST, GMT)</td>
+<td align="left">IST</td>
+</tr>
+</tbody></table>
+<p>You may use any of the above-mentioned format options (first column) for the date command in the aforementioned syntax.</p>
+<h2 id="流控制"><a href="#流控制" class="headerlink" title="流控制"></a>流控制</h2><h3 id="if"><a href="#if" class="headerlink" title="if"></a>if</h3><p><code>if</code> 语法如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs shell">if commands; then<br>commands<br>[elif commands; then<br>commands...]<br>[else<br>commands]<br>fi<br></code></pre></td></tr></table></figure>
+
+<h3 id="Exit-Status"><a href="#Exit-Status" class="headerlink" title="Exit Status"></a>Exit Status</h3><p>退出状态，即命令执行后会给系统一个值，0-255，0 代表 success：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash">[root@bhc004 ~]<span class="hljs-comment"># true</span><br>[root@bhc004 ~]<span class="hljs-comment"># echo $?</span><br>0<br>[root@bhc004 ~]<span class="hljs-comment"># false</span><br>[root@bhc004 ~]<span class="hljs-comment"># echo $?</span><br>1<br></code></pre></td></tr></table></figure>
+
+<h3 id="test"><a href="#test" class="headerlink" title="test"></a>test</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">First form</span><br>test expression<br><span class="hljs-meta prompt_"># </span><span class="language-bash">Second form</span><br>[ expression ]<br></code></pre></td></tr></table></figure>
+
+<p>test 命令和 if 命令一起完成 true &#x2F; false 判断，当表达式为 true，test 以 0 退出；为 false，test 以 1 退出。</p>
+<p>例如：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell">if [ -f .bash_profile ]; then<br>    echo &quot;You have a .bash_profile. Things are fine.&quot;<br>else<br>    echo &quot;Yikes! You have no .bash_profile!&quot;<br>fi<br></code></pre></td></tr></table></figure>
+
+<p>表达式“-f .bash_profile”表示 .bash_profile 是一个文件，若为 true，则执行 <code>then</code> 后的命令；否则执行 else 后的命令。</p>
+<p>test 可以评估的表达式如下：</p>
+<table>
+<thead>
+<tr>
+<th><strong>Expression</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-d <em>file</em></td>
+<td>True if <em>file</em> is a directory.</td>
+</tr>
+<tr>
+<td>-e <em>file</em></td>
+<td>True if <em>file</em> exists.</td>
+</tr>
+<tr>
+<td>-f <em>file</em></td>
+<td>True if <em>file</em> exists and is a regular file.</td>
+</tr>
+<tr>
+<td>-L <em>file</em></td>
+<td>True if <em>file</em> is a symbolic link.</td>
+</tr>
+<tr>
+<td>-r <em>file</em></td>
+<td>True if <em>file</em> is a file readable by you.</td>
+</tr>
+<tr>
+<td>-w <em>file</em></td>
+<td>True if <em>file</em> is a file writable by you.</td>
+</tr>
+<tr>
+<td>-x <em>file</em></td>
+<td>True if <em>file</em> is a file executable by you.</td>
+</tr>
+<tr>
+<td><em>file1</em> -nt <em>file2</em></td>
+<td>True if <em>file1</em> is newer than (according to modification time) <em>file2</em></td>
+</tr>
+<tr>
+<td><em>file1</em> -ot <em>file2</em></td>
+<td>True if <em>file1</em> is older than <em>file2</em></td>
+</tr>
+<tr>
+<td>-z <em>string</em></td>
+<td>True if <em>string</em> is empty.</td>
+</tr>
+<tr>
+<td>-n <em>string</em></td>
+<td>True if <em>string</em> is not empty.</td>
+</tr>
+<tr>
+<td><em>string1</em> &#x3D; <em>string2</em></td>
+<td>True if <em>string1</em> equals <em>string2.</em></td>
+</tr>
+<tr>
+<td><em>string1</em> !&#x3D; <em>string2</em></td>
+<td>True if <em>string1</em> does not equal <em>string2.</em></td>
+</tr>
+</tbody></table>
+<p>不同的书写格式：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">Alternate form</span><br>if [ -f .bash_profile ]<br>then<br>    echo &quot;You have a .bash_profile. Things are fine.&quot;<br>else<br>    echo &quot;Yikes! You have no .bash_profile!&quot;<br>fi<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">Another alternate form</span><br>if [ -f .bash_profile ]<br>then echo &quot;You have a .bash_profile. Things are fine.&quot;<br>else echo &quot;Yikes! You have no .bash_profile!&quot;<br>fi<br></code></pre></td></tr></table></figure>
+
+<h3 id="exit"><a href="#exit" class="headerlink" title="exit"></a>exit</h3><p>exit 命令可以立即结束此脚本，并设置退出状态：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">exit 0<br></code></pre></td></tr></table></figure>
+
+<h3 id="test-for-superuser"><a href="#test-for-superuser" class="headerlink" title="test for superuser"></a>test for superuser</h3><p><code>id</code> 命令可以查看当前用户信息：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">[root@bhc004 ~]<span class="hljs-comment"># id</span><br>uid=0(root) gid=0(root) <span class="hljs-built_in">groups</span>=0(root)<br>[root@bhc004 ~]<span class="hljs-comment"># id -u</span><br>0<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs shell">if [ $(id -u) != &quot;0&quot; ]; then<br>    # &gt;&amp;2 输出到标准错误<br>    echo &quot;You must be the superuser to run this script&quot; &gt;&amp;2<br>    # 1 向操作系统表示脚本执行不成功<br>    exit 1<br>else<br>    echo &quot;superuser&quot;<br>fi<br></code></pre></td></tr></table></figure>
+
+<h3 id="Watching-your-script"><a href="#Watching-your-script" class="headerlink" title="Watching your script"></a>Watching your script</h3><p>在第一行加 <code>+x</code> 监控脚本执行状态：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">!/bin/bash -x</span><br></code></pre></td></tr></table></figure>
+
+<p>或者，使用 <code>set -x</code> 和 <code>set +x</code>监控一段代码：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">!/bin/bash</span><br><br>number=1<br><br>set -x<br>if [ $number = &quot;1&quot; ]; then<br>    echo &quot;Number equals 1&quot;<br>else<br>    echo &quot;Number does not equal 1&quot;<br>fi<br>set +x<br></code></pre></td></tr></table></figure>
+
+<h2 id="键盘输入和算术"><a href="#键盘输入和算术" class="headerlink" title="键盘输入和算术"></a>键盘输入和算术</h2><p>用户交互。</p>
+<h3 id="read"><a href="#read" class="headerlink" title="read"></a>read</h3><p>从键盘输入并赋值给变量：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">!/bin/bash</span><br><br>echo -n &quot;Enter some text &gt; &quot;<br>read text<br>echo &quot;You entered: $text&quot;<br></code></pre></td></tr></table></figure>
+
+<p><code>-n</code> 使输入和字符串在同一行。read 有 <code>-t</code>、<code>-s</code> 等参数：</p>
+<ul>
+<li><code>-t</code> 表示在指定时间内获得响应，当无论用户是否输入都要继续执行时使用；</li>
+<li><code>is</code> 表示不显示输入的内容；当输入密码时使用；</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">!/bin/bash</span><br><br>echo -n &quot;Hurry up and type something! &gt; &quot;<br>if read -t 3 response; then<br>    echo &quot;Great, you made it in time!&quot;<br>else<br>    echo &quot;Sorry, you are too slow!&quot;<br>fi<br></code></pre></td></tr></table></figure>
+
+<h3 id="算术"><a href="#算术" class="headerlink" title="算术"></a>算术</h3><p>使用双括号计算算术表达式：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">!/bin/bash</span><br><br>first_num=0<br>second_num=0<br><br>echo -n &quot;Enter the first number --&gt; &quot;<br>read first_num<br>echo -n &quot;Enter the second number -&gt; &quot;<br>read second_num<br><br>echo &quot;first number + second number = $((first_num + second_num))&quot;<br>echo &quot;first number - second number = $((first_num - second_num))&quot;<br>echo &quot;first number * second number = $((first_num * second_num))&quot;<br>echo &quot;first number / second number = $((first_num / second_num))&quot;<br>echo &quot;first number % second number = $((first_num % second_num))&quot;<br>echo &quot;first number raised to the&quot;<br>echo &quot;power of the second number   = $((first_num ** second_num))&quot;<br></code></pre></td></tr></table></figure>
+
+<p>括号内的变量不需要 <code>$</code> 就可以引用，</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">!/bin/bash</span><br><br>number=0<br><br>echo -n &quot;Enter a number &gt; &quot;<br>read number<br><br>echo &quot;Number is $number&quot;<br>if [ $((number % 2)) -eq 0 ]; then<br>    echo &quot;Number is even&quot;<br>else<br>    echo &quot;Number is odd&quot;<br>fi<br></code></pre></td></tr></table></figure>
+
+<h2 id="流控制2"><a href="#流控制2" class="headerlink" title="流控制2"></a>流控制2</h2><p>更过分支：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">!/bin/bash</span><br><br>echo -n &quot;Enter a number between 1 and 3 inclusive &gt; &quot;<br>read character<br>if [ &quot;$character&quot; = &quot;1&quot; ]; then<br>    echo &quot;You entered one.&quot;<br>elif [ &quot;$character&quot; = &quot;2&quot; ]; then<br>    echo &quot;You entered two.&quot;<br>elif [ &quot;$character&quot; = &quot;3&quot; ]; then<br>    echo &quot;You entered three.&quot;<br>else<br>    echo &quot;You did not enter a number between 1 and 3.&quot;<br>fi<br></code></pre></td></tr></table></figure>
+
+<p>使用 case 优化分支结构</p>
+<h3 id="case"><a href="#case" class="headerlink" title="case"></a>case</h3><p>case 语句格式如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">case word in<br>    patterns ) commands ;;<br>esac<br></code></pre></td></tr></table></figure>
+
+<p>改造如上语句：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">!/bin/bash</span><br><br>echo -n &quot;Enter a number between 1 and 3 inclusive &gt; &quot;<br>read character<br>case $character in<br>    1 ) echo &quot;You entered one.&quot;<br>        ;;<br>    2 ) echo &quot;You entered two.&quot;<br>        ;;<br>    3 ) echo &quot;You entered three.&quot;<br>        ;;<br>    * ) echo &quot;You did not enter a number between 1 and 3.&quot;<br>esac<br></code></pre></td></tr></table></figure>
+
+<p>case 也可以匹配表达式：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">!/bin/bash</span><br><br>echo -n &quot;Type a digit or a letter &gt; &quot;<br>read character<br>case $character in<br>                                # Check for letters<br>    [[:lower:]] | [[:upper:]] ) echo &quot;You typed the letter $character&quot;<br>                                ;;<br><br>                                # Check for digits<br>    [0-9] )                     echo &quot;You typed the digit $character&quot;<br>                                ;;<br><br>                                # Check for anything else<br>    * )                         echo &quot;You did not type a letter or a digit&quot;<br>esac<br></code></pre></td></tr></table></figure>
+
+<p><code>*</code> 通常用来检测无效输入。</p>
+<h3 id="循环"><a href="#循环" class="headerlink" title="循环"></a>循环</h3><h4 id="while"><a href="#while" class="headerlink" title="while"></a>while</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-meta">#!/bin/bash</span><br><br>number=0<br><span class="hljs-keyword">while</span> [ <span class="hljs-string">&quot;<span class="hljs-variable">$number</span>&quot;</span> -lt 10 ]; <span class="hljs-keyword">do</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;Number = <span class="hljs-variable">$number</span>&quot;</span><br>    number=$((number + <span class="hljs-number">1</span>))<br><span class="hljs-keyword">done</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="util"><a href="#util" class="headerlink" title="util"></a>util</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">!/bin/bash</span><br><br>number=0<br>until [ &quot;$number&quot; -ge 10 ]; do<br>    echo &quot;Number = $number&quot;<br>    number=$((number + 1))<br>done<br></code></pre></td></tr></table></figure>
+
+<h4 id="自定义菜单"><a href="#自定义菜单" class="headerlink" title="自定义菜单"></a>自定义菜单</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">!/bin/bash</span><br><br>selection=<br>until [ &quot;$selection&quot; = &quot;0&quot; ]; do<br>    echo &quot;<br>    PROGRAM MENU<br>    1 - Display free disk space<br>    2 - Display free memory<br><br>    0 - exit program<br>&quot;<br>    echo -n &quot;Enter selection: &quot;<br>    read selection<br>    echo &quot;&quot;<br>    case $selection in<br>        1 ) df ;;<br>        2 ) free ;;<br>        0 ) exit ;;<br>        * ) echo &quot;Please enter 1, 2, or 0&quot;<br>    esac<br>done<br></code></pre></td></tr></table></figure>
+
+<h2 id="位置参数"><a href="#位置参数" class="headerlink" title="位置参数"></a>位置参数</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">!/bin/bash</span><br><br>echo &quot;Positional Parameters&quot;<br>echo &#x27;$0 = &#x27; $0<br>echo &#x27;$1 = &#x27; $1<br>echo &#x27;$2 = &#x27; $2<br>echo &#x27;$3 = &#x27; $3<br><br>if [ &quot;$1&quot; != &quot;&quot; ]; then<br>    echo &quot;Positional parameter 1 contains something&quot;<br>else<br>    echo &quot;Positional parameter 1 is empty&quot;<br>fi<br></code></pre></td></tr></table></figure>
+
+<h3 id="命令行选项"><a href="#命令行选项" class="headerlink" title="命令行选项"></a>命令行选项</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs shell">interactive=<br>filename=~/sysinfo_page.html<br><br>while [ &quot;$1&quot; != &quot;&quot; ]; do<br>    case $1 in<br>        -f | --file )           shift<br>                                filename=$1<br>                                ;;<br>        -i | --interactive )    interactive=1<br>                                ;;<br>        -h | --help )           usage<br>                                exit<br>                                ;;<br>        * )                     usage<br>                                exit 1<br>    esac<br>    shift<br>done<br></code></pre></td></tr></table></figure>
+
+<h3 id="shift"><a href="#shift" class="headerlink" title="shift"></a>shift</h3><p><code>shift</code> 是内建命令，每次调用 <code>shift</code> 使所有参数的索引减一，即 $2 变成 $1，$3 变成 $2：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">!/bin/bash</span><br><br>echo &quot;You start with $# positional parameters&quot;<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">Loop until all parameters are used up</span><br>while [ &quot;$1&quot; != &quot;&quot; ]; do<br>    echo &quot;Parameter 1 equals $1&quot;<br>    echo &quot;You now have $# positional parameters&quot;<br><br>    # Shift all the parameters down by one<br>    shift<br><br>done<br></code></pre></td></tr></table></figure>
+
+<h3 id="命令行处理器"><a href="#命令行处理器" class="headerlink" title="命令行处理器"></a>命令行处理器</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">!/bin/bash</span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">sysinfo_page - A script to produce a system information HTML file</span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment">#### Constants</span></span><br><br>TITLE=&quot;System Information for $HOSTNAME&quot;<br>RIGHT_NOW=$(date +&quot;%x %r %Z&quot;)<br>TIME_STAMP=&quot;Updated on $RIGHT_NOW by $USER&quot;<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment">#### Functions</span></span><br><br>system_info()<br>&#123;<br>    echo &quot;&lt;h2&gt;System release info&lt;/h2&gt;&quot;<br>    echo &quot;&lt;p&gt;Function not yet implemented&lt;/p&gt;&quot;<br><br>&#125;   # end of system_info<br><br><br>show_uptime()<br>&#123;<br>    echo &quot;&lt;h2&gt;System uptime&lt;/h2&gt;&quot;<br>    echo &quot;&lt;pre&gt;&quot;<br>    uptime<br>    echo &quot;&lt;/pre&gt;&quot;<br><br>&#125;   # end of show_uptime<br><br><br>drive_space()<br>&#123;<br>    echo &quot;&lt;h2&gt;Filesystem space&lt;/h2&gt;&quot;<br>    echo &quot;&lt;pre&gt;&quot;<br>    df<br>    echo &quot;&lt;/pre&gt;&quot;<br><br>&#125;   # end of drive_space<br><br><br>home_space()<br>&#123;<br>    # Only the superuser can get this information<br><br>    if [ &quot;$(id -u)&quot; = &quot;0&quot; ]; then<br>        echo &quot;&lt;h2&gt;Home directory space by user&lt;/h2&gt;&quot;<br>        echo &quot;&lt;pre&gt;&quot;<br>        echo &quot;Bytes Directory&quot;<br>        du -s /home/* | sort -nr<br>        echo &quot;&lt;/pre&gt;&quot;<br>    fi<br><br>&#125;   # end of home_space<br><br><br>write_page()<br>&#123;<br>    cat &lt;&lt;- _EOF_<br>    &lt;html&gt;<br>        &lt;head&gt;<br>        &lt;title&gt;$TITLE&lt;/title&gt;<br>        &lt;/head&gt;<br>        &lt;body&gt;<br>        &lt;h1&gt;$TITLE&lt;/h1&gt;<br>        &lt;p&gt;$TIME_STAMP&lt;/p&gt;<br>        $(system_info)<br>        $(show_uptime)<br>        $(drive_space)<br>        $(home_space)<br>        &lt;/body&gt;<br>    &lt;/html&gt;<br>_EOF_<br><br>&#125;<br><br>usage()<br>&#123;<br>    echo &quot;usage: sysinfo_page [[[-f file ] [-i]] | [-h]]&quot;<br>&#125;<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment">#### Main</span></span><br><br>interactive=<br>filename=~/sysinfo_page.html<br><br>while [ &quot;$1&quot; != &quot;&quot; ]; do<br>    case $1 in<br>        -f | --file )           shift<br>                                filename=$1<br>                                ;;<br>        -i | --interactive )    interactive=1<br>                                ;;<br>        -h | --help )           usage<br>                                exit<br>                                ;;<br>        * )                     usage<br>                                exit 1<br>    esac<br>    shift<br>done<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">Test code to verify <span class="hljs-built_in">command</span> line processing</span><br><br>if [ &quot;$interactive&quot; = &quot;1&quot; ]; then<br>	response=<br><br>    echo -n &quot;Enter name of output file [$filename] &gt; &quot;<br>    read response<br>    if [ -n &quot;$response&quot; ]; then<br>        filename=$response<br>    fi<br><br>    if [ -f $filename ]; then<br>        echo -n &quot;Output file exists. Overwrite? (y/n) &gt; &quot;<br>        read response<br>        if [ &quot;$response&quot; != &quot;y&quot; ]; then<br>            echo &quot;Exiting program.&quot;<br>            exit 1<br>        fi<br>    fi<br>fi<br>echo &quot;output file = $filename&quot;<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">Write page (comment out until testing is complete)</span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">write_page &gt; <span class="hljs-variable">$filename</span></span><br></code></pre></td></tr></table></figure>
+
+<h2 id="for-循环"><a href="#for-循环" class="headerlink" title="for 循环"></a>for 循环</h2><h3 id="处理位置参数"><a href="#处理位置参数" class="headerlink" title="处理位置参数"></a>处理位置参数</h3><p>for 命令可以处理命令行参数列表：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">!/bin/bash</span><br><br>for i in &quot;$@&quot;; do<br>    echo $i<br>done<br></code></pre></td></tr></table></figure>
+
+<h3 id="处理文件列表"><a href="#处理文件列表" class="headerlink" title="处理文件列表"></a>处理文件列表</h3><p>比较两个文件夹中的文件：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">!/bin/bash</span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">cmp_dir - program to compare two directories</span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">Check <span class="hljs-keyword">for</span> required arguments</span><br>if [ $# -ne 2 ]; then<br>    echo &quot;usage: $0 directory_1 directory_2&quot; 1&gt;&amp;2<br>    exit 1<br>fi<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">Make sure both arguments are directories</span><br>if [ ! -d $1 ]; then<br>    echo &quot;$1 is not a directory!&quot; 1&gt;&amp;2<br>    exit 1<br>fi<br><br>if [ ! -d $2 ]; then<br>    echo &quot;$2 is not a directory!&quot; 1&gt;&amp;2<br>    exit 1<br>fi<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">Process each file <span class="hljs-keyword">in</span> directory_1, comparing it to directory_2</span><br>missing=0<br>for filename in $1/*; do<br>    fn=$(basename &quot;$filename&quot;)<br>    if [ -f &quot;$filename&quot; ]; then<br>        if [ ! -f &quot;$2/$fn&quot; ]; then<br>            echo &quot;$fn is missing from $2&quot;<br>            missing=$((missing + 1))<br>        fi<br>    fi<br>done<br>echo &quot;$missing files missing&quot;<br></code></pre></td></tr></table></figure>
+
+<h3 id="home-space"><a href="#home-space" class="headerlink" title="home_space"></a>home_space</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs shell">home_space()<br>&#123;<br>    echo &quot;&lt;h2&gt;Home directory space by user&lt;/h2&gt;&quot;<br>    echo &quot;&lt;pre&gt;&quot;<br>    format=&quot;%8s%10s%10s   %-s\n&quot;<br>    printf &quot;$format&quot; &quot;Dirs&quot; &quot;Files&quot; &quot;Blocks&quot; &quot;Directory&quot;<br>    printf &quot;$format&quot; &quot;----&quot; &quot;-----&quot; &quot;------&quot; &quot;---------&quot;<br>    if [ $(id -u) = &quot;0&quot; ]; then<br>        dir_list=&quot;/home/*&quot;<br>    else<br>        dir_list=$HOME<br>    fi<br>    for home_dir in $dir_list; do<br>        total_dirs=$(find $home_dir -type d | wc -l)<br>        total_files=$(find $home_dir -type f | wc -l)<br>        total_blocks=$(du -s $home_dir)<br>        printf &quot;$format&quot; $total_dirs $total_files $total_blocks<br>    done<br>    echo &quot;&lt;/pre&gt;&quot;<br><br>&#125;   # end of home_space<br></code></pre></td></tr></table></figure>
+
+<p>使用 printf 格式化输出，参考：</p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="http://www.gnu.org/software/gawk/manual/html_node/Control-Letters.html#Control-Letters">GNU Awk User’s Guide - Control Letters</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="http://www.gnu.org/software/gawk/manual/html_node/Format-Modifiers.html#Format-Modifiers">GNU Awk User’s Guide - Format Modifiers</a></p>
+</li>
+</ul>
+<h2 id="其它"><a href="#其它" class="headerlink" title="其它"></a>其它</h2><h3 id="鲁棒性"><a href="#鲁棒性" class="headerlink" title="鲁棒性"></a>鲁棒性</h3><p>提高 shell 脚本的鲁棒性，处理 exit status，否则会发生意想不到的事情。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">cd $some_directory<br>rm *<br></code></pre></td></tr></table></figure>
+
+<p>若 $some_directory 不存在，进入指定目录失败，则删除当前工作文件夹下的所有文件，-_-</p>
+<h3 id="clean-up-功能"><a href="#clean-up-功能" class="headerlink" title="clean_up 功能"></a>clean_up 功能</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">!/bin/bash</span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">Program to <span class="hljs-built_in">print</span> a text file with headers and footers</span><br><br>TEMP_FILE=/tmp/printfile.txt<br><br>clean_up() &#123;<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">	# </span><span class="language-bash">Perform program <span class="hljs-built_in">exit</span> housekeeping</span><br>	rm $TEMP_FILE<br>	exit<br>&#125;<br><br>trap clean_up SIGHUP SIGINT SIGTERM<br><br>pr $1 &gt; $TEMP_FILE<br><br>echo -n &quot;Print file? [y/n]: &quot;<br>read<br>if [ &quot;$REPLY&quot; = &quot;y&quot; ]; then<br>	lpr $TEMP_FILE<br>fi<br>clean_up<br></code></pre></td></tr></table></figure>
+
+<p>结束一个脚本时，应清理一些文件：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">!/bin/bash</span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">Program to <span class="hljs-built_in">print</span> a text file with headers and footers</span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">Usage: printfile file</span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">Create a temporary file name that gives preference</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">to the user<span class="hljs-string">&#x27;s local tmp directory and has a name</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"><span class="hljs-string">that is resistant to &quot;temp race attacks&quot;</span></span><br><br>if [ -d &quot;~/tmp&quot; ]; then<br>	TEMP_DIR=~/tmp<br>else<br>	TEMP_DIR=/tmp<br>fi<br>TEMP_FILE=$TEMP_DIR/printfile.$$.$RANDOM<br>PROGNAME=$(basename $0)<br><br>usage() &#123;<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">	# </span><span class="language-bash"><span class="hljs-string">Display usage message on standard error</span></span><br>	echo &quot;Usage: $PROGNAME file&quot; 1&gt;&amp;2<br>&#125;<br><br>clean_up() &#123;<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">	# </span><span class="language-bash"><span class="hljs-string">Perform program exit housekeeping</span></span><br><span class="hljs-meta prompt_">	# </span><span class="language-bash"><span class="hljs-string">Optionally accepts an exit status</span></span><br>	rm -f $TEMP_FILE<br>	exit $1<br>&#125;<br><br>error_exit() &#123;<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">	# </span><span class="language-bash"><span class="hljs-string">Display error message and exit</span></span><br>	echo &quot;$&#123;PROGNAME&#125;: $&#123;1:-&quot;Unknown Error&quot;&#125;&quot; 1&gt;&amp;2<br>	clean_up 1<br>&#125;<br><br>trap clean_up SIGHUP SIGINT SIGTERM<br><br>if [ $# != &quot;1&quot; ]; then<br>	usage<br>	error_exit &quot;one file to print must be specified&quot;<br>fi<br>if [ ! -f &quot;$1&quot; ]; then<br>	error_exit &quot;file $1 cannot be read&quot;<br>fi<br><br>pr $1 &gt; $TEMP_FILE || error_exit &quot;cannot format file&quot;<br><br>echo -n &quot;Print file? [y/n]: &quot;<br>read<br>if [ &quot;$REPLY&quot; = &quot;y&quot; ]; then<br>	lpr $TEMP_FILE || error_exit &quot;cannot print file&quot;<br>fi<br>clean_up<br></code></pre></td></tr></table></figure>
+
+<h3 id="安全的临时文件"><a href="#安全的临时文件" class="headerlink" title="安全的临时文件"></a>安全的临时文件</h3><p><code>/tmp</code> 会有很多程序放置临时文件在里面，文件名重复会覆盖内容（可预测，predictable）；</p>
+<p>建议创建本地临时文件夹 <code>~/tmp</code>，即用户目录下的子目录；</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">TEMP_FILE=$TEMP_DIR/printfile.$$.$RANDOM<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>$TEMP_DIR 是  <code>/tmp</code> 或 <code>~/tmp</code></li>
+<li>printfile 是应用程序的名字</li>
+<li>$$ 是 shell 变量，将 process id(pid) 嵌入文件名</li>
+<li>$RANDOM 是追加随机数</li>
+</ul>
+<p>这样就生成了唯一且不易重复的文件名，例如 <code>tomcat</code> ：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash">tomcat.5141431142496395497.9000<br>tomcat.6486338835837423954.9000<br>tomcat.8674130370990688323.9000<br>tomcat-docbase.2197772788338189182.9000<br>tomcat-docbase.30706145223021005.9000<br><br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="http://linuxcommand.org/lc3_writing_shell_scripts.php">http://linuxcommand.org/lc3_writing_shell_scripts.php</a></p>
+<p>（完）</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/OPS/" class="category-chain-item">OPS</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Linux/" class="print-no-link">#Linux</a>
+      
+        <a href="/tags/%E8%BF%90%E7%BB%B4/" class="print-no-link">#运维</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Linux Shell 脚本基础</div>
+      <div>https://blackist.org/2020-04-17-linux-shell-base/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>董猿外</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年4月17日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020-04-17-linux-redis-cluster-shell/" title="Shell 脚本自动部署 Redis 集群">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Shell 脚本自动部署 Redis 集群</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020-04-03-redis-cluster-masterandslave/" title="Redis 主从集群及自启动配置">
+                        <span class="hidden-mobile">Redis 主从集群及自启动配置</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://lib.baomitu.com/gitalk/1.8.0/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"506775736a1ab7d38a56","clientSecret":"b1c3f0dc07680f22f07a585fc81cd5288adb6729","repo":"blackist.github.io","owner":"blackist","admin":["blackist"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '0796526bdafcd1978f09e4efc4abc94b'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a>
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

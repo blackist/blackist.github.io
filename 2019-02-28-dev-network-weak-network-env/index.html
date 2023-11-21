@@ -1,0 +1,711 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/images/Dong_medium.ico">
+  <link rel="icon" href="/images/Dong_medium.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="董猿外">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="在Web应用、App应用测试中需要进行弱网测试，测试网络不稳定时应用做出的反应和提示是否友好、无歧义。通常情况下不稳定的网络环境使用工具来模拟，本文通过Fiddler设置网络规则限制应用的网络请求时间，达到弱网测试的目的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="弱网测试环境搭建">
+<meta property="og:url" content="https://blackist.org/2019-02-28-dev-network-weak-network-env/index.html">
+<meta property="og:site_name" content="Thinking in Coding">
+<meta property="og:description" content="在Web应用、App应用测试中需要进行弱网测试，测试网络不稳定时应用做出的反应和提示是否友好、无歧义。通常情况下不稳定的网络环境使用工具来模拟，本文通过Fiddler设置网络规则限制应用的网络请求时间，达到弱网测试的目的。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blogres.blackist.org/dev-network-weak-fiddler-main.png">
+<meta property="og:image" content="https://blogres.blackist.org/dev-network-weak-fiddler-main-script.png">
+<meta property="og:image" content="https://blogres.blackist.org/dev-network-weak-fiddler-console-web.png">
+<meta property="og:image" content="https://blogres.blackist.org/dev-network-weak-fiddler-remote-connection.png">
+<meta property="og:image" content="https://blogres.blackist.org/dev-network-weak-android-proxy.jpg">
+<meta property="og:image" content="https://blogres.blackist.org/dev-network-weak-proxy-ip.png">
+<meta property="article:published_time" content="2019-02-28T02:11:20.000Z">
+<meta property="article:modified_time" content="2023-01-05T06:23:24.168Z">
+<meta property="article:author" content="董猿外">
+<meta property="article:tag" content="开发">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blogres.blackist.org/dev-network-weak-fiddler-main.png">
+  
+  
+  
+  <title>弱网测试环境搭建 - Thinking in Coding</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blackist.org","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":100,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>董猿外</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="弱网测试环境搭建"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2019-02-28 10:11" pubdate>
+          2019年2月28日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          17 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">弱网测试环境搭建</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>在Web应用、App应用测试中需要进行弱网测试，测试网络不稳定时应用做出的反应和提示是否友好、无歧义。通常情况下不稳定的网络环境使用工具来模拟，本文通过Fiddler设置网络规则限制应用的网络请求时间，达到弱网测试的目的。</p>
+<span id="more"></span>
+
+<h2 id="一、弱网环境搭建"><a href="#一、弱网环境搭建" class="headerlink" title="一、弱网环境搭建"></a>一、弱网环境搭建</h2><p>在windows操作系统中，下载解压<a target="_blank" rel="noopener" href="https://blogres.blackist.org/dev-network-Fiddler.rar">Fiddler</a>(中文版，可到<a target="_blank" rel="noopener" href="https://www.telerik.com/fiddler">官网</a>安装最新原版)，打开软件主界面。</p>
+<p><img src="https://blogres.blackist.org/dev-network-weak-fiddler-main.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="设置网络规则"><a href="#设置网络规则" class="headerlink" title="设置网络规则"></a>设置网络规则</h3><p>选项 Rule(规则)-&gt;Custom Rule(自定义规则)，弹出规则编辑器Fiddler Script编辑器，</p>
+<p><img src="https://blogres.blackist.org/dev-network-weak-fiddler-main-script.png" srcset="/img/loading.gif" lazyload></p>
+<p>在编辑器中寻找如下代码段(Ctrl+F寻找关键字 m_SimulateModem)</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">if</span> (m_SimulateModem) &#123;<br>    <span class="hljs-comment">// Delay sends by 300ms per KB uploaded.</span><br>    oSession[<span class="hljs-string">&quot;request-trickle-delay&quot;</span>] = <span class="hljs-string">&quot;300&quot;</span>; <br>    <span class="hljs-comment">// Delay receives by 150ms per KB downloaded.</span><br>    oSession[<span class="hljs-string">&quot;response-trickle-delay&quot;</span>] = <span class="hljs-string">&quot;150&quot;</span>; <br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>顾名思义，”request-trickle-delay”表示网络请求延时，”response-trickle-delay”表示网络响应延时，单位是毫秒(ms)。规则进行如下设置并保存，则网络请求延时3秒，网络响应延时3.5秒。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">if</span> (m_SimulateModem) &#123;<br>    <span class="hljs-comment">// Delay sends by 300ms per KB uploaded.</span><br>    oSession[<span class="hljs-string">&quot;request-trickle-delay&quot;</span>] = <span class="hljs-string">&quot;3000&quot;</span>; <br>    <span class="hljs-comment">// Delay receives by 150ms per KB downloaded.</span><br>    oSession[<span class="hljs-string">&quot;response-trickle-delay&quot;</span>] = <span class="hljs-string">&quot;3500&quot;</span>; <br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="应用网络限制"><a href="#应用网络限制" class="headerlink" title="应用网络限制"></a>应用网络限制</h3><p>修改并保存规则后，需要应用到系统中，选项 Rule(规则)-&gt;Performance(性能)-&gt;选中Simulate Modems Speeds(模拟调制解调器速度)，即可开启网络延迟</p>
+<h3 id="扩展网络规则"><a href="#扩展网络规则" class="headerlink" title="扩展网络规则"></a>扩展网络规则</h3><p>设置固定的网络延时会使网络一直处于虚弱的环境，时好时坏的网络更贴近实际网络，修改规则可实现动态变化的网络环境：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// 随机整数</span><br><span class="hljs-keyword">static</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">randInt</span>(<span class="hljs-params">min, max</span>) &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">round</span>(<span class="hljs-title class_">Math</span>.<span class="hljs-title function_">random</span>()*(max-min)+min);<br>&#125;<br><br><span class="hljs-keyword">if</span> (m_SimulateModem) &#123;<br>    <span class="hljs-comment">// Delay sends by 300ms per KB uploaded.</span><br>    oSession[<span class="hljs-string">&quot;request-trickle-delay&quot;</span>] = <span class="hljs-string">&quot;&quot;</span> + <span class="hljs-title function_">randInt</span>(<span class="hljs-number">1</span>, <span class="hljs-number">6000</span>); <br>    <span class="hljs-comment">// Delay receives by 150ms per KB downloaded.</span><br>    oSession[<span class="hljs-string">&quot;response-trickle-delay&quot;</span>] = <span class="hljs-string">&quot;&quot;</span> + <span class="hljs-title function_">randInt</span>(<span class="hljs-number">1</span>, <span class="hljs-number">3000</span>); <br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+
+<h2 id="Web应用弱网环境测试"><a href="#Web应用弱网环境测试" class="headerlink" title="Web应用弱网环境测试"></a>Web应用弱网环境测试</h2><p>基于以上搭建的PC端弱网环境，在本机通过浏览器等访问Web应用即可实现弱网环境测试。</p>
+<p><img src="https://blogres.blackist.org/dev-network-weak-fiddler-console-web.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="移动应用弱网环境测试"><a href="#移动应用弱网环境测试" class="headerlink" title="移动应用弱网环境测试"></a>移动应用弱网环境测试</h2><p>移动端进行弱网测试时，iPhone可通过系统设置实现弱网环境，但移动设备一般通过PC端配置弱网环境，移动端与PC处于同一网段并设置网络代理，由PC端控制移动端的网络环境。</p>
+<h3 id="Fiddler设置远程连接"><a href="#Fiddler设置远程连接" class="headerlink" title="Fiddler设置远程连接"></a>Fiddler设置远程连接</h3><p>基于以上Fiddler配置，接着Tools(工具)-&gt;选项(Options)-&gt;Connection(连接)，配置如下：</p>
+<p><img src="https://blogres.blackist.org/dev-network-weak-fiddler-remote-connection.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="安卓设备设置代理"><a href="#安卓设备设置代理" class="headerlink" title="安卓设备设置代理"></a>安卓设备设置代理</h3><p>在连接的wifi界面中，设置手动代理，填写PC端代理的的ip和端口号，配置完成后安卓设备上的所有网络请求都被代理到Fiddler。</p>
+<p><img src="https://blogres.blackist.org/dev-network-weak-android-proxy.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>ip通过PC端命令ipconfig查看:</p>
+<p><img src="https://blogres.blackist.org/dev-network-weak-proxy-ip.png" srcset="/img/loading.gif" lazyload></p>
+<p>若PC连接wifi，则选择WLAN适配器的ip。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/u010618194/article/details/76652513">https://blog.csdn.net/u010618194/article/details/76652513</a><br><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/c0b5ec817617">https://www.jianshu.com/p/c0b5ec817617</a><br><a target="_blank" rel="noopener" href="http://insights.thoughtworkers.org/mobile-testing-traps/">http://insights.thoughtworkers.org/mobile-testing-traps/</a><br><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/728a993329b2?tdsourcetag=s_pctim_aiomsg">https://www.jianshu.com/p/728a993329b2?tdsourcetag=s_pctim_aiomsg</a></p>
+<p>（完）</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%BC%80%E5%8F%91/" class="category-chain-item">开发</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%BC%80%E5%8F%91/" class="print-no-link">#开发</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>弱网测试环境搭建</div>
+      <div>https://blackist.org/2019-02-28-dev-network-weak-network-env/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>董猿外</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2019年2月28日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019-03-09-javaweb-ar-deploy-path/" title="校友录-项目线上部署">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">校友录-项目线上部署</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019-01-18-public-open-source-license/" title="如何为你的代码选择一个开源协议">
+                        <span class="hidden-mobile">如何为你的代码选择一个开源协议</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://lib.baomitu.com/gitalk/1.8.0/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"506775736a1ab7d38a56","clientSecret":"b1c3f0dc07680f22f07a585fc81cd5288adb6729","repo":"blackist.github.io","owner":"blackist","admin":["blackist"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '6336600f9010eff077e5291326f445bc'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a>
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

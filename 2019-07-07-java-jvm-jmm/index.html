@@ -1,0 +1,741 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/images/Dong_medium.ico">
+  <link rel="icon" href="/images/Dong_medium.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="董猿外">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Java源代码文件(.java后缀)会被Java编译器编译为字节码文件(.class后缀)，然后由JVM中的类加载器加载各个类的字节码文件，加载完毕之后，交由JVM执行引擎执行。 那在整个程序执行过程中，JVM中怎么存取数据和相关信息呢？ 事实上在JVM中是用一段空间来存储程序执行期间需要用到的数据和相关信息，这段空间一般被称作为Runtime Data Area（运行时数据区），也就是我们常说的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JVM - 运行时内存区域">
+<meta property="og:url" content="https://blackist.org/2019-07-07-java-jvm-jmm/index.html">
+<meta property="og:site_name" content="Thinking in Coding">
+<meta property="og:description" content="Java源代码文件(.java后缀)会被Java编译器编译为字节码文件(.class后缀)，然后由JVM中的类加载器加载各个类的字节码文件，加载完毕之后，交由JVM执行引擎执行。 那在整个程序执行过程中，JVM中怎么存取数据和相关信息呢？ 事实上在JVM中是用一段空间来存储程序执行期间需要用到的数据和相关信息，这段空间一般被称作为Runtime Data Area（运行时数据区），也就是我们常说的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blogres.blackist.org/dev-201907071428-3.png">
+<meta property="article:published_time" content="2019-07-07T12:38:34.000Z">
+<meta property="article:modified_time" content="2023-01-05T06:23:24.209Z">
+<meta property="article:author" content="董猿外">
+<meta property="article:tag" content="开发">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="jvm">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blogres.blackist.org/dev-201907071428-3.png">
+  
+  
+  
+  <title>JVM - 运行时内存区域 - Thinking in Coding</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blackist.org","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":100,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>董猿外</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="JVM - 运行时内存区域"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2019-07-07 20:38" pubdate>
+          2019年7月7日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          35 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">JVM - 运行时内存区域</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>Java源代码文件(.java后缀)会被Java编译器编译为字节码文件(.class后缀)，然后由JVM中的类加载器加载各个类的字节码文件，加载完毕之后，交由<strong>JVM执行引擎</strong>执行。</p>
+<p>那在整个程序执行过程中，JVM中怎么存取数据和相关信息呢？</p>
+<p>事实上在JVM中是用一段空间来存储程序执行期间需要用到的数据和相关信息，这段空间一般被称作为Runtime Data Area（运行时数据区），也就是我们常说的JVM内存。</p>
+<span id="more"></span>
+
+
+
+<h2 id="一、运行时数据区域包括哪些"><a href="#一、运行时数据区域包括哪些" class="headerlink" title="一、运行时数据区域包括哪些"></a>一、运行时数据区域包括哪些</h2><p><img src="https://blogres.blackist.org/dev-201907071428-3.png" srcset="/img/loading.gif" lazyload></p>
+<p>根据《Java虚拟机规范》的规定，运行时数据区通常包括这几个部分：</p>
+<ul>
+<li><p>**程序计数器(Program Counter Register)**：线程私有的，记录当前线程的行号指示器，为线程的切换提供保障；</p>
+</li>
+<li><p>**Java虚拟机栈(Java Vitual Machine Stack)*<em>：线程私有的，主要存放</em>局部变量表*，操作数栈，动态链接和方法出口等；</p>
+</li>
+<li><p><strong>本地方法栈(Native Method Stack)</strong></p>
+</li>
+<li><p><strong>方法区(Method Area)<strong>：线程共享的，主要存储</strong>类信息、常量池、静态变量、JIT编译后的代码</strong>等数据。方法区理论上来说是堆的逻辑组成部分；<strong>运行时常量池</strong>是方法区的一部分，用于存放编译期生成的各种字面量和符号引用；</p>
+</li>
+<li><p><strong>堆(Heap)<strong>：所有线程共享的，主要用来存储对象。其中，堆可分为：</strong>年轻代和老年代</strong>两块区域。使用NewRatio参数来设定比例。对于年轻代，一个Eden区和两个Suvivor区，使用参数SuvivorRatio来设定大小；</p>
+</li>
+</ul>
+<h2 id="二、各个部分存储的信息和负责的职能"><a href="#二、各个部分存储的信息和负责的职能" class="headerlink" title="二、各个部分存储的信息和负责的职能"></a>二、各个部分存储的信息和负责的职能</h2><h3 id="1、程序计数器"><a href="#1、程序计数器" class="headerlink" title="1、程序计数器"></a>1、程序计数器</h3><p>这个内存区域是Java虚拟机规范中唯一一个没有规定任何OOM（OutOfMemoryError）情况的区域，这是这个区域最大的特点之一，这是因为程序计数器中存储的数据所占空间的大小不会随程序的执行而发生改变，因此，对于程序计数器是不会发生内存溢出现象(OutOfMemory)的。</p>
+<p>这个区域主要是负责记录正在执行的虚拟机字节码指令地址，即当前线程执行的字节码的行号指示器（注意：JVM不是直接执行Java代码，而是执行.class文件，所以只要其他编程语言能翻译成.class文件一样能放入JVM中执行）。 <strong>JVM会给每个线程一个独立的程序计数器</strong>，计数器之间互不影响 ，且通过线程轮流切换并且分配处理器执行时间来实现JVM的多线程。不过当线程执行的是Native方法的时候这个计数器中的值为undefined。</p>
+<h3 id="2、Java虚拟机栈"><a href="#2、Java虚拟机栈" class="headerlink" title="2、Java虚拟机栈"></a>2、Java虚拟机栈</h3><p>和程序计数器一样的是<strong>Java虚拟机栈是线程私有</strong>，生命周期和线程相同。虚拟机栈描述的是<strong>Java方法</strong>执行的内存模型：每个<strong>方法在执行的时候都会创建栈帧</strong>，用来存储局部变量表，操作数栈，动态链接，方法出口等信息，每个方法从调用到执行完成的过程，就对应一个栈帧在虚拟机中入栈到出栈的过程，其中64位长度的long和double类型的数据会占用2个局部变量空间，其余的数据类型只占用1个。 这里需要理解一下的就是为什么要用栈这个结构呢，比如A方法中调用了B方法，虚拟机中是先让A方法的栈帧进入虚拟机栈执行，当执行到调用B方法的语句就让B栈帧进入，执行完之后B栈帧就出栈，A栈就继续执行。这里注意的是如果递归的方法递归的太深很容易抛出下面两种异常，所以递归虽然写起来方便，但是性能会有所下降，并且容易抛出异常。</p>
+<p>Java虚拟机规范中，对这个区域规定了两种异常状况</p>
+<p>i. 线程请求栈的深度大于虚拟机所允许栈的深度，将抛出Stack Overflow Error</p>
+<p>ii. 如果虚拟机栈可以动态扩展且扩展时无法申请到足够的内存，会抛出OutOfMemoryError</p>
+<h3 id="3、本地方法栈"><a href="#3、本地方法栈" class="headerlink" title="3、本地方法栈"></a>3、本地方法栈</h3><p>与虚拟机栈作用相似，不过是虚拟机栈为虚拟机执行Java方法提供，而本地方法为虚拟机使用到的Native方法服务，Native方法多是用C++写的。抛出的异常和虚拟机栈相同。</p>
+<h3 id="4、Java堆"><a href="#4、Java堆" class="headerlink" title="4、Java堆"></a>4、Java堆</h3><p>Java堆是与前面的区域不同的是：这个区域是 <strong>被所有线程共享</strong> 的一块内存区域，用来<strong>存放对象实例，并为对象实例分配好内存</strong>。Java虚拟机规范中这样描述：所有对象实例以及数组都要在堆上分配。Java堆也是垃圾收集器管理的主要区域，也叫”GC堆“。由于现在的垃圾回收算法多是分代收集，所以Java堆里面又可分为：新生代和老年代。 并且根据Java虚拟机规范的规定：Java堆可以处于物理上不连续的内存空间中，只要逻辑上连续即可。有实例没有被分配，且堆无法再扩展的时候会抛出OutOfMemoryError异常，虚拟机调优其实也主要关注的是这个区域。</p>
+<h3 id="5、方法区"><a href="#5、方法区" class="headerlink" title="5、方法区"></a>5、方法区</h3><p>与Java堆一样，<strong>线程共享</strong>，用来存储被虚拟机加载的<strong>类信息、常量、静态变量</strong>。这个区域Java虚拟机规范对其特别宽松，既可以像Java堆那样不需要连续内存，又可以选择固定大小和可扩展。还可以选择不实现垃圾收集，这个区域的内存回收目标主要是针对常量池的回收和对类型的卸载。当无法满足内存分配需求时，将抛出OutOfMemoryError异常。</p>
+<h4 id="永久代和元空间"><a href="#永久代和元空间" class="headerlink" title="永久代和元空间"></a>永久代和元空间</h4><p>方法区是Java虚拟机规范中的定义，是一种规范，而永久代是HotSpot对方法区的一种实现，一个是标准一个是实现，即<strong>使用永久代来实现方法区</strong>；</p>
+<ul>
+<li>存储位置不同，永久代物理上是堆的一部分，和新生代，老年代地址是连续的，而元空间属于本地内存；</li>
+<li>存储内容不同，<strong>元空间(一块区域)存储类的元信息</strong>，<strong>静态变量和常量池等并入堆中</strong>。相当于永久代的数据被分到了堆和元空间中。</li>
+</ul>
+<p>对于Java8， HotSpots取消了永久代， 取代永久代的就是元空间。虚拟机Hotspot已经将这部分存储空间<strong>从使用JVM内存换成使用本地内存</strong>，即这部分不再叫永久代，而是<strong>元空间</strong>。这个元空间实际上是JVM动态规定内存大小。</p>
+<p>这个替换有什么优势呢？因为字符串常量池是存在永久代中，很容易出现性能问题，并且类和方法信息大小难确定，给永久代的的大小指定带来困难，而且GC会对永久代特殊处理，这就增加了GC的复杂性。从JDK1.7开始，<strong>字符串常量池就划分进了堆中</strong>，也使得元空间在内存划分的算法上更趋于合理。</p>
+<h4 id="Class文件常量池"><a href="#Class文件常量池" class="headerlink" title="Class文件常量池"></a><strong>Class文件常量池</strong></h4><p>Class 文件常量池指的是编译生成的 class 字节码文件，其结构中有一项是常量池（Constant Pool Table），用于存放编译期生成的各种<strong>字面量和符号引用</strong>，这部分内容将<strong>在类加载后进入方法区的运行时常量池中存放</strong>。</p>
+<p>这里的字面量是指<strong>字符串字面量和声明为 final 的（基本数据类型）常量值</strong>。</p>
+<ul>
+<li>字符串字面量：除了类中所有双引号括起来的字符串(包括方法体内的)，还包括所有用到的类名、方法的名字和这些类与方法的字符串描述、字段(成员变量)的名称和描述符；</li>
+<li>声明为final的常量值：指的是类的<strong>成员变量</strong>，不包含本地变量，<strong>本地变量是属于方法的</strong>。这些都在常量池的 UTF-8 表中(逻辑上的划分)；</li>
+</ul>
+<h4 id="运行时常量池"><a href="#运行时常量池" class="headerlink" title="运行时常量池"></a>运行时常量池</h4><p>运行时常量池是方法区的一部分，是一块内存区域。Class 文件常量池将在类加载后进入方法区的运行时常量池中存放。<strong>一个类加载到 JVM 中后对应一个运行时常量池</strong>，运行时常量池相对于 Class 文件常量池来说具备动态性，Class 文件常量只是一个静态存储结构，里面的引用都是符号引用。而运行时常量池可以在运行期间<strong>将符号引用解析为直接引用</strong>。可以说运行时常量池就是用来<strong>索引和查找字段和方法名称和描述符</strong>的。给定任意一个方法或字段的索引，通过这个索引最终可得到该方法或字段所属的类型信息和名称及描述符信息，这涉及到方法的调用和字段获取。</p>
+<h4 id="字符串常量池"><a href="#字符串常量池" class="headerlink" title="字符串常量池"></a>字符串常量池</h4><p><strong>字符串常量池是全局</strong>的，JVM 中独此一份，因此也称为全局字符串常量池。</p>
+<p>运行时常量池中的字符串字面量若是成员的，则在类的加载初始化阶段就使用到了字符串常量池；若是本地的，则在使用到的时候（执行此代码时）才会使用到字符串常量池。其实，“使用常量池”对应的字节码是一个 ldc 指令，在给 String 类型的引用赋值的时候会先执行这个指令，看常量池中是否存在这个字符串对象的引用，若有就直接返回这个引用，若没有，就在堆里创建这个字符串对象并在字符串常量池中记录下这个引用（jdk1.7)。</p>
+<p>常量不一定只有编译期才能产生，运行期间也可以将新的常量放入池中。例如<strong>String的Intern()方法</strong>，同样抛出OutOfMemoryError异常。</p>
+<h4 id="缓冲池"><a href="#缓冲池" class="headerlink" title="缓冲池"></a>缓冲池</h4><p>JVM 中除了字符串常量池，8种基本数据类型中除了两种浮点类型剩余的6种基本数据类型的包装类，都使用了缓冲池技术，但是 Byte、Short、Integer、Long、Character 这5种整型的包装类也只是在对应值在 [-128,127] 时才会使用缓冲池，超出此范围仍然会去创建新的对象。其中：</p>
+<ul>
+<li>在 jdk1.6（含）之前也是方法区的一部分，并且其中存放的是字符串的实例；</li>
+<li>在 jdk1.7（含）之后是在堆内存之中，存储的是字符串对象的引用，字符串实例是在堆中；</li>
+<li>jdk1.8 已移除永久代，字符串常量池是在本地内存当中，存储的也只是引用。</li>
+</ul>
+<h2 id="三、直接内存"><a href="#三、直接内存" class="headerlink" title="三、直接内存"></a>三、直接内存</h2><p>这个区域并不是属于运行时数据区域，但是这个区域也会被频繁使用，并且抛出OOM异常。这个区域主要是由于在JDK1.4中新加入了NIO（New Input&#x2F;Output）类，引入了一种基于通道与缓冲区的I&#x2F;O方式，它可以使用Native函数库直接分配堆外内存，通过一个储存在Java堆中的DirectByteBuffer对象作为这块内存的引用进行操作。</p>
+<p>这样能避免在Java堆和Native堆中来回复制数据，从而在一些场景中显著提高性能。直接内存分配不会受到Java堆大小的限制，会受到本机总内存大小及处理器寻址空间的限制。会抛出OutOfMemoryError异常</p>
+<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><p>只有程序计数器不会报出任何相关OOM异常，而Java虚拟机栈有可能会报出OOM或Stack Overflow异常。<strong>Java虚拟机栈主要是存储方法的一些信息</strong>，能让方法顺利的执行，而<strong>Java堆存储的是对象的信息</strong>。虚拟机的垃圾回收算法主要在这一块，并且平常调优的区域也是在这一块。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/xiaotian15/p/6971353.html">https://www.cnblogs.com/xiaotian15/p/6971353.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.tuicool.com/articles/Av6RZnU">https://www.tuicool.com/articles/Av6RZnU</a></p>
+<h2 id="参考-1"><a href="#参考-1" class="headerlink" title="参考"></a>参考</h2><p>（完）</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Java/" class="category-chain-item">Java</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%BC%80%E5%8F%91/" class="print-no-link">#开发</a>
+      
+        <a href="/tags/java/" class="print-no-link">#java</a>
+      
+        <a href="/tags/jvm/" class="print-no-link">#jvm</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>JVM - 运行时内存区域</div>
+      <div>https://blackist.org/2019-07-07-java-jvm-jmm/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>董猿外</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2019年7月7日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019-08-28-arithmetic-coordinate-point-segment-dist/" title="算法 - PNPoly处理点和多边形">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">算法 - PNPoly处理点和多边形</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019-07-06-java-jvm-classload-process/" title="JVM - 类加载过程">
+                        <span class="hidden-mobile">JVM - 类加载过程</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://lib.baomitu.com/gitalk/1.8.0/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"506775736a1ab7d38a56","clientSecret":"b1c3f0dc07680f22f07a585fc81cd5288adb6729","repo":"blackist.github.io","owner":"blackist","admin":["blackist"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '59b234d05c9fa52dd865fb7fe24f202c'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a>
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,822 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/images/Dong_medium.ico">
+  <link rel="icon" href="/images/Dong_medium.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="董猿外">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="使用 EXPLAIN 分析查询语句，解析每一项的含义，并给出优化建议。 MySQL 版本：10.5.5-MariaDB MariaDB Server。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL 查询优化 - Explain">
+<meta property="og:url" content="https://blackist.org/2020-10-11-mysql-optimize-basic/index.html">
+<meta property="og:site_name" content="Thinking in Coding">
+<meta property="og:description" content="使用 EXPLAIN 分析查询语句，解析每一项的含义，并给出优化建议。 MySQL 版本：10.5.5-MariaDB MariaDB Server。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blogres.blackist.org/20201011163022.jpg">
+<meta property="og:image" content="https://blogres.blackist.org/20200814104611.jpg">
+<meta property="article:published_time" content="2020-10-11T08:08:28.000Z">
+<meta property="article:modified_time" content="2023-01-05T06:23:24.183Z">
+<meta property="article:author" content="董猿外">
+<meta property="article:tag" content="MySQL">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blogres.blackist.org/20201011163022.jpg">
+  
+  
+  
+  <title>MySQL 查询优化 - Explain - Thinking in Coding</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blackist.org","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":100,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>董猿外</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="MySQL 查询优化 - Explain"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-10-11 16:08" pubdate>
+          2020年10月11日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          6.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          56 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">MySQL 查询优化 - Explain</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>使用 <code>EXPLAIN</code> 分析查询语句，解析每一项的含义，并给出优化建议。</p>
+<p>MySQL 版本：10.5.5-MariaDB MariaDB Server。</p>
+<span id="more"></span>
+
+<h2 id="一、EXPLAIN"><a href="#一、EXPLAIN" class="headerlink" title="一、EXPLAIN"></a>一、EXPLAIN</h2><p>查看某一查询语句的执行计划：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">MariaDB [ar]&gt; EXPLAIN SELECT * FROM `user` WHERE true_name like <span class="hljs-string">&#x27;董%&#x27;</span>;  <br></code></pre></td></tr></table></figure>
+
+<p>得到如下执行结果：</p>
+<img src="https://blogres.blackist.org/20201011163022.jpg" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h3 id="id"><a href="#id" class="headerlink" title="id"></a>id</h3><p>含有子查询的时候，表明各语句执行的先后顺序，如果数字相同，则按照先后顺序执行，如果为 null，则代表是结果集，不需要查询。</p>
+<h3 id="select-type"><a href="#select-type" class="headerlink" title="select_type"></a>select_type</h3><p>分为 simple（简单查询）、subquery（子查询）、drived（衍生表，from 列表中有子查询）、union（联合查询）等。</p>
+<h3 id="table"><a href="#table" class="headerlink" title="table"></a>table</h3><p>通常是表名，或者表的别名，或者一个为查询产生临时表的标示符（如派生表、子查询、集合）。</p>
+<h3 id="type"><a href="#type" class="headerlink" title="type"></a>type</h3><p>扫描类型（<strong>性能</strong>从高到低）：</p>
+<ul>
+<li><p>null：MySQL在优化过程中分解语句，不需要访问索引或表就可以得到结果。</p>
+</li>
+<li><p>system：表中只有一行数据或者该表为空表，这个方式通常出现在 myisam 和 memory 的引擎中，innodb 一般会展示为 all 或 index。</p>
+</li>
+<li><p><strong>const</strong>：使用唯一索引或者主键，返回记录一定是 1 行记录的<strong>等值 where 条</strong>件时。</p>
+<blockquote>
+<p> const、system：当MySQL对查询某部分进行优化，并转换为一个常量时，使用这些类型访问。如将主键置于where列表中，MySQL就能将该查询转换为一个常量</p>
+</blockquote>
+</li>
+<li><p>eq_ref：出现在要连接几个表的查询计划中，驱动表只返回一行数据，且这行数据是第二个表的主键或者唯一索引，且必须为 not null，唯一索引和主键是多列时，只有所有的列都用作比较时才会出现 eq_ref。唯一性索引扫描，对于每个索引键，表中只有一条记录与之匹配。常见于主键或唯一索引扫描。</p>
+</li>
+<li><p><strong>ref</strong>：不像eq_ref那样要求连接顺序，也没有主键和唯一索引的要求，只要使用相等条件检索时就可能出现。常见于辅助索引的等值查找；多列主键、唯一索引中，使用第一个列之外的列作为等值查找也会出现，总之，返回数据不唯一的等值查找就可能出现。</p>
+</li>
+<li><p>ref_or_null：与ref方法类似，只是增加了null值的比较。实际用的不多。</p>
+</li>
+<li><p><strong>range</strong>：以范围的形式扫描数据，对索引的扫描开始于某一点，返回匹配值域的行，常见于使用 <code>&gt;</code>, <code>&lt;</code>, <code>is null</code>, <code>between</code>, <code>in</code>, <code>like</code> 等运算符的查询中。</p>
+</li>
+<li><p>index_merge：表示查询使用了两个以上的索引，最后取交集或者并集，常见and ，or的条件使用了不同的索引，官方排序这个在ref_or_null之后，但是实际上由于要读取所有索引，性能可能大部分时间都不如range</p>
+</li>
+<li><p><strong>index</strong>：索引全表扫描（Full Index Scan），把索引从头到尾扫一遍，常见于使用索引列就可以处理不需要读取<strong>数据文件</strong>的查询、可以使用索引排序或者分组的查询。index 与 ALL 区别为 index 类型只遍历索引树。</p>
+</li>
+<li><p><strong>all</strong>：这个就是全表扫描<strong>数据文件</strong>（Full Table Scan），然后再在 server 层进行过滤返回符合要求的记录。</p>
+</li>
+</ul>
+<p>range、index、all 需要添加<strong>合适的索引</strong>。</p>
+<h3 id="possible-keys"><a href="#possible-keys" class="headerlink" title="possible_keys"></a>possible_keys</h3><p>本次查询可能会用到的索引</p>
+<h3 id="key"><a href="#key" class="headerlink" title="key"></a>key</h3><p>实际使用到的索引。</p>
+<h3 id="key-len"><a href="#key-len" class="headerlink" title="key_len"></a>key_len</h3><p>键长</p>
+<h3 id="ref"><a href="#ref" class="headerlink" title="ref"></a>ref</h3><p>使用的索引列用的查找方式：</p>
+<ul>
+<li><p>const：使用常数等值进行查询。</p>
+</li>
+<li><p>func：使用了表达式或函数。</p>
+</li>
+</ul>
+<h3 id="rows"><a href="#rows" class="headerlink" title="rows"></a>rows</h3><p>预估需要扫描的行数，其中如果行数到达表总行数一定的比例的时候，就会不使用索引。</p>
+<h3 id="filtered"><a href="#filtered" class="headerlink" title="filtered"></a>filtered</h3><p>通过过滤条件之后对比总数的百分比。</p>
+<p>给出了一个百分比的值，这个百分比值和rows列的值一起使用，可以估计出那些将要和执行计划中的前一个表（前一个表就是指id列的值比当前表的id小的表）进行连接的行的数目。</p>
+<h3 id="Extra"><a href="#Extra" class="headerlink" title="Extra"></a>Extra</h3><h4 id="using-index"><a href="#using-index" class="headerlink" title="using index"></a>using index</h4><p>本次查询使用了覆盖索引，直接通过索引就可以返回结果，无需进行回表。</p>
+<blockquote>
+<p>The column information is retrieved from the table using only information in the index tree without having to do an additional seek to read the actual row. This strategy can be used when the query uses only columns that are part of a single index.</p>
+<p>For InnoDB tables that have a user-defined clustered index, that index can be used even when Using index is absent from the Extra column. This is the case if type is index and key is PRIMARY.</p>
+</blockquote>
+<p>从表中仅使用索引树中的信息就能获取查询语句的列的信息, 而不必进行其他额外查找（seek）去读取实际的行记录。当查询的列是单个索引的部分的列时, 可以使用此策略。对于具有用户定义的聚集索引的 InnoDB 表, 即使从Extra列中没有使用索引, 也可以使用该索引。如果 type 是 index 并且 Key 是主键, 则会出现这种情况（并非只有这一种情况）。</p>
+<h4 id="using-where"><a href="#using-where" class="headerlink" title="using where"></a>using where</h4><blockquote>
+<p>A WHERE clause is used to restrict which rows to match against the next table or send to the client. Unless you specifically intend to fetch or examine all rows from the table, you may have something wrong in your query if the Extra value is not Using where and the table join type is ALL or index.</p>
+<p>Using where has no direct counterpart in JSON-formatted output; the attached_condition property contains any WHERE condition used.</p>
+</blockquote>
+<p>where 子句用于限制与下一个表匹配的行记录或发送到客户端的行记录。除非您特意打算从表中提取或检查所有行,否则如果 Extra 值不是Using where 并且表连接类型为 ALL 或 index，则查询可能会出错。</p>
+<p>MySQL 服务器在存储引擎收到记录后进行后过滤（Post-filter），先读取整行数据，再判断是否符合条件，符合保留，不符合丢弃。如果查询未能使用索引，Using where 的作用只是提醒我们 MySQL 将用 where 子句来过滤结果集。这个一般发生在 MySQL 服务器，而不是存储引擎层。一般发生在不能走索引扫描的情况下或者走索引扫描，但是有些查询条件不在索引当中的情况下。</p>
+<h4 id="using-index-condition"><a href="#using-index-condition" class="headerlink" title="using index condition"></a>using index condition</h4><blockquote>
+<p>Tables are read by accessing index tuples and testing them first to determine whether to read full table rows. In this way, index information is used to defer (“push down”) reading full table rows unless it is necessary. See Section 8.2.1.5, “Index Condition Pushdown Optimization”.</p>
+</blockquote>
+<p>mysql 5.6 时出现的新特性，基于 ICP（<strong>Index Condition Pushdown</strong>），即如果你的查询条件里有部分可以走索引，那么则会先将条件推到底层的存储引擎层去做一部分过滤，找到所有符合索引条件的数据行，随后用 WHERE 子句中的其他条件去过滤这些数据行，以此减少查询的条数。因此基于 icp 的概念，在我们使用组合索引的场景不是很明确时，最好可以分别建立索引。</p>
+<h4 id="using-filesort"><a href="#using-filesort" class="headerlink" title="using filesort"></a>using filesort</h4><p>当需要的排序和使用索引的排序不一致时，即无法通过索引排序，在获取结果之后，还需要对结果进行再一次的排序。</p>
+<p>MySQL 中<strong>无法利用索引</strong>完成的排序操作称为“文件排序”。</p>
+<p>当我们试图对一个没有索引的字段进行排序时，就是filesoft。它跟文件没有任何关系，实际上是<strong>内部的一个快速排序</strong>。</p>
+<h3 id="Using-where-Using-index-和-Using-index-condition"><a href="#Using-where-Using-index-和-Using-index-condition" class="headerlink" title="Using where; Using index 和 Using index condition"></a>Using where; Using index 和 Using index condition</h3><p><strong>Using index condition</strong> : where condition contains indexed and non-indexed column and the optimizer will first resolve the indexed column and will look for the rows in the table for the other condition (index push down)</p>
+<p><strong>Using where; Using index</strong> : ‘Using index’ meaning not doing the scan of entire table. ‘Using where’ may still do the table scan on non-indexed column but it will use if there is any indexed column in the where condition first more like using index condition</p>
+<p><strong>Which is better?</strong> </p>
+<ul>
+<li><p><code>Using where; Using index</code> would be better then <code>Using index condition</code> if query has index all covering.</p>
+</li>
+<li><p>When ‘Column Extra’ says <code>Using Index Condition</code>, all columns in where condition are using index. If there are any columns out of index, then Column Extra say <code>Using Where; Using Index</code> (in this case, Mysql need look for in data row to apply where clause). It’s better <code>Using Index Condition</code>.</p>
+</li>
+</ul>
+<h3 id="ICP"><a href="#ICP" class="headerlink" title="ICP"></a>ICP</h3><p>在没有 ICP 之前，存储引擎根据索引去基表查找，然后将数据返回给 mysql server，mysql server 再根据 where 条件进行过滤。</p>
+<p>ICP 是在取出索引的同时，判断是否可以根据索引当中的列进行 where 条件过滤，将 where 条件的过滤放在了存储引擎。</p>
+<p>ICP 的执行步骤是：</p>
+<ol>
+<li><p>在存储引擎获取一条索引基础数据。</p>
+</li>
+<li><p>存储引擎根据上面的数据，结合where条件，判断是否满足where条件，如果没有满足条件，回到第一步，筛选下一条数据，否则的话，进行下面的判断。</p>
+</li>
+<li><p>对于满足下推条件的数据，存储引擎根据 B+ 树的 key，定位基表的行数据，并返回整行数据至 server 层。</p>
+</li>
+<li><p>在 server 层筛选没有被下推到存储引擎层 where 条件，满足则使用，否则丢弃。</p>
+</li>
+</ol>
+<img src="https://blogres.blackist.org/20200814104611.jpg" srcset="/img/loading.gif" lazyload style="zoom: 45%;" />
+
+<h2 id="二、优化经验"><a href="#二、优化经验" class="headerlink" title="二、优化经验"></a>二、优化经验</h2><ol>
+<li>要对经常进行搜索，排序，分组的列创建索引。</li>
+<li>考虑列基数（同一个列中的不重复的值的数量），列基数越大，效果越好，即区分度越高。</li>
+<li>索引的数据类型尽可能的短，如果tinyint可以实现，就不要用Int</li>
+<li>使用最左前缀。</li>
+<li>不要建立过多的索引。</li>
+<li>insert的时候可以考虑使用批量插入。</li>
+<li>like的时候不要在初始位置使用通配符。</li>
+</ol>
+<h3 id="Extra列"><a href="#Extra列" class="headerlink" title="Extra列"></a>Extra列</h3><p>出现以下情况时，考虑优化：</p>
+<ul>
+<li><p>using filesort 使用外部排序，而不是按照索引顺序排序，数据量少时通过内存排序，否则需要通过磁盘排序（<strong>需要添加合适的索引</strong>）</p>
+</li>
+<li><p>using temporary 创建一个临时表来存储数据，一般出现在对非索引的列集进行 group by 时 （需要添加合适的索引）  </p>
+</li>
+<li><p>using where 通常是对全表&#x2F;全索引进行扫描之后，再用 where 条件进行筛选查询出来的，<strong>通常 type 列为 all 或者 index</strong>.（<strong>需要添加合适的索引</strong>）</p>
+</li>
+<li><p>using index 表示当前的查询条件都能够从索引树当中获取，不需要进行回表查询，即（索引覆盖）说明性能还可以，需要和type列当中的 index 进行区分。如果同时出现了 using where 表明进行了索引被用来执行键值的查询，如果没有using where表明索引用来读取数据，而非查找，以上两种情况都是从 mysql 服务层完成的，无需再回表查询记录。</p>
+</li>
+</ul>
+<h3 id="索引操作"><a href="#索引操作" class="headerlink" title="索引操作"></a>索引操作</h3><p>在执行CREATE TABLE语句时可以创建索引，也可以单独用CREATE INDEX或ALTER TABLE来为表增加索引。</p>
+<h4 id="1-ALTER-TABLE"><a href="#1-ALTER-TABLE" class="headerlink" title="1.ALTER TABLE"></a>1.ALTER TABLE</h4><p>ALTER TABLE 用来创建普通索引、UNIQUE 索引或 PRIMARY KEY 索引：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> table_name <span class="hljs-keyword">ADD</span> INDEX index_name (column_list)<br><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> table_name <span class="hljs-keyword">ADD</span> <span class="hljs-keyword">UNIQUE</span> (column_list)<br><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> table_name <span class="hljs-keyword">ADD</span> <span class="hljs-keyword">PRIMARY</span> KEY (column_list)<br></code></pre></td></tr></table></figure>
+
+<p> 其中 table_name 是要增加索引的表名，column_list 指出对哪些列进行索引，多列时各列之间用逗号分隔。索引名 index_name 可选，缺省时，MySQL 将根据第一个索引列赋一个名称。另外，ALTER TABLE 允许在单个语句中更改多个表，因此可以在同时创建多个索引。</p>
+<h4 id="2-CREATE-INDEX"><a href="#2-CREATE-INDEX" class="headerlink" title="2.CREATE INDEX"></a>2.CREATE INDEX</h4><p>CREATE INDEX 可对表增加普通索引或 UNIQUE 索引：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE</span> INDEX index_name <span class="hljs-keyword">ON</span> table_name (column_list)<br><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">UNIQUE</span> INDEX index_name <span class="hljs-keyword">ON</span> table_name (column_list)<br></code></pre></td></tr></table></figure>
+
+<p>table_name、index_name 和 column_list 具有与 ALTER TABLE 语句中相同的含义，索引名不可选。另外，不能用 CREATE INDEX 语句创建 PRIMARY KEY 索引。</p>
+<h4 id="3-索引类型"><a href="#3-索引类型" class="headerlink" title="3.索引类型"></a>3.索引类型</h4><p>在创建索引时，可以规定索引能否包含重复值。如果不包含，则索引应该创建为 PRIMARY KEY 或 UNIQUE 索引。对于单列惟一性索引，这保证单列不包含重复的值。对于多列惟一性索引，保证多个值的组合不重复。</p>
+<p>PRIMARY KEY 索引和 UNIQUE 索引非常类似。事实上，PRIMARY KEY 索引仅是一个具有名称 PRIMARY 的 UNIQUE 索引。这表示一个表只能包含一个 PRIMARY KEY，因为一个表中不可能具有两个同名的索引。</p>
+<p>下面的SQL语句对 students 表在 sid 上添加 PRIMARY KEY 索引：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> students <span class="hljs-keyword">ADD</span> <span class="hljs-keyword">PRIMARY</span> KEY (sid)<br></code></pre></td></tr></table></figure>
+
+<h4 id="4-删除索引"><a href="#4-删除索引" class="headerlink" title="4.删除索引"></a>4.删除索引</h4><p>可利用ALTER TABLE或DROP INDEX语句来删除索引。类似于CREATE INDEX语句，DROP INDEX可以在ALTER TABLE内部作为一条语句处理，语法如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">DROP</span> INDEX index_name <span class="hljs-keyword">ON</span> talbe_name<br><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> table_name <span class="hljs-keyword">DROP</span> INDEX index_name<br><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> table_name <span class="hljs-keyword">DROP</span> <span class="hljs-keyword">PRIMARY</span> KEY<br></code></pre></td></tr></table></figure>
+
+<p>其中，前两条语句是等价的，删除掉table_name中的索引index_name。</p>
+<p>第3条语句只在删除 PRIMARY KEY 索引时使用，因为一个表只可能有一个 PRIMARY KEY 索引，因此不需要指定索引名。如果没有创建 PRIMARY KEY 索引，但表具有一个或多个 UNIQUE 索引，则 MySQL 将删除第一个 UNIQUE 索引。</p>
+<p>如果从表中删除了某列，则索引会受到影响。对于多列组合的索引，如果删除其中的某列，则该列也会从索引中删除。如果删除组成索引的所有列，则整个索引将被删除。</p>
+<h4 id="5-查看索引"><a href="#5-查看索引" class="headerlink" title="5.查看索引"></a>5.查看索引</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">mysql&gt; show index from tblname;<br>mysql&gt; show keys from tblname;<br></code></pre></td></tr></table></figure>
+
+
+
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/5.7/en/index-extensions.html">https://dev.mysql.com/doc/refman/5.7/en/index-extensions.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/kerrycode/p/9909093.html">https://www.cnblogs.com/kerrycode/p/9909093.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/tianhuilove/archive/2011/09/05/2167795.html">https://www.cnblogs.com/tianhuilove/archive/2011/09/05/2167795.html</a></p>
+<p>（完）</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/DB/" class="category-chain-item">DB</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/MySQL/" class="print-no-link">#MySQL</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>MySQL 查询优化 - Explain</div>
+      <div>https://blackist.org/2020-10-11-mysql-optimize-basic/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>董猿外</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年10月11日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021-06-12-life-playing-in-work/" title="生活乐趣——猜猜乐">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">生活乐趣——猜猜乐</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020-04-17-linux-redis-cluster-shell/" title="Shell 脚本自动部署 Redis 集群">
+                        <span class="hidden-mobile">Shell 脚本自动部署 Redis 集群</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://lib.baomitu.com/gitalk/1.8.0/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"506775736a1ab7d38a56","clientSecret":"b1c3f0dc07680f22f07a585fc81cd5288adb6729","repo":"blackist.github.io","owner":"blackist","admin":["blackist"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '18ea1475df9e5d63804984957ee1d65d'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a>
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

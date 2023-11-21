@@ -1,0 +1,739 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/images/Dong_medium.ico">
+  <link rel="icon" href="/images/Dong_medium.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="董猿外">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="我时常需要在云服务器上搭建测试环境，每次入手新的服务器配置集群环境时，跟着笔记敲一遍命令行挺麻烦的。学了 shell 脚本后，我尝试使用脚本在单机服务器上部署 Redis 集群。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Shell 脚本自动部署 Redis 集群">
+<meta property="og:url" content="https://blackist.org/2020-04-17-linux-redis-cluster-shell/index.html">
+<meta property="og:site_name" content="Thinking in Coding">
+<meta property="og:description" content="我时常需要在云服务器上搭建测试环境，每次入手新的服务器配置集群环境时，跟着笔记敲一遍命令行挺麻烦的。学了 shell 脚本后，我尝试使用脚本在单机服务器上部署 Redis 集群。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-04-17T15:07:20.000Z">
+<meta property="article:modified_time" content="2023-11-21T08:52:51.056Z">
+<meta property="article:author" content="董猿外">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="OPS">
+<meta property="article:tag" content="Redis">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Shell 脚本自动部署 Redis 集群 - Thinking in Coding</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blackist.org","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":100,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>董猿外</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Shell 脚本自动部署 Redis 集群"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-04-17 23:07" pubdate>
+          2020年4月17日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          8.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          73 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Shell 脚本自动部署 Redis 集群</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>我时常需要在云服务器上搭建测试环境，每次入手新的服务器配置集群环境时，跟着笔记敲一遍命令行挺麻烦的。学了 shell 脚本后，我尝试使用脚本在单机服务器上部署 Redis 集群。</p>
+<span id="more"></span>
+
+<h2 id="安装-Redis-服务器"><a href="#安装-Redis-服务器" class="headerlink" title="安装 Redis 服务器"></a>安装 Redis 服务器</h2><p>参照 <a href="https://blackist.org/2020/04/03/redis-cluster-masterandslave/">Redis 主从集群及自启动配置</a> 实现自动安装，首先判断是否已安装，若存在 Redis 服务程序则跳过，否则安装。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">Check redis <span class="hljs-built_in">command</span></span><br>if [ ! -f &quot;/usr/local/bin/redis-server&quot; ]; then<br>  echo &quot;Redis not ready, please install redis firstly!&quot;<br>  echo &quot;&quot;<br>  echo &quot;===== Install redis as follows =====&quot;<br>  wget http://download.redis.io/releases/redis-5.0.7.tar.gz -P /usr/local/src<br>  cd /usr/local/src/<br>  tar -zxvf redis-5.0.7.tar.gz<br>  cd redis-5.0.7<br>  install GCC if not exists<br>  yum install -y gcc-c++<br>  make MALLOC=libc install<br><br>  echo &quot;&quot;<br>  echo &quot;Redis Server Installation Finished!&quot;<br>fi<br></code></pre></td></tr></table></figure>
+
+<p>通过 <code>if [ ! -f &quot;/usr/local/bin/redis-server&quot; ]</code> 判断 server 程序是否存在，若存在则认为 Redis 已安装。</p>
+<p>采用源码编译的方式安装 Redis，已指定 5.0.7 版本，防止出现兼容性问题。</p>
+<h2 id="生成-Redis-实例的配置文件"><a href="#生成-Redis-实例的配置文件" class="headerlink" title="生成 Redis 实例的配置文件"></a>生成 Redis 实例的配置文件</h2><h3 id="常量定义"><a href="#常量定义" class="headerlink" title="常量定义"></a>常量定义</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">Constants</span><br>BASE_DIR=/usr/local/redis-cluster<br>PORTS=`seq 7000 7005`<br>START_UP=$BASE_DIR/startup.sh<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>BASE_DIR 为集群配置 directory；</li>
+<li>PORTS 为集群在本地所占用的端口列表，<code>seq 7000 7005</code> 生成 7000-7005 的整数数组；</li>
+<li>START_UP 为集群实例启动脚本，集群需要启动 6 个 Redis 实例，使用脚本简化操作。</li>
+</ul>
+<h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">创建工作目录，在工作目录下进行后续操作</span><br>mkdir -p $BASE_DIR<br>cd $BASE_DIR<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">准备集群实例启动脚本，在每次实例配置循环时将启动命令追加到脚本中</span><br>echo &quot;#!/bin/bash&quot; &gt; $START_UP<br>servers=<br>for port in $PORTS; do <br><span class="hljs-meta prompt_">  # </span><span class="language-bash">设置每个实例的工作目录, data为数据存放目录</span><br>  mkdir -p $BASE_DIR/$port/data<br><span class="hljs-meta prompt_">  # </span><span class="language-bash">生成单个实例的配置文件</span><br>  generate_instance_conf $port<br><span class="hljs-meta prompt_">  # </span><span class="language-bash">追加实例启动命令到启动脚本</span><br>  echo &quot;/usr/local/bin/redis-server $BASE_DIR/$port/redis.conf&quot; &gt;&gt; $START_UP<br><span class="hljs-meta prompt_">  # </span><span class="language-bash">记录所有的实例位置，用于之后的集群启动</span><br>  servers=&quot;$servers 127.0.0.1:$port &quot;<br>done<br></code></pre></td></tr></table></figure>
+
+<h3 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h3><p>每个实例的配置文件相似，只是端口号和工作目录不同。还有一点需要注意，要想可以从其它外部主机访问此主机上的 Redis 集群，需要将实例的集群地址设置为主机的外网地址，因此需要用户手动输入主机外网地址。</p>
+<p>使用 shell 实现外网地址获取的交互模式：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">User custom setting</span><br>echo -n &quot;Enter your host&#x27;s public address(default 127.0.0.1):&quot;<br>read cluster_address<br></code></pre></td></tr></table></figure>
+
+<p>将实例配置依次写入 redis.conf 中：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">generate configuration files</span><br>function generate_instance_conf() &#123;<br>  echo &quot;configuring server $1&quot;<br>  <br><span class="hljs-meta prompt_">  # </span><span class="language-bash">clean conf file</span><br>  echo &quot;&quot; &gt; $1/redis.conf<br><span class="hljs-meta prompt_">  # </span><span class="language-bash">write conf</span><br>  echo &quot;port $1&quot; &gt;&gt; $1/redis.conf<br>  echo &quot;bind 0.0.0.0&quot; &gt;&gt; $1/redis.conf<br>  echo &quot;dir $BASE_DIR/$port/data&quot; &gt;&gt; $1/redis.conf<br>  echo &quot;cluster-enabled yes&quot; &gt;&gt; $1/redis.conf<br>  echo &quot;cluster-config-file nodes-$1.conf&quot; &gt;&gt; $1/redis.conf<br>  echo &quot;cluster-node-timeout 5000&quot; &gt;&gt; $1/redis.conf<br>  if [ -n &quot;$cluster_address&quot; ]; then <br>    echo &quot;cluster-announce-ip $cluster_address&quot; &gt;&gt; $1/redis.conf<br>  else <br>    echo &quot;cluster-announce-ip 127.0.0.1&quot; &gt;&gt; $1/redis.conf<br>  fi<br>  echo &quot;appendonly yes&quot; &gt;&gt; $1/redis.conf<br>  echo &quot;daemonize yes&quot; &gt;&gt; $1/redis.conf<br>&#125;<br>chmod +x $START_UP<br></code></pre></td></tr></table></figure>
+
+<p>如上步骤完成后，集群工作目录如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash">drwxr-xr-x 3 root root 4096 Apr 19 11:07 7000<br>drwxr-xr-x 3 root root 4096 Apr 19 11:07 7001<br>drwxr-xr-x 3 root root 4096 Apr 19 11:07 7002<br>drwxr-xr-x 3 root root 4096 Apr 19 11:07 7003<br>drwxr-xr-x 3 root root 4096 Apr 19 11:07 7004<br>drwxr-xr-x 3 root root 4096 Apr 19 11:07 7005<br>-rwxr-xr-x 1 root root  426 Apr 19 11:07 startup.sh<br></code></pre></td></tr></table></figure>
+
+<h2 id="启动实例并建立集群"><a href="#启动实例并建立集群" class="headerlink" title="启动实例并建立集群"></a>启动实例并建立集群</h2><h3 id="启动-Redis-服务实例"><a href="#启动-Redis-服务实例" class="headerlink" title="启动 Redis 服务实例"></a>启动 Redis 服务实例</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">startup instances</span><br>echo &quot;starting servers...&quot;<br><span class="hljs-meta prompt_">$</span><span class="language-bash">START_UP</span><br>sleep 5s<br>echo &quot;servers ready!&quot;<br></code></pre></td></tr></table></figure>
+
+<p>执行启动脚本，启动 6 个 Redis 实例，并保持休眠 5 秒，等待集群启动完成，执行结果如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash">starting servers...<br>27764:C 19 Apr 2020 11:07:58.874 <span class="hljs-comment"># oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo</span><br>27764:C 19 Apr 2020 11:07:58.874 <span class="hljs-comment"># Redis version=5.0.7, ..</span><br>27764:C 19 Apr 2020 11:07:58.874 <span class="hljs-comment"># Configuration loaded</span><br>...<br>27777:C 19 Apr 2020 11:07:58.885 <span class="hljs-comment"># oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo</span><br>27777:C 19 Apr 2020 11:07:58.885 <span class="hljs-comment"># Redis version=5.0.7, ..</span><br>27777:C 19 Apr 2020 11:07:58.885 <span class="hljs-comment"># Configuration loaded</span><br>servers ready! 	<br></code></pre></td></tr></table></figure>
+
+<h3 id="建立集群"><a href="#建立集群" class="headerlink" title="建立集群"></a>建立集群</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">create cluster</span><br>echo &quot;configuring cluster...&quot;<br>/usr/local/bin/redis-cli --cluster create $servers --cluster-replicas 1<br>echo &quot;configured!&quot;<br></code></pre></td></tr></table></figure>
+
+<p>使用 redis-cli 建立集群，指定所要包含实例的 host 和 port，$servers 中就是这些信息。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash">configuring cluster...<br>&gt;&gt;&gt; Performing <span class="hljs-built_in">hash</span> slots allocation on 6 nodes...<br>Master[0] -&gt; Slots 0 - 5460<br>Master[1] -&gt; Slots 5461 - 10922<br>Master[2] -&gt; Slots 10923 - 16383<br>...<br>Can I <span class="hljs-built_in">set</span> the above configuration? (<span class="hljs-built_in">type</span> <span class="hljs-string">&#x27;yes&#x27;</span> to accept): <span class="hljs-built_in">yes</span><br>...<br>[OK] All nodes agree about slots configuration.<br>&gt;&gt;&gt; Check <span class="hljs-keyword">for</span> open slots...<br>&gt;&gt;&gt; Check slots coverage...<br>[OK] All 16384 slots covered.<br>configured!<br></code></pre></td></tr></table></figure>
+
+<p>集群建立时需要用户手动确认槽数划分，输入 <code>yes</code> 即可。</p>
+<p>至此集群部署完成，下面配置集群开机自启动。</p>
+<h2 id="systemd-自启动"><a href="#systemd-自启动" class="headerlink" title="systemd 自启动"></a>systemd 自启动</h2><p>使用 systemd 配置 Redis 集群启动服务，首先配置 service 文件：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">generate redis-cluster service file</span><br>cat &lt;&lt; EOT &gt; $BASE_DIR/redis-cluster.service<br>[Unit]<br>Description=Redis 5.0 Cluster Service<br>After=network.target<br><br>[Service]<br>Type=forking<br>ExecStart=/usr/local/redis-cluster/startup.sh<br><br>[Install]<br>WantedBy=default.target<br>EOT<br></code></pre></td></tr></table></figure>
+
+<p><code>cat &lt;&lt; EOT &gt; $BASE_DIR/redis-cluster.service</code> 表示向 <code>redis-cluster.service</code> 文件中覆盖一段内容，内容为下一行至 <code>EOT</code> 之间的内容。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">create service</span><br>echo &quot;Creating redis cluster service...&quot;<br><span class="hljs-meta prompt_"># </span><span class="language-bash">在 systemd 文件夹下创建 service 的软连接并启动 redis 集群服务</span><br>ln -s $BASE_DIR/$SERVICE /etc/systemd/system/$SERVICE <br>sudo systemctl daemon-reload &amp;&amp; sudo systemctl enable $SERVICE &amp;&amp; sudo systemctl start $SERVICE<br></code></pre></td></tr></table></figure>
+
+<h2 id="集群删除"><a href="#集群删除" class="headerlink" title="集群删除"></a>集群删除</h2><p>使用 <code>--remove</code> 参数执行集群删除操作：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">Remove redis cluster</span><br>function remove_cluster() &#123;<br><span class="hljs-meta prompt_">  # </span><span class="language-bash">终止各 Reids 实例进程</span><br>  ps -ef | grep redis-server | grep cluster | awk &#x27;&#123;print $2&#125;&#x27; | xargs kill -9<br><span class="hljs-meta prompt_">  # </span><span class="language-bash">移除 systemd 服务</span><br>  systemctl disable redis-cluster.service<br><span class="hljs-meta prompt_">  # </span><span class="language-bash">移除工作目录（配置文件和数据）</span><br>  if [ -d $BASE_DIR ]; then<br>    rm -rf $BASE_DIR<br>  fi<br>&#125;<br><br>if [ &quot;$1&quot; = &quot;--remove&quot; ]; then<br>  remove_cluster<br>  exit 0<br>fi<br></code></pre></td></tr></table></figure>
+
+<p>通过过滤器 <code>grep</code> 和流式编辑器 <code>awk</code> 查询到 Redis 实例的 pid，使用 <code>kill</code> 命令结束进程。</p>
+<p>其中 <code>awk &#39;&#123;print $2&#125;&#39;</code> 为 <code>awk -F &#39; &#39; &#39;&#123;print $2&#125;&#39;</code> 的缩写，<code>-F</code> 表示分隔符参数，默认为空格，&#96;&#96;awk -F ‘ ‘&#96; 将如下内容分割为数组：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">root 27765 1 0 11:07 ? 00:00:03 /usr/local/bin/redis-server 0.0.0.0:7000 [cluster]<br></code></pre></td></tr></table></figure>
+
+<p><code>&#123;print $2&#125;</code> 表述输出第 2 个元素，$0 表述输出整行。</p>
+<h2 id="完整的-shell"><a href="#完整的-shell" class="headerlink" title="完整的 shell"></a>完整的 shell</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">!/bin/bash</span><br><br>BASE_DIR=/usr/local/redis-cluster<br><br>PORTS=`seq 7000 7005`<br><br>START_UP=$BASE_DIR/startup.sh<br><br>SERVICE=redis-cluster.service<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">Remove redis cluster</span><br>function remove_cluster() &#123;<br><span class="hljs-meta prompt_">  # </span><span class="language-bash"><span class="hljs-built_in">kill</span> redis servers</span><br>  ps -ef | grep redis-server | grep cluster | awk &#x27;&#123;print $2&#125;&#x27; | xargs kill -9<br><span class="hljs-meta prompt_">  # </span><span class="language-bash"><span class="hljs-built_in">disable</span> systemd</span><br>  systemctl disable redis-cluster.service<br><span class="hljs-meta prompt_">  # </span><span class="language-bash"><span class="hljs-built_in">rm</span> cluster data</span><br>  if [ -d $BASE_DIR ]; then<br>    rm -rf $BASE_DIR<br>  fi<br>&#125;<br><br>if [ &quot;$1&quot; = &quot;--remove&quot; ]; then<br>  remove_cluster<br>  exit 0<br>fi<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">Check redis <span class="hljs-built_in">command</span></span><br>if [ ! -f &quot;/usr/local/bin/redis-server&quot; ]; then<br>  echo &quot;Redis not ready, please install redis firstly!&quot;<br>  echo &quot;&quot;<br>  echo &quot;===== Install redis as follows =====&quot;<br>  wget http://download.redis.io/releases/redis-5.0.7.tar.gz -P /usr/local/src<br>  cd /usr/local/src/<br>  tar -zxvf redis-5.0.7.tar.gz<br>  cd redis-5.0.7<br>  install GCC if not exists<br>  yum install -y gcc-c++<br>  make MALLOC=libc install<br><br>  echo &quot;&quot;<br>fi<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">User custom setting</span><br>echo -n &quot;Enter your host&#x27;s public address(default 127.0.0.1):&quot;<br>read cluster_address<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">enter work directory</span><br>mkdir -p $BASE_DIR<br>cd $BASE_DIR<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">generate configuration files</span><br>function generate_instance_conf() &#123;<br>  echo &quot;configuring server $1&quot;<br>  <br><span class="hljs-meta prompt_">  # </span><span class="language-bash">clean conf file</span><br>  echo &quot;&quot; &gt; $1/redis.conf<br><span class="hljs-meta prompt_">  # </span><span class="language-bash">write conf</span><br>  echo &quot;port $1&quot; &gt;&gt; $1/redis.conf<br>  echo &quot;bind 0.0.0.0&quot; &gt;&gt; $1/redis.conf<br>  echo &quot;dir $BASE_DIR/$1/data&quot; &gt;&gt; $1/redis.conf<br>  echo &quot;cluster-enabled yes&quot; &gt;&gt; $1/redis.conf<br>  echo &quot;cluster-config-file nodes-$1.conf&quot; &gt;&gt; $1/redis.conf<br>  echo &quot;cluster-node-timeout 5000&quot; &gt;&gt; $1/redis.conf<br>  if [ -n &quot;$cluster_address&quot; ]; then <br>    echo &quot;cluster-announce-ip $cluster_address&quot; &gt;&gt; $1/redis.conf<br>  else <br>    echo &quot;cluster-announce-ip 127.0.0.1&quot; &gt;&gt; $1/redis.conf<br>  fi<br>  echo &quot;appendonly yes&quot; &gt;&gt; $1/redis.conf<br>  echo &quot;daemonize yes&quot; &gt;&gt; $1/redis.conf<br>&#125;<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"><span class="hljs-built_in">mkdir</span> <span class="hljs-built_in">dirs</span> and setup startup.sh</span><br>echo &quot;#!/bin/bash&quot; &gt; $START_UP<br>servers=<br>for port in $PORTS; do <br>  mkdir -p $BASE_DIR/$port/data<br><span class="hljs-meta prompt_">  # </span><span class="language-bash">generate conf files</span><br>  generate_instance_conf $port<br><span class="hljs-meta prompt_">  # </span><span class="language-bash"></span><br><span class="language-bash">  <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;/usr/local/bin/redis-server <span class="hljs-variable">$BASE_DIR</span>/<span class="hljs-variable">$port</span>/redis.conf&quot;</span> &gt;&gt; <span class="hljs-variable">$START_UP</span></span><br><span class="hljs-meta prompt_">  # </span><span class="language-bash">servers</span><br>  servers=&quot;$servers 127.0.0.1:$port &quot;<br>done<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">startup instances</span><br>chmod +x $START_UP<br>echo &quot;starting servers...&quot;<br><span class="hljs-meta prompt_">$</span><span class="language-bash">START_UP</span><br>sleep 5s<br>echo &quot;servers ready!&quot;<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">create cluster</span><br>echo &quot;configuring cluster...&quot;<br>/usr/local/bin/redis-cli --cluster create $servers --cluster-replicas 1<br>echo &quot;configured!&quot;<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">generate redis-cluster service file</span><br>cat &lt;&lt; EOT &gt; $BASE_DIR/redis-cluster.service<br>[Unit]<br>Description=Redis 5.0 Cluster Service<br>After=network.target<br><br>[Service]<br>Type=forking<br>ExecStart=/usr/local/redis-cluster/startup.sh<br><br>[Install]<br>WantedBy=default.target<br>EOT<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">create service</span><br>echo &quot;Creating redis cluster service...&quot;<br>ln -s $BASE_DIR/$SERVICE /etc/systemd/system/$SERVICE <br>sudo systemctl daemon-reload &amp;&amp; sudo systemctl enable $SERVICE &amp;&amp; sudo systemctl start $SERVICE<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">Cluster OK</span><br>echo &quot;&quot;<br>echo &quot;Completed!&quot;<br>echo &quot;&quot;<br>echo &quot;Test cluster with: /usr/local/bin/redis-cli -h 127.0.0.1 -p 7000&quot;<br>echo &quot;&quot;<br>echo &quot;127.0.0.1:7000&gt;cluster nodes&quot;<br></code></pre></td></tr></table></figure>
+
+<p>脚本下载：<a target="_blank" rel="noopener" href="https://blogres.blackist.org/202004232347_404.sh">https://blogres.blackist.org/202004232347_404.sh</a></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://blackist.org/2020/04/03/redis-cluster-masterandslave/">https://blackist.org/2020/04/03/redis-cluster-masterandslave/</a></p>
+<p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/13910087/shell-script-to-capture-process-id-and-kill-it-if-exist">https://stackoverflow.com/questions/13910087/shell-script-to-capture-process-id-and-kill-it-if-exist</a></p>
+<p>（完）</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/OPS/" class="category-chain-item">OPS</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Linux/" class="print-no-link">#Linux</a>
+      
+        <a href="/tags/OPS/" class="print-no-link">#OPS</a>
+      
+        <a href="/tags/Redis/" class="print-no-link">#Redis</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Shell 脚本自动部署 Redis 集群</div>
+      <div>https://blackist.org/2020-04-17-linux-redis-cluster-shell/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>董猿外</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年4月17日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020-10-11-mysql-optimize-basic/" title="MySQL 查询优化 - Explain">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">MySQL 查询优化 - Explain</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020-04-17-linux-shell-base/" title="Linux Shell 脚本基础">
+                        <span class="hidden-mobile">Linux Shell 脚本基础</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://lib.baomitu.com/gitalk/1.8.0/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"506775736a1ab7d38a56","clientSecret":"b1c3f0dc07680f22f07a585fc81cd5288adb6729","repo":"blackist.github.io","owner":"blackist","admin":["blackist"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '52e2eadb4e0d597aeab3a764b2909af6'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a>
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

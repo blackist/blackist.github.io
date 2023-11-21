@@ -1,0 +1,823 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/images/Dong_medium.ico">
+  <link rel="icon" href="/images/Dong_medium.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="董猿外">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Anroid MVP是安卓开发中一个经典的话题，当项目较大、参与的开发人员较多，MVP的优势就体现出来了。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android组件化-MVP设计模式">
+<meta property="og:url" content="https://blackist.org/2019-03-31-android-modulize-mvp/index.html">
+<meta property="og:site_name" content="Thinking in Coding">
+<meta property="og:description" content="Anroid MVP是安卓开发中一个经典的话题，当项目较大、参与的开发人员较多，MVP的优势就体现出来了。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blogres.blackist.org/android-modulize-mvp-struc.png">
+<meta property="article:published_time" content="2019-03-31T08:12:27.000Z">
+<meta property="article:modified_time" content="2023-01-05T06:23:24.168Z">
+<meta property="article:author" content="董猿外">
+<meta property="article:tag" content="开发">
+<meta property="article:tag" content="android">
+<meta property="article:tag" content="组件化">
+<meta property="article:tag" content="MVP">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blogres.blackist.org/android-modulize-mvp-struc.png">
+  
+  
+  
+  <title>Android组件化-MVP设计模式 - Thinking in Coding</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blackist.org","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":100,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>董猿外</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Android组件化-MVP设计模式"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2019-03-31 16:12" pubdate>
+          2019年3月31日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          11k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          92 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Android组件化-MVP设计模式</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>Anroid MVP是安卓开发中一个经典的话题，当项目较大、参与的开发人员较多，MVP的优势就体现出来了。</p>
+<span id="more"></span>
+
+
+<blockquote>
+<p><strong>系列文章</strong></p>
+<p><a href="/2018/10/18/android-modulize-common/">Android组件化-基础框架搭建</a></p>
+<p><a href="/2018/10/23/android-modulize-router/">Android组件化-组件间通信BRouter</a></p>
+<p><a href="/2019/03/21/android-modulize-ui-theme/">Android组件化-风格统一&amp;主题变色</a></p>
+<p><a href="/2019/03/31/android-modulize-mvp/">Android组件化-MVP设计模式</a></p>
+</blockquote>
+<h2 id="一、经典的MVP"><a href="#一、经典的MVP" class="headerlink" title="一、经典的MVP"></a>一、经典的MVP</h2><blockquote>
+<p>经典的意思，就是又老又香 ^-^</p>
+</blockquote>
+<h3 id="1-1-一句话MVP"><a href="#1-1-一句话MVP" class="headerlink" title="1.1 一句话MVP"></a>1.1 一句话MVP</h3><p>提到Android MVP（Model-View-Presenter）就会想到MVC（Model-View-Controller），C就是Web开发中经常提到的Controller，P则是Android中用来分离Activity逻辑与界面的Presenter。</p>
+<p>MVP核心思想：</p>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs gams">MVP把Activity中的UI逻辑抽象成View接口，把业务逻辑抽象成Presenter接口，<span class="hljs-keyword">Model</span>类还是原来的<span class="hljs-keyword">Model</span>。<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="1-2-MVP图解"><a href="#1-2-MVP图解" class="headerlink" title="1.2 MVP图解"></a>1.2 MVP图解</h3><p>一图胜千言：</p>
+<p><img src="https://blogres.blackist.org/android-modulize-mvp-struc.png" srcset="/img/loading.gif" lazyload alt="MVP模型图"></p>
+<ul>
+<li>视图View：Activity和Fragment</li>
+<li>逻辑Presenter：业务逻辑和业务管理类等</li>
+<li>模型Model：SharedPreferences、数据库访问（Dao）和网络交互（Api）</li>
+</ul>
+<h2 id="二、Modulize使用MVP"><a href="#二、Modulize使用MVP" class="headerlink" title="二、Modulize使用MVP"></a>二、Modulize使用MVP</h2><p><a target="_blank" rel="noopener" href="https://github.com/blackist/modulize">Modulize项目</a>使用MVP作为基本的开发框架（以登录为例）。</p>
+<h3 id="2-1-Model层的设计"><a href="#2-1-Model层的设计" class="headerlink" title="2.1 Model层的设计"></a>2.1 Model层的设计</h3><p>Model层负责数据交互，包括网络交互、本地数据库交互以及SharedPreferences数据存取。在lib-common中添加抽象类BaseModel，LoginModel等业务模块继承自BaseModel。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">abstract</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">BaseModel</span> &#123;<br><br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="网络交互-okHttp-Retrofit-Rxjava"><a href="#网络交互-okHttp-Retrofit-Rxjava" class="headerlink" title="网络交互 - okHttp+Retrofit+Rxjava"></a>网络交互 - okHttp+Retrofit+Rxjava</h4><p>网络访问使用无话可说的okHttp，结合优雅的Retrofit，加以RxJava，真香！</p>
+<p>使用okHttpClient实例管理全局http访问：</p>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs haxe"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">OkHttp3Util</span> </span>&#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> OkHttpClient mOkHttpClient;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 获取OkHttpClient对象实例</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * @return</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> OkHttpClient getOkHttpClient() &#123;<br><br>        <span class="hljs-keyword">if</span> (<span class="hljs-literal">null</span> == mOkHttpClient) &#123;<br><br>            <span class="hljs-comment">// build design mode</span><br>            mOkHttpClient = <span class="hljs-keyword">new</span> <span class="hljs-type">OkHttpClient</span>.Builder()<br>                    <span class="hljs-comment">// cookie manager</span><br>                    .cookieJar(<span class="hljs-keyword">new</span> <span class="hljs-type">CookiesManager</span>())<br>                    <span class="hljs-comment">// 网络请求日志</span><br>                    .addInterceptor(loggingInterceptor)<br>                    <span class="hljs-comment">// 自定义拦截器</span><br>                    .addInterceptor(<span class="hljs-keyword">new</span> <span class="hljs-type">CommonIntercepter</span>())<br>                    <span class="hljs-comment">// set timeout of connection, reading and writing</span><br>                    .connectTimeout(<span class="hljs-number">10</span>, TimeUnit.SECONDS)<br>                    .writeTimeout(<span class="hljs-number">30</span>, TimeUnit.SECONDS)<br>                    .readTimeout(<span class="hljs-number">20</span>, TimeUnit.SECONDS)<br>                    .cache(cache)<br>                    .build();<br>        &#125;<br><br>        <span class="hljs-keyword">return</span> mOkHttpClient;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在lib-common中新建ServiceGenerate类管理、创建Retrofit接口访问实例，</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ServiceGenerator</span> &#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">API_SERVICE</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;http://xxxx:8080/api/&quot;</span>;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 在gson中加入时间格式化，DateDeserializer\DateSerializer为自定义转换类.</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-type">Gson</span> <span class="hljs-variable">gson</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">GsonBuilder</span>()<br>            .registerTypeAdapter(java.util.Date.class, <span class="hljs-keyword">new</span> <span class="hljs-title class_">DateDeserializer</span>()).setDateFormat(DateFormat.LONG)<br>            .registerTypeAdapter(java.util.Date.class, <span class="hljs-keyword">new</span> <span class="hljs-title class_">DateSerializer</span>()).setDateFormat(DateFormat.LONG)<br>            .create();<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * API Retrofit.</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-type">Retrofit</span> <span class="hljs-variable">apiGenerator</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Retrofit</span>.Builder()<br>            .baseUrl(API_SERVICE)<br>            <span class="hljs-comment">// 自定义转换器一定要在gsonConverter前面,否则gson会拦截所有的解析方式</span><br>            .addConverterFactory(CustomConverterFactory.create())<br>            <span class="hljs-comment">// Gson Converter</span><br>            .addConverterFactory(GsonConverterFactory.create(gson))<br>            <span class="hljs-comment">// Callback Handler RxJava</span><br>            .addCallAdapterFactory(RxJavaCallAdapterFactory.create())<br>            .client(OkHttp3Util.getOkHttpClient())<br>            .build();<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>为了统一处理Http接口返回，创建Response响应类，应当和后台接口保持一致的gson格式：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Response</span>&lt;T&gt; &#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> code;<br>    <span class="hljs-keyword">private</span> String message;<br>    <span class="hljs-keyword">private</span> T data;<br><br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>基于Retrofit的登录Api如下：</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs less"><span class="hljs-selector-tag">public</span> <span class="hljs-selector-tag">interface</span> <span class="hljs-selector-tag">LoginApi</span> &#123;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * user login</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * @param username username</span><br><span class="hljs-comment">     * @param password password</span><br><span class="hljs-comment">     * @return user info</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-variable">@FormUrlEncoded</span><br>    <span class="hljs-variable">@POST</span>(<span class="hljs-string">&quot;login&quot;</span>)<br>    Observable&lt;Response&lt;User&gt;&gt; <span class="hljs-built_in">loginStu</span>(<span class="hljs-variable">@Field</span>(<span class="hljs-string">&quot;username&quot;</span>) String username, <span class="hljs-variable">@Field</span>(<span class="hljs-string">&quot;password&quot;</span>) String password);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="数据库交互-GreenDao"><a href="#数据库交互-GreenDao" class="headerlink" title="数据库交互 - GreenDao"></a>数据库交互 - GreenDao</h4><p>使用J神家的的GreenDao，这个移动端ORM框架还是需要好好学习下的，本文仅介绍GrrenDao在MVP中的使用。在lib-db中创建DBHelper用于管理数据库连接和数据访问对象（Dao）实例：</p>
+<figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs smali">public class DBHelper &#123;<br><br><span class="hljs-keyword">    .</span>..<span class="hljs-built_in"> instance </span>init<br><br>   <span class="hljs-keyword"> public</span> &lt;T&gt; AbstractDao getDao(Class&lt;T&gt; clazz) &#123;<br>       <span class="hljs-built_in"> return </span>session.getDao(clazz);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="SharedPreferences"><a href="#SharedPreferences" class="headerlink" title="SharedPreferences"></a>SharedPreferences</h4><p>使用SP存储用户偏好设置或登录认证数据等碎片数据。</p>
+<h4 id="LoginModel"><a href="#LoginModel" class="headerlink" title="LoginModel"></a>LoginModel</h4><p>Model中持有Retrofit实例（api）、数据库访问对象（Dao）以及SP等本地存储对象：</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">public <span class="hljs-keyword">class</span> LoginModel extends BaseModel &#123;<br><br>    <span class="hljs-keyword">private</span> static final String TAG = <span class="hljs-string">&quot;LoginModel&quot;</span>;<br><br>    <span class="hljs-keyword">private</span> LoginApi api;<br>    <span class="hljs-keyword">private</span> UserDao userDao;<br>    <span class="hljs-keyword">private</span> SharedPreferences userPreference;<br><br>    public <span class="hljs-constructor">LoginModel()</span> &#123;<br>        <span class="hljs-comment">// 使用ServiceGenerator生成api访问类</span><br>        api = <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">ServiceGenerator</span>.</span></span>create<span class="hljs-constructor">APIService(LoginApi.<span class="hljs-params">class</span>)</span>;<br>        <span class="hljs-comment">// 获取数据库访问对象</span><br>        userDao = (UserDao) <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">DBHelper</span>.</span></span>get<span class="hljs-constructor">Instance()</span>.get<span class="hljs-constructor">Dao(User.<span class="hljs-params">class</span>)</span>;<br>        userPreference = context.get<span class="hljs-constructor">SharedPreferences(<span class="hljs-string">&quot;user&quot;</span>, Context.MODE_PRIVATE)</span>;<br>    &#125;<br><br>    public void set<span class="hljs-constructor">User(User <span class="hljs-params">user</span>)</span> &#123;<br>        userPreference.put(<span class="hljs-string">&quot;user&quot;</span>, user.get<span class="hljs-constructor">Name()</span>);<br>        userDao.insert(user);<br>    &#125;<br><br>    public void login(String username, String password, Observer&lt;Response&lt;User&gt;&gt; observer) &#123;<br>        rx<span class="hljs-constructor">Subscribe(<span class="hljs-params">api</span>.<span class="hljs-params">login</span>(<span class="hljs-params">username</span>, <span class="hljs-params">password</span>)</span>, observer);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>Presenter调用LoginModel方法时传递接口参数和Observer，LoginModel接口请求响应后回调Observer，rxSubscribe()定义在BaseModel中：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">abstract</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">BaseModel</span> &#123;<br>    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">static</span> &lt;T&gt; <span class="hljs-keyword">void</span> <span class="hljs-title function_">rxSubscribe</span><span class="hljs-params">(Observable&lt;T&gt; observable, Observer&lt;T&gt; observer)</span> &#123;<br>        observable.subscribeOn(Schedulers.io())<br>                .subscribeOn(Schedulers.newThread())<span class="hljs-comment">//子线程访问网络</span><br>                .observeOn(AndroidSchedulers.mainThread())<span class="hljs-comment">//回调到主线程</span><br>                .subscribe(observer);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+<h3 id="2-2-Presenter层的设计"><a href="#2-2-Presenter层的设计" class="headerlink" title="2.2 Presenter层的设计"></a>2.2 Presenter层的设计</h3><p>Presenter持有Model实例，Presenter初始化时实例化Model，在lib-common中加入BasePresenter：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs scala">public <span class="hljs-keyword">abstract</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">BasePresenter&lt;TView</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">BaseView</span>, <span class="hljs-title">TModel</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">BaseModel&gt;</span> </span>&#123;<br><br>    <span class="hljs-keyword">protected</span> <span class="hljs-type">TView</span> mView;<br>    <span class="hljs-keyword">protected</span> <span class="hljs-type">TModel</span> mModel;<br><br>    public <span class="hljs-type">BasePresenter</span>(<span class="hljs-type">TView</span> view) &#123;<br>        <span class="hljs-keyword">this</span>.mView = view;<br>        <span class="hljs-keyword">this</span>.mModel = <span class="hljs-keyword">this</span>.getModel();<br>    &#125;<br><br>    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">abstract</span> <span class="hljs-type">TModel</span> getModel();<br><br>    public void detach() &#123;<br>        <span class="hljs-keyword">this</span>.mView = <span class="hljs-literal">null</span>;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+<p>LoginPresenter集成BasePresenter，实例化LoginModel：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">LoginPresenter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">BasePresenter</span>&lt;<span class="hljs-title class_">BaseActivity</span>, <span class="hljs-title class_">LoginModel</span>&gt; &#123;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title class_">LoginPresenter</span>(<span class="hljs-title class_">BaseActivity</span> activity) &#123;<br>        <span class="hljs-variable language_">super</span>(activity);<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> <span class="hljs-title class_">LoginModel</span> <span class="hljs-title function_">getModel</span>(<span class="hljs-params"></span>) &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">LoginModel</span>();<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">login</span>(<span class="hljs-params"><span class="hljs-built_in">String</span> username, <span class="hljs-built_in">String</span> password</span>) &#123;<br>        <span class="hljs-comment">// 请求前 加载等待框</span><br>        mView.<span class="hljs-title function_">loadHud</span>();<br>        mModel.<span class="hljs-title function_">loginStudent</span>(username, password, <span class="hljs-keyword">new</span> <span class="hljs-title class_">Observer</span>&lt;<span class="hljs-title class_">Response</span>&lt;<span class="hljs-title class_">User</span>&gt;&gt;() &#123;<br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">onCompleted</span>(<span class="hljs-params"></span>) &#123;<br>            &#125;<br><br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">onError</span>(<span class="hljs-params">Throwable e</span>) &#123;<br>                e.<span class="hljs-title function_">printStackTrace</span>();<br>            &#125;<br><br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">onNext</span>(<span class="hljs-params">Response&lt;User&gt; response</span>) &#123;<br>                <span class="hljs-comment">// 加载完成  取消等待框</span><br>                mView.<span class="hljs-title function_">cancelHud</span>();<br><br>                <span class="hljs-keyword">if</span> (response.<span class="hljs-title function_">OK</span>()) &#123;<br>                    <span class="hljs-comment">// 请求成功 回调VIew层进行页面刷新</span><br>		            mView.<span class="hljs-title function_">onViewEvent</span>(<span class="hljs-title class_">BaseView</span>.<span class="hljs-property">VIEW_LOADED</span>, response.<span class="hljs-title function_">getData</span>());<br>                    <span class="hljs-comment">// 把用户信息保存在本地</span><br>                    mModel.<span class="hljs-title function_">setUser</span>(user);<br>		        &#125; <span class="hljs-keyword">else</span> &#123;<br>                    <span class="hljs-comment">// 请求失败 回调View层报错</span><br>		            mView.<span class="hljs-title function_">onViewEvent</span>(<span class="hljs-title class_">LoginActivity</span>.<span class="hljs-property">ERROR</span>, <span class="hljs-literal">null</span>);<br>		        &#125;<br>            &#125;<br>        &#125;);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>本项目在MVP中未使用接口的方式，在View中实现接口，在Presenter中持有实例并进行接口调用，因为使用接口则每个页面都需要新建一个接口类，较为繁琐。</p>
+<p>本项目MVP使用BaseView中的抽象方法onViewEvent()，每个View继承BaseView后实现onViewEvent(int code, Object param)，Presenter层Attach BaseView后通过mView.onViewEvent()对View进行界面回调处理，View中根据事件code和参数param进行视图处理。</p>
+<blockquote>
+<p>一个Presenter可持有多个Model，定义多个Model对象并在Presenter构造函数中初始化。</p>
+</blockquote>
+<h3 id="2-3-View层的设计"><a href="#2-3-View层的设计" class="headerlink" title="2.3 View层的设计"></a>2.3 View层的设计</h3><p>在lib-common中定义BaseView，</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">void</span> <span class="hljs-title function_">toast</span><span class="hljs-params">(<span class="hljs-meta">@StringRes</span> <span class="hljs-type">int</span> resId)</span>;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 用于Presenter中吐司提示</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">void</span> <span class="hljs-title function_">toast</span><span class="hljs-params">(String res)</span>;<br><br>    &lt;T <span class="hljs-keyword">extends</span> <span class="hljs-title class_">View</span>&gt; T <span class="hljs-title function_">findViewById</span><span class="hljs-params">(<span class="hljs-meta">@IdRes</span> <span class="hljs-type">int</span> resId)</span>;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 用于Presenter回调界面操作</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">void</span> <span class="hljs-title function_">onViewEvent</span><span class="hljs-params">(<span class="hljs-type">int</span> code, Object param)</span>;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 在界面中统一处理数据、网络异常</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">void</span> <span class="hljs-title function_">onViewState</span><span class="hljs-params">(<span class="hljs-type">int</span> state)</span>;<br>    <span class="hljs-keyword">void</span> <span class="hljs-title function_">onViewState</span><span class="hljs-params">(Response response)</span>;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 加载、取消Dialog</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">void</span> <span class="hljs-title function_">loadHud</span><span class="hljs-params">()</span>;<br>    <span class="hljs-keyword">void</span> <span class="hljs-title function_">cancelHud</span><span class="hljs-params">()</span>;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>toast（）：Toast封装，用于在Activity、Fragment或Presenter中弹出用户提示</li>
+<li>findViewById()：主要用于fragment中获取元素使用（组件化开发使用ButterKnife较为繁琐，不建议使用）</li>
+<li>onViewEvent()：View层的回调，用于Presenter网络请求响应后通知View层</li>
+<li>onViewState()：View层的回调。当Presenter层发生错误时统一处理View（网络异常、Http请求错误等）</li>
+<li>loadHud()&#x2F;cancelHud()：加载ProgressDialog，Presenter发请网络请求时、请求结束后，在Presenter层弹出ProgressDialog</li>
+</ul>
+<h4 id="BaseActivity"><a href="#BaseActivity" class="headerlink" title="BaseActivity"></a>BaseActivity</h4><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-keyword">public</span> <span class="hljs-keyword">abstract</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">BaseActivity</span>&lt;<span class="hljs-title class_">TPresenter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">BasePresenter</span>&gt; <span class="hljs-keyword">extends</span> <span class="hljs-title class_">AppCompatActivity</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">BaseView</span> &#123;<br><br>    <span class="hljs-keyword">protected</span> <span class="hljs-title class_">Handler</span> mUIHandler;<br><br>    <span class="hljs-keyword">protected</span> <span class="hljs-title class_">TPresenter</span> mPresenter;<br><br>    <span class="hljs-keyword">protected</span> <span class="hljs-title class_">KProgressHUD</span> mHud;<br>    <br>    <span class="hljs-comment">// 获取界面layout资源文件</span><br>    <span class="hljs-meta">@LayoutRes</span><br>    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">abstract</span> int <span class="hljs-title function_">getLayoutResId</span>();<br><br>    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">abstract</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">initViewAndData</span>(<span class="hljs-meta">@Nullable</span> <span class="hljs-title class_">Bundle</span> savedInstanceState);<br><br>    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">abstract</span> <span class="hljs-title class_">TPresenter</span> <span class="hljs-title function_">getPresenter</span>();<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">onCreate</span>(<span class="hljs-params"><span class="hljs-meta">@Nullable</span> Bundle savedInstanceState</span>) &#123;<br>        <span class="hljs-title function_">beforeCreate</span>();<br>        <span class="hljs-variable language_">super</span>.<span class="hljs-title function_">onCreate</span>(savedInstanceState);<br>        <span class="hljs-title function_">beforeSetContentView</span>();<br>        <span class="hljs-title function_">setContentView</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-title function_">getLayoutResId</span>());<br>        <span class="hljs-comment">// init</span><br>        <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">init</span>();<br>        <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">initViewAndData</span>(savedInstanceState);<br><br>        <span class="hljs-comment">// EventBus</span><br>        <span class="hljs-title class_">EventBus</span>.<span class="hljs-title function_">getDefault</span>().<span class="hljs-title function_">register</span>(<span class="hljs-variable language_">this</span>);<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * before set contentView</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">beforeSetContentView</span>(<span class="hljs-params"></span>) &#123;<br>        <span class="hljs-comment">// NoTitle</span><br>        <span class="hljs-title function_">requestWindowFeature</span>(<span class="hljs-title class_">Window</span>.<span class="hljs-property">FEATURE_NO_TITLE</span>);<br>        <span class="hljs-comment">// ScreenPortrait</span><br>        <span class="hljs-title function_">setRequestedOrientation</span>(<span class="hljs-title class_">ActivityInfo</span>.<span class="hljs-property">SCREEN_ORIENTATION_PORTRAIT</span>);<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * before create</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">beforeCreate</span>(<span class="hljs-params"></span>) &#123;<br>        <span class="hljs-comment">// 统一设置主题</span><br>        <span class="hljs-title function_">setTheme</span>(<span class="hljs-title class_">UIConfig</span>.<span class="hljs-title function_">getInstance</span>(<span class="hljs-title function_">getApplicationContext</span>()).<span class="hljs-title function_">getThemeId</span>());<br>    &#125;<br><br>    <span class="hljs-meta">@Subscribe</span>(threadMode = <span class="hljs-title class_">ThreadMode</span>.<span class="hljs-property">MAIN</span>)<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">onEventMainThread</span>(<span class="hljs-params">CommonEvent event</span>) &#123;<br>        <span class="hljs-comment">// EventBus统一处理全局异常</span><br>        <span class="hljs-title class_">BLog</span>.<span class="hljs-title function_">e</span>(<span class="hljs-string">&quot;[Event]: &quot;</span> + event.<span class="hljs-property">code</span>);<br>        <span class="hljs-keyword">if</span> (event.<span class="hljs-property">code</span> == <span class="hljs-title class_">CommonEvent</span>.<span class="hljs-property">Type</span>.<span class="hljs-property">NETWORK_ERROR</span>) &#123;<br>            <span class="hljs-title function_">onViewState</span>(<span class="hljs-title class_">UIConstants</span>.<span class="hljs-property">ViewState</span>.<span class="hljs-property">NETWORK_DISCONNECTED</span>);<br>            <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">mCommonEvent</span> != <span class="hljs-literal">null</span>) &#123;<br>                <span class="hljs-variable language_">this</span>.<span class="hljs-property">mCommonEvent</span>.<span class="hljs-title function_">onCommonEvent</span>(event.<span class="hljs-property">code</span>, event.<span class="hljs-property">param</span>);<br>            &#125;<br>            <span class="hljs-comment">// cancel loading hud</span><br>            <span class="hljs-title function_">cancelHud</span>();<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * init view, e.g commonTitleBar.</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">init</span>(<span class="hljs-params"></span>) &#123;<br>        <span class="hljs-comment">// view init</span><br>        ...<br><br>        <span class="hljs-comment">// 从子类拿到Presenter实例</span><br>        <span class="hljs-variable language_">this</span>.<span class="hljs-property">mPresenter</span> = <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">getPresenter</span>();<br>        <span class="hljs-comment">// 使用第三方库作为Loading Dialog</span><br>        <span class="hljs-variable language_">this</span>.<span class="hljs-property">mHud</span> = <span class="hljs-title class_">KProgressHUD</span>.<span class="hljs-title function_">create</span>(<span class="hljs-variable language_">this</span>);<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">onViewState</span>(<span class="hljs-params">int state</span>) &#123;<br>        <span class="hljs-comment">// 全局异常处理</span><br>        ...<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">onViewState</span>(<span class="hljs-params">Response response</span>) &#123;<br>        <span class="hljs-comment">// 根据Response处理服务器http响应</span><br>        ...<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">onDestroy</span>(<span class="hljs-params"></span>) &#123;<br>        <span class="hljs-variable language_">super</span>.<span class="hljs-title function_">onDestroy</span>();<br><br>        <span class="hljs-variable language_">this</span>.<span class="hljs-property">mUIHandler</span> = <span class="hljs-literal">null</span>;<br>        <span class="hljs-comment">// Unregister EventBus</span><br>        <span class="hljs-title class_">EventBus</span>.<span class="hljs-title function_">getDefault</span>().<span class="hljs-title function_">unregister</span>(<span class="hljs-variable language_">this</span>);<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> &lt;T <span class="hljs-keyword">extends</span> <span class="hljs-title class_">View</span>&gt; T <span class="hljs-title function_">findViewById</span>(<span class="hljs-params">int resId</span>) &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-variable language_">super</span>.<span class="hljs-title function_">findViewById</span>(resId);<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">toast</span>(<span class="hljs-params"><span class="hljs-meta">@StringRes</span> final int resId</span>) &#123;<br>        <span class="hljs-keyword">if</span> (mUIHandler == <span class="hljs-literal">null</span>) &#123;<br>            <span class="hljs-keyword">return</span>;<br>        &#125;<br>        mUIHandler.<span class="hljs-title function_">post</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Runnable</span>() &#123;<br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">run</span>(<span class="hljs-params"></span>) &#123;<br>                <span class="hljs-title class_">Toast</span>.<span class="hljs-title function_">makeText</span>(<br>                        <span class="hljs-title function_">getApplicationContext</span>(),<br>                        resId,<br>                        <span class="hljs-title class_">Toast</span>.<span class="hljs-property">LENGTH_SHORT</span>).<span class="hljs-title function_">show</span>();<br>            &#125;<br>        &#125;);<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">toast</span>(<span class="hljs-params">final <span class="hljs-built_in">String</span> res</span>) &#123;<br>        ...<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">loadHud</span>(<span class="hljs-params">int resId</span>) &#123;<br>        <span class="hljs-comment">// 加载等待Dialog</span><br>        <span class="hljs-keyword">if</span> (mHud == <span class="hljs-literal">null</span>) &#123;<br>            mHud = <span class="hljs-title class_">KProgressHUD</span>.<span class="hljs-title function_">create</span>(<span class="hljs-variable language_">this</span>);<br>        &#125;<br>        mHud.<span class="hljs-title function_">setStyle</span>(<span class="hljs-title class_">KProgressHUD</span>.<span class="hljs-property">Style</span>.<span class="hljs-property">SPIN_INDETERMINATE</span>)<br>                .<span class="hljs-title function_">setCancellable</span>(<span class="hljs-literal">true</span>)<br>                .<span class="hljs-title function_">setLabel</span>(resId == <span class="hljs-number">0</span> ? <span class="hljs-title function_">getString</span>(R.<span class="hljs-property">string</span>.<span class="hljs-property">opt_loading</span>) : <span class="hljs-title function_">getString</span>(resId))<br>                .<span class="hljs-title function_">setAnimationSpeed</span>(<span class="hljs-number">1</span>)<br>                .<span class="hljs-title function_">setDimAmount</span>(<span class="hljs-number">0.</span>5f)<br>                .<span class="hljs-title function_">show</span>();<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">cancelHud</span>(<span class="hljs-params"></span>) &#123;<br>        <span class="hljs-keyword">if</span> (mHud != <span class="hljs-literal">null</span>) &#123;<br>            mHud.<span class="hljs-title function_">dismiss</span>();<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>loadHud()：参考第三方库<a target="_blank" rel="noopener" href="https://github.com/Kaopiz/KProgressHUD">https://github.com/Kaopiz/KProgressHUD</a></li>
+</ul>
+<h4 id="BaseFragment"><a href="#BaseFragment" class="headerlink" title="BaseFragment"></a>BaseFragment</h4><p>类似BaseActivity，加入一些对宿主Activity的回调。</p>
+<p>参考<a target="_blank" rel="noopener" href="https://github.com/blackist/modulize/blob/8478eb2a4bdaf7b9f9e2022be0e9462ea82b3eeb/lib-common/src/main/java/org/blackist/common/base/BaseFragment.java">https://github.com/blackist/modulize/blob/8478eb2a4bdaf7b9f9e2022be0e9462ea82b3eeb/lib-common/src/main/java/org/blackist/common/base/BaseFragment.java</a></p>
+<h4 id="LoginActivity"><a href="#LoginActivity" class="headerlink" title="LoginActivity"></a>LoginActivity</h4><p>LoginActivity继承自BaseActivity，实例化LoginPresenter，实现onViewEvent()回调函数：</p>
+<pre><code class="hljs">public class LoginActivity extends BaseActivity&lt;LoginPresenter&gt; implements View.OnClickListener &#123;
+
+    private static final String TAG = &quot;LoginActivity&quot;;
+
+    public static final int ERROR = 1000;
+
+    @Override
+    protected int getLayoutResId() &#123;
+        return R.layout.main_login_activity;
+    &#125;
+
+    @Override
+    protected void initViewAndData(@Nullable Bundle savedInstanceState) &#123;
+        initView();
+        ...
+    &#125;
+
+    @Override
+    protected LoginPresenter getPresenter() &#123;
+        return new LoginPresenter(this);
+    &#125;
+
+    @Override
+    public void onClick(View v) &#123;
+        ...
+    &#125;
+
+    @Override
+    public void onViewEvent(int code, Object param) &#123;
+        switch (code) &#123;
+            case VIEW_LOADED: &#123;
+                // 登录成功处理
+                ...
+                startActivity(new Intent(this, MainActivity.class));
+                finish();
+            &#125;
+            break;
+
+            case ERROR: &#123;
+                toast(R.string.main_login_error);
+            &#125;
+            break;
+
+            default:
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<blockquote>
+<p>通常情况下一个View对应一个Presenter，也可在View中定义多个Presenter对象并在initViewAndData()中初始化</p>
+</blockquote>
+<p>至此，实现了精简版的Android MVP，本人用在项目开发中问题不大。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000003927200">https://segmentfault.com/a/1190000003927200</a></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.im/post/5a61559051882573351a5fb6">https://juejin.im/post/5a61559051882573351a5fb6</a></p>
+<p>（完）</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Android/" class="category-chain-item">Android</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%BC%80%E5%8F%91/" class="print-no-link">#开发</a>
+      
+        <a href="/tags/android/" class="print-no-link">#android</a>
+      
+        <a href="/tags/%E7%BB%84%E4%BB%B6%E5%8C%96/" class="print-no-link">#组件化</a>
+      
+        <a href="/tags/MVP/" class="print-no-link">#MVP</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Android组件化-MVP设计模式</div>
+      <div>https://blackist.org/2019-03-31-android-modulize-mvp/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>董猿外</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2019年3月31日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019-05-03-ops-docker-basic/" title="Docker入门">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Docker入门</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019-03-21-android-modulize-ui-theme/" title="Android组件化-UI统一&amp;主题变色">
+                        <span class="hidden-mobile">Android组件化-UI统一&amp;主题变色</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://lib.baomitu.com/gitalk/1.8.0/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"506775736a1ab7d38a56","clientSecret":"b1c3f0dc07680f22f07a585fc81cd5288adb6729","repo":"blackist.github.io","owner":"blackist","admin":["blackist"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '3fc7abdf5b98b179b0c5ca040db0b06e'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a>
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

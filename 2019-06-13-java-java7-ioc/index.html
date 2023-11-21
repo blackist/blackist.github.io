@@ -1,0 +1,861 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/images/Dong_medium.ico">
+  <link rel="icon" href="/images/Dong_medium.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="董猿外">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="讲真的，今年就业形势相当不好，对IT从业者的专业能力要求将变得更高。近来一边忙学业，一边学习Java基础和框架源码，为不久之后的招聘做准备。 打算从Java7、Java8d的版本新特性着手，再深入JVM、并发编程等。Java7中发布了JSR-330标准的DI特性。IoC是控制反转，DI是依赖注入。依赖注入（控制反转的一种形式）是Java开发主流中一个重要的范式。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="依赖注入">
+<meta property="og:url" content="https://blackist.org/2019-06-13-java-java7-ioc/index.html">
+<meta property="og:site_name" content="Thinking in Coding">
+<meta property="og:description" content="讲真的，今年就业形势相当不好，对IT从业者的专业能力要求将变得更高。近来一边忙学业，一边学习Java基础和框架源码，为不久之后的招聘做准备。 打算从Java7、Java8d的版本新特性着手，再深入JVM、并发编程等。Java7中发布了JSR-330标准的DI特性。IoC是控制反转，DI是依赖注入。依赖注入（控制反转的一种形式）是Java开发主流中一个重要的范式。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2019/jpeg/204153/1560386178634-f13db507-ef0b-4eb5-be76-f61291a3e741.jpeg#align=left&display=inline&height=254&originHeight=254&originWidth=353&size=0&status=done&width=353">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2019/jpeg/204153/1560386191880-91750474-e215-4608-bf06-53e820c2a180.jpeg#align=left&display=inline&height=421&originHeight=421&originWidth=336&size=0&status=done&width=336">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2019/png/204153/1560392266590-a5a9c420-3145-49f5-a196-b1d91d6ff87a.png#align=left&display=inline&height=399&name=image.png&originHeight=399&originWidth=689&size=18655&status=done&width=689">
+<meta property="article:published_time" content="2019-06-13T12:07:19.000Z">
+<meta property="article:modified_time" content="2022-08-24T03:09:53.359Z">
+<meta property="article:author" content="董猿外">
+<meta property="article:tag" content="开发">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="java7">
+<meta property="article:tag" content="IoC">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2019/jpeg/204153/1560386178634-f13db507-ef0b-4eb5-be76-f61291a3e741.jpeg#align=left&display=inline&height=254&originHeight=254&originWidth=353&size=0&status=done&width=353">
+  
+  
+  
+  <title>依赖注入 - Thinking in Coding</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blackist.org","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":100,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>董猿外</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="依赖注入"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2019-06-13 20:07" pubdate>
+          2019年6月13日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          9.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          82 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">依赖注入</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>讲真的，今年就业形势相当不好，对IT从业者的专业能力要求将变得更高。近来一边忙学业，一边学习Java基础和框架源码，为不久之后的招聘做准备。</p>
+<p>打算从Java7、Java8d的版本新特性着手，再深入JVM、并发编程等。Java7中发布了JSR-330标准的DI特性。IoC是控制反转，DI是依赖注入。依赖注入（控制反转的一种形式）是Java开发主流中一个重要的范式。</p>
+<span id="more"></span>
+
+<h2 id="一、理解IoC和DI"><a href="#一、理解IoC和DI" class="headerlink" title="一、理解IoC和DI"></a>一、理解IoC和DI</h2><p><a name="iGpK3"></a></p>
+<h3 id="IoC-控制反转"><a href="#IoC-控制反转" class="headerlink" title="IoC(控制反转)"></a>IoC(控制反转)</h3><p>非IoC范式编程，“功能中心”控制程序逻辑的流程，调用各个可重用对象中的方法执行特定的功能。<br /><img src="https://cdn.nlark.com/yuque/0/2019/jpeg/204153/1560386178634-f13db507-ef0b-4eb5-be76-f61291a3e741.jpeg#align=left&display=inline&height=254&originHeight=254&originWidth=353&size=0&status=done&width=353" srcset="/img/loading.gif" lazyload><br />IoC程式编程，调用者的代码来处理程序的执行顺序，而程序逻辑则被封装在接受调用的子流程中。<br /><img src="https://cdn.nlark.com/yuque/0/2019/jpeg/204153/1560386191880-91750474-e215-4608-bf06-53e820c2a180.jpeg#align=left&display=inline&height=421&originHeight=421&originWidth=336&size=0&status=done&width=336" srcset="/img/loading.gif" lazyload></p>
+<p>IoC也被称为<strong>好莱坞原则</strong>，其思想可以归结为会有另一端代码拥有最初的控制线程（容器&#x2F;工厂），并且有它来调用你的代码（注入&#x2F;实例化对象），而不是由你的代码调用它。</p>
+<blockquote>
+<p>好莱坞原则 – “不要给我们打电话，我们会打给你”<br>好莱坞经纪人总是给人打电话，而不是让别人打给他们！</p>
+</blockquote>
+<p>IoC—Inversion of Control，即“控制反转”，不是什么技术，而是一种设计思想。在Java开发中，Ioc意味着将你设计好的对象交给容器控制，而不是传统的在你的对象内部直接控制。如何理解好Ioc呢？理解好Ioc的关键是要明确“谁控制谁，控制什么，为何是反转（有反转就应该有正转了），哪些方面反转了”，那我们来深入分析一下：<br /> <br />●<strong>谁控制谁，控制什么：</strong>传统Java SE程序设计，我们直接在对象内部通过new进行创建对象，是程序主动去创建依赖对象；而IoC是有专门一个容器来创建这些对象，即由Ioc容器来控制对象的创建；谁控制谁？当然是IoC 容器控制了对象；控制什么？那就是主要控制了外部资源获取（不只是对象包括比如文件等）。<br /><br><br />●<strong>为何是反转，哪些方面反转了：</strong>有反转就有正转，传统应用程序是由我们自己在对象中主动控制去直接获取依赖对象，也就是正转；而反转则是由容器来帮忙创建及注入依赖对象；为何是反转？因为由容器帮我们查找及注入依赖对象，对象只是被动的接受依赖对象，所以是反转；哪些方面反转了？<strong>依赖对象的获取</strong>被反转了。</p>
+<p><a name="FxilH"></a></p>
+<h3 id="IoC应用"><a href="#IoC应用" class="headerlink" title="IoC应用"></a>IoC应用</h3><p><strong>降低代码间的耦合度</strong>，让代码<strong>更易于测试、更易读、内聚性更强</strong>。</p>
+<p>IoC不是一种技术，只是一种思想，一个重要的面向对象编程的法则，它能指导我们如何设计出松耦合、更优良的程序。传统应用程序都是由我们在类内部主动创建依赖对象，从而导致类与类之间高耦合，难于测试；有了IoC容器后，把创建和查找依赖对象的控制权交给了容器，由容器进行注入组合对象，所以对象与对象之间是松散耦合，这样也方便测试，利于功能复用，更重要的是使得程序的整个体系结构变得非常灵活。<br />其实IoC对编程带来的最大改变不是从代码上，而是从思想上，发生了“主从换位”的变化。应用程序原本是老大，要获取什么资源都是主动出击，但是在IoC&#x2F;DI思想中，应用程序就变成被动的了，被动的等待IoC容器来创建并注入它所需要的资源了。<br />IoC很好的体现了面向对象设计法则之一—— 好莱坞法则：“别找我们，我们找你”；即由IoC容器帮对象找相应的依赖对象并注入，而不是由对象主动去找。<br /></p>
+<p><a name="kSWEA"></a></p>
+<h3 id="IoC实现方式"><a href="#IoC实现方式" class="headerlink" title="IoC实现方式"></a>IoC实现方式</h3><p>包括工厂模式，服务器定位模式，依赖注入(DI)。</p>
+<p><a name="LQjDC"></a></p>
+<h3 id="DI-依赖注入"><a href="#DI-依赖注入" class="headerlink" title="DI(依赖注入)"></a>DI(依赖注入)</h3><p>DI—Dependency Injection，即“依赖注入”：是组件之间依赖关系由容器在运行期决定，形象的说，即由容器动态的将某个依赖关系注入到组件之中。<br /><br><br />DI是IoC的一种特定形态，是指<strong>寻找依赖项的过程（实例化）不在当前执行代码的直接控制之下</strong>。通常使用自带IoC容器的DI框架来实现依赖注入机制，如Guice，Spring。IoC可以看作运行时环境。<br /><br><br />依赖注入的目的并非为软件系统带来更多功能，而是为了提升组件重用的频率，并为系统搭建一个灵活、可扩展的平台。通过依赖注入机制，我们只需要通过简单的配置，而无需任何代码就可指定目标需要的资源，完成自身的业务逻辑，而不需要关心具体的资源来自何处，由谁实现。<br /> <br />理解DI的关键是：“谁依赖谁，为什么需要依赖，谁注入谁，注入了什么”，那我们来深入分析一下：<br /> <br />●<strong>谁依赖于谁：</strong>当然是应用程序依赖于IoC容器；<br />●<strong>为什么需要依赖：</strong>应用程序需要IoC容器来提供对象需要的外部资源；<br />●<strong>谁注入谁：</strong>很明显是IoC容器注入应用程序某个对象，应用程序依赖的对象；<br /><br><br /><strong>●注入了什么：</strong>就是注入某个对象所需要的外部资源（包括对象、资源、常量数据）。<br /> <br />IoC和DI由什么关系呢？其实它们是同一个概念的不同角度描述，由于控制反转概念比较含糊（可能只是理解为容器控制对象这一个层面，很难让人想到谁来维护对象关系），所以2004年大师级人物Martin Fowler又给出了一个新的名字：“依赖注入”，相对IoC 而言，<strong>“依赖注入”明确描述了“被注入对象依赖IoC容器配置依赖对象”。</strong></p>
+<p><a name="IB7px"></a></p>
+<h2 id="二、DI实现实例"><a href="#二、DI实现实例" class="headerlink" title="二、DI实现实例"></a>二、DI实现实例</h2><blockquote>
+<p>找出所有对Java开发人员比较友善的好莱坞经纪人</p>
+</blockquote>
+<p>有个AgentFinder接口，及其两个实现类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">abstract</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AgentFinder</span> &#123;<br>	<span class="hljs-keyword">public</span> <span class="hljs-keyword">abstract</span> List&lt;String&gt; <span class="hljs-title function_">getAllAgents</span><span class="hljs-params">()</span>;<br>&#125;<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">DevAgentFinder</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">AgentFinder</span> &#123;<br>	<span class="hljs-keyword">public</span> List&lt;String&gt; <span class="hljs-title function_">getAllAgents</span><span class="hljs-params">()</span> &#123;...&#125;<br>&#125;<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">BankAgentFinder</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">AgentFinder</span> &#123;<br>	<span class="hljs-keyword">public</span> List&lt;String&gt; <span class="hljs-title function_">getAllAgents</span><span class="hljs-params">()</span> &#123;...&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在AgentFinderService中使用AgentFinder查找对Java开发人员友好的经纪人，</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AgentFinderService</span> &#123;<br>	<span class="hljs-keyword">public</span> List&lt;String&gt; <span class="hljs-title function_">getGoodAgents</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-type">AgentFinder</span> <span class="hljs-variable">finder</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">DevAgentFinder</span>();<br>		List&lt;String&gt; allAgents = finder.getAllAgents();<br>		<span class="hljs-keyword">return</span> filterAgents(allAgents);<br>	&#125;<br>	<span class="hljs-keyword">private</span> List&lt;String&gt; <span class="hljs-title function_">filterAgents</span><span class="hljs-params">(List&lt;String&gt; agents)</span> &#123;<br>		List&lt;String&gt; fitAgents = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;();<br>		<span class="hljs-keyword">for</span> (String agent : agents) &#123;<br>			<span class="hljs-keyword">if</span> (agent.contains(<span class="hljs-string">&quot;Java&quot;</span>)) &#123;<br>				fitAgents.add(agent);<br>			&#125;<br>		&#125;<br>		<span class="hljs-keyword">return</span> fitAgents;<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>以上代码，AgentFinderService和DevAgentFinder紧密黏合，使用工厂模式和服务器定位模式可降低耦合，它们都是IoC的一种。</p>
+<p><a name="LtAfb"></a></p>
+<h3 id="使用工厂-x2F-服务器定位模式"><a href="#使用工厂-x2F-服务器定位模式" class="headerlink" title="使用工厂&#x2F;服务器定位模式"></a>使用工厂&#x2F;服务器定位模式</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AgentFinderService</span> &#123;<br>	<span class="hljs-keyword">public</span> List&lt;String&gt; <span class="hljs-title function_">getGoodAgents</span><span class="hljs-params">(String agentFinderType)</span> &#123;<br>        <span class="hljs-type">AgentFinderFactory</span> <span class="hljs-variable">factory</span> <span class="hljs-operator">=</span> AgentFinderFactory.getInstance();<br>        <span class="hljs-type">AgentFinder</span> <span class="hljs-variable">finder</span> <span class="hljs-operator">=</span> factory.getAgentFinder(agentFinderType);<br>		List&lt;String&gt; allAgents = finder.getAllAgents();<br>		<span class="hljs-keyword">return</span> filterAgents(allAgents);<br>	&#125;<br>	<span class="hljs-keyword">private</span> List&lt;String&gt; <span class="hljs-title function_">filterAgents</span><span class="hljs-params">(List&lt;String&gt; agents)</span> &#123;...&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>AgentFinderFactory根据注入的agentFinderType实例化令人满意的AgentFinder。仍存在问题：</p>
+<ul>
+<li>代码注入agentFinderType作为引用凭据，而没有注入真正的对象。</li>
+<li>getGoodAgents仍存在其他依赖项，达不到只关注自身职能的状态。</li>
+</ul>
+<p><a name="DXp6k"></a></p>
+<h3 id="使用DI"><a href="#使用DI" class="headerlink" title="使用DI"></a>使用DI</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AgentFinderService</span> &#123;<br>	<span class="hljs-keyword">public</span> List&lt;String&gt; <span class="hljs-title function_">getGoodAgents</span><span class="hljs-params">(AgentFinder finder)</span> &#123;<br>		List&lt;String&gt; allAgents = finder.getAllAgents();<br>		<span class="hljs-keyword">return</span> filterAgents(allAgents);<br>	&#125;<br>	<span class="hljs-keyword">private</span> List&lt;String&gt; <span class="hljs-title function_">filterAgents</span><span class="hljs-params">(List&lt;String&gt; agents)</span> &#123;...&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>如上AgentFinder被直接注入到getGoodAgents方法中，只专注于纯业务逻辑。存在问题，如何配置AgentFinder具体实现？原本AgentFinderFactory要做的事情只是<strong>换个地方</strong>完成。</p>
+<p><a name="LhmHR"></a></p>
+<h3 id="使用JSR-330-DI"><a href="#使用JSR-330-DI" class="headerlink" title="使用JSR-330 DI"></a>使用JSR-330 DI</h3><p>使用框架执行DI操作，DI框架用标准的JSR-330<a href="#">@Inject</a>注解将依赖项注入到getGoodAgents方法中：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AgentFinderService</span> &#123;<br>	<span class="hljs-meta">@Inject</span> <span class="hljs-keyword">public</span> List&lt;String&gt; <span class="hljs-title function_">getGoodAgents</span><span class="hljs-params">(AgentFinder finder)</span> &#123;<br>		List&lt;String&gt; allAgents = finder.getAllAgents();<br>		<span class="hljs-keyword">return</span> filterAgents(allAgents);<br>	&#125;<br>	<span class="hljs-keyword">private</span> List&lt;String&gt; <span class="hljs-title function_">filterAgents</span><span class="hljs-params">(List&lt;String&gt; agents)</span> &#123;...&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>如上，AgentFinder的某个具体实现类的实例由支持JSR-330@inject注解的DI框架在运行时注入。</p>
+<blockquote>
+<p>JSR 企业应用标准：<br>JSR-330: Dependency Injection for Java 1.0<br>JSR-330统一DI体系，对大多数Java DI框架的核心功能做了很好的汇总</p>
+</blockquote>
+<p>从以上改造来温故依赖注入对我们的帮助：</p>
+<ul>
+<li>松耦合</li>
+<li>可测性</li>
+<li>更强的内聚性</li>
+<li>可重用组件</li>
+<li>更轻盈的代码</li>
+</ul>
+<p><a name="FAjHO"></a></p>
+<h2 id="三、Java中标准化DI"><a href="#三、Java中标准化DI" class="headerlink" title="三、Java中标准化DI"></a>三、Java中标准化DI</h2><p>DI新标准中，javax.inject包只是提供一个接口和几个注解类型，这些都会被遵循JSR-330标准的各种DI框架实现。</p>
+<p><a name="eSefj"></a></p>
+<h3 id="理解DI工作原来"><a href="#理解DI工作原来" class="headerlink" title="理解DI工作原来"></a>理解DI工作原来</h3><p>优秀的Java开发人员不能只满足于使用类库和框架，要明白内部基本工作原理。在DI领域，会面临各种问题，如依赖项配置错误、依赖项诡异地超出作用域、依赖项在不该共享时被共享、分布调试离奇宕机等。</p>
+<p>理解javax.inject包：</p>
+<blockquote>
+<p>javax.inject包<br>这个包指明了获取对象的一种方式，与传统的构造方法、工厂模式、服务器定位模式（如JNDI）等相比，这种方式的可重用性、可测试性、可维护性都有极大提升。这种方式成为依赖注入。</p>
+</blockquote>
+<p>javax.inject包中包括一个Provider<T>接口和5个注解类型（@inject、@Qualifier、@Named、@Scope、@Singleton）。</p>
+<p><a name="M5vYz"></a></p>
+<h3 id="Inject-注解"><a href="#Inject-注解" class="headerlink" title="@Inject 注解"></a>@Inject 注解</h3><p>@Inject注解可以出现在三种类成员之前，表示该成员需要依赖注入。按运行时处理顺序：</p>
+<ol>
+<li>构造器</li>
+<li>方法</li>
+<li>属性</li>
+</ol>
+<p><a name="kECuT"></a></p>
+<h4 id="构造器上使用-Inject"><a href="#构造器上使用-Inject" class="headerlink" title="构造器上使用@Inject"></a>构造器上使用@Inject</h4><p>在构造器上使用@Inject时，其参数在运行时由配置好的IoC容器提供。比如在下面的代码中，运行时调用AgentFinderService的构造器时，IoC容器会注入其参数AgentFinder。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AgentFinderService</span> &#123;<br>	<span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> AgentFinder finder;<br>	<span class="hljs-meta">@Inject</span> <span class="hljs-keyword">public</span> <span class="hljs-title function_">AgentFinderService</span><span class="hljs-params">(AgentFinder finder)</span> &#123;<br>		<span class="hljs-built_in">this</span>.finder = finder;<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意</p>
+</blockquote>
+<p>因为JRE无法决定构造器注入的优先级，所以规范中规定类中<strong>只能有一个构造器带@Inject注解</strong></p>
+<p><a name="zlKd3"></a></p>
+<h4 id="方法上使用-Inject"><a href="#方法上使用-Inject" class="headerlink" title="方法上使用@Inject"></a>方法上使用@Inject</h4><p>运行时可注入的参数可以是多个也可以是0个，使用参数注入的方法不能声明为抽象方法，也不能声明其自身的类型参数。下面这段代码在set方法前使用@Inject，这是注入可选属性的常用技术。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Inject</span> <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setContent</span><span class="hljs-params">(Content contnet)</span> &#123;<br>    <span class="hljs-built_in">this</span>.content = content;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>向方法中注入参数技术对于服务类方法来说非常有用，其所需的资源可以作为参数注入，比如向查询数据库的服务方法中注入数据访问对象（DAO）。</p>
+<blockquote>
+<p>向构造器注入的通常是类中必需的依赖项，而对于非必需的依赖项，通常是在set方法上注入。比如已经给出了默认的属性就是非必需的依赖项。</p>
+</blockquote>
+<p><a name="nxUoc"></a></p>
+<h4 id="属性上使用-Inject"><a href="#属性上使用-Inject" class="headerlink" title="属性上使用@Inject"></a>属性上使用@Inject</h4><p>简单直接，但最好不要用。因为这样可能会使单元测试更加困难。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AgentFinderService</span> &#123;<br>    <span class="hljs-meta">@Inject</span> <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> AgentFinder finder;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><a name="QyP4w"></a></p>
+<h3 id="Qualifier-注解"><a href="#Qualifier-注解" class="headerlink" title="@Qualifier 注解"></a>@Qualifier 注解</h3><p>JSR-330规范使用@Qualifier限定（标识）要注入的对象，比如IoC容器有两个类型相同的对象，当把他们注入到你的代码中时，要把他们区分开来。<br /><img src="https://cdn.nlark.com/yuque/0/2019/png/204153/1560392266590-a5a9c420-3145-49f5-a196-b1d91d6ff87a.png#align=left&display=inline&height=399&name=image.png&originHeight=399&originWidth=689&size=18655&status=done&width=689" srcset="/img/loading.gif" lazyload alt="image.png"><br />创建一个@Qualifier实现必须遵循如下规则：</p>
+<ul>
+<li>必须标记为@Qualifier和@Retention（RUNTIME），以确保该限定注解在运行时一直有效。</li>
+<li>通常还要加上@Documented注解，这样该实现就能加到API的公共JavaDoc中了。</li>
+<li>可以有属性。</li>
+<li>@Target注解可以限定其使用范围。</li>
+</ul>
+<p>示例如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Documented</span><br><span class="hljs-meta">@Retention</span><br><span class="hljs-meta">@Qualifier</span><br><span class="hljs-keyword">public</span> <span class="hljs-meta">@interface</span> MusicGenre &#123;<br>    Genre <span class="hljs-title function_">genre</span><span class="hljs-params">()</span> <span class="hljs-keyword">default</span> Genre.TRANCE;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">enum</span> <span class="hljs-title class_">GENRE</span> &#123; CLASSICAL, METAL, ROCK, TRANCE &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><a name="Evb8J"></a></p>
+<h3 id="Named-注解"><a href="#Named-注解" class="headerlink" title="@Named 注解"></a>@Named 注解</h3><p><a href="#">@amed</a>@Named是一个特别的@Qualifier注解，借助@Named可以用名字注明要注入的对象。将@Named和@Inject一起使用，符合指定名称并且类型正确的对象会被注入。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AgentFinderService</span> &#123;<br>    <span class="hljs-meta">@Inject</span> <span class="hljs-meta">@Named(&quot;devFinder&quot;)</span> <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> AgentFinder devFinder;<br>    <span class="hljs-meta">@Inject</span> <span class="hljs-meta">@Named(&quot;bankFinder&quot;)</span> <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> AgentFinder bankFinder;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+<p><a name="J6Xx8"></a></p>
+<h3 id="Scoped-注解"><a href="#Scoped-注解" class="headerlink" title="@Scoped 注解"></a>@Scoped 注解</h3><p>@Scoped注解用于自定义注解器（IoC容器）对注入对象的重用方式。JSR-330默认了如下几种默认行为：</p>
+<ul>
+<li>如果未声明任何@Scope注解接口的实现，注入器应创建注入对象并且仅使用该对象一次。</li>
+<li>如果声明了@Scoped注解接口，注入对象的声明周期由所声明的@Scoped注解实现决定。</li>
+<li>如果注入对象在@Scoped实现中要由多个线程使用，则需保证注入对象的线程安全性。</li>
+<li>如果某个类上声明了多个@Scoped注解，或声明了不受支持的@Scoped注解，IoC容器应该抛出异常。</li>
+</ul>
+<p>公认的通用@Scoped实现只有@Singleton一个，JSR-330只确定了这么一个标准的生命周期注解。</p>
+<p><a name="NWSe0"></a></p>
+<h3 id="Singleton-注解"><a href="#Singleton-注解" class="headerlink" title="@Singleton 注解"></a>@Singleton 注解</h3><p>@Singleton注解接口在DI框架中应用广泛，需要注入一个不会改变的对象时，就要用@Singleton。大多数DI框架都将@Singleton作为注入对象的默认声明周期，无需显式发明。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AgentFinderService</span> &#123;<br>    <span class="hljs-meta">@Inject</span> <span class="hljs-meta">@Singleton</span> <span class="hljs-keyword">private</span> AgentFinder devFinder;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><a name="y22MA"></a></p>
+<h3 id="接口Provider"><a href="#接口Provider" class="headerlink" title="接口Provider"></a>接口Provider<T></h3><p>当DI框架的标准注解不能满足你的需求，你想对DI框架注入代码中的对象拥有更多的控制权，可以要求DI框架将Provider<T>接口实现注入对象。</p>
+<ul>
+<li>可以获取该对象的多个实例。</li>
+<li>可以延迟加载对象。</li>
+<li>可以打破循环依赖。</li>
+<li>可以定义作用域，能在比整个被加载的应用小的作用域中查找对象。</li>
+</ul>
+<p>该接口仅有一个T get()方法，这个方法会返回一个构造好的注入对象（T）。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AgentFinderService</span> &#123;<br>	<span class="hljs-meta">@Inject</span> <span class="hljs-keyword">public</span> <span class="hljs-title function_">AgentFinderService</span><span class="hljs-params">(AgentFinderProvider provider)</span> &#123;<br>		<span class="hljs-type">AgentFinder</span> <span class="hljs-variable">finder</span> <span class="hljs-operator">=</span> provider.get();<br>        <span class="hljs-keyword">if</span> (condition) &#123; <span class="hljs-comment">// 延迟加载</span><br>            <span class="hljs-type">AgentFinder</span> <span class="hljs-variable">finder2</span> <span class="hljs-operator">=</span> provider.get(); <span class="hljs-comment">// 多个实例对象</span><br>        &#125;<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><a name="sa2Mm"></a></p>
+<h2 id="四、DI参考实现：Guice3"><a href="#四、DI参考实现：Guice3" class="headerlink" title="四、DI参考实现：Guice3"></a>四、DI参考实现：Guice3</h2><p>Guice3是JSR-330规范的完整参考实现，可以配置、绑定、注入依赖项。</p>
+<p><a name="aA1Cw"></a></p>
+<h3 id="实现DI"><a href="#实现DI" class="headerlink" title="实现DI"></a>实现DI</h3><p><a name="Ra3KF"></a></p>
+<h4 id="创建绑定关系"><a href="#创建绑定关系" class="headerlink" title="创建绑定关系"></a>创建绑定关系</h4><p>先创建绑定关系AgentFinderModule，重写configure()声明绑定关系，当AgentFinderService要求@Inject一个AgentFinder时，就会绑定DevAgentFinder作为注入对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AgentFinderModule</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">AbstractModule</span> &#123;<br>	<span class="hljs-meta">@Override</span><br>	<span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">configure</span><span class="hljs-params">()</span> &#123;<br>		bind(AgentFinder.class).to(DevAgentFinder.class);<br>	&#125;<br>&#125;<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AgentFinderService</span> &#123;<br>	<span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> AgentFinder finder;<br>	<span class="hljs-meta">@Inject</span> <span class="hljs-keyword">public</span> <span class="hljs-title function_">AgentFinderService</span><span class="hljs-params">(AgentFinder finder)</span> &#123;<br>		<span class="hljs-built_in">this</span>.finder = finder;<br>	&#125;<br>    <span class="hljs-keyword">public</span> List&lt;String&gt; <span class="hljs-title function_">getGoodAgents</span><span class="hljs-params">()</span> &#123;<br>		List&lt;String&gt; allAgents = finder.getAllAgents();<br>		<span class="hljs-keyword">return</span> filterAgents(allAgents);<br>	&#125;<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>代码4-1</p>
+<p><a name="WQnho"></a></p>
+<h4 id="构建Guice对象关系图"><a href="#构建Guice对象关系图" class="headerlink" title="构建Guice对象关系图"></a>构建Guice对象关系图</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AgentApplication</span> &#123;<br><br>	<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>		<span class="hljs-type">Injector</span> <span class="hljs-variable">injector</span> <span class="hljs-operator">=</span> Guice.createInjector(<span class="hljs-keyword">new</span> <span class="hljs-title class_">AgentFinderModule</span>());<br>		<span class="hljs-type">AgentFinderService</span> <span class="hljs-variable">hollywoodService</span> <span class="hljs-operator">=</span> injector.getInstance(AgentFinderService.class);<br>		List&lt;String&gt; agents = hollywoodService.getGoodAgents();<br>		System.out.println(agents);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>代码4-2<br><a name="m1R8M"></a></p>
+<h3 id="Guice的各种绑定"><a href="#Guice的各种绑定" class="headerlink" title="Guice的各种绑定"></a>Guice的各种绑定</h3><p>Guice提供多种绑定方式：</p>
+<ul>
+<li>链接绑定</li>
+<li>绑定注解</li>
+<li>实例绑定</li>
+<li>@Provides方法</li>
+<li>Provider绑定</li>
+<li>无目标绑定</li>
+<li>内置绑定</li>
+<li>及时绑定</li>
+</ul>
+<p>最常用的包括链接绑定、绑定注解、@Provides方法、Provider<T>绑定。<br><a name="DPOM8"></a></p>
+<h4 id="链接绑定"><a href="#链接绑定" class="headerlink" title="链接绑定"></a>链接绑定</h4><p>代码4-1中AgentFinderModule即为链接绑定，是最简单的绑定方式，只是告诉注入器运行时应该注入实现类或扩展类（可以直接注入子类）。</p>
+<p><a name="4nYv7"></a></p>
+<h4 id="绑定注解"><a href="#绑定注解" class="headerlink" title="绑定注解"></a>绑定注解</h4><p>将注入类的类型和额外的标识符组合起来，以标识恰当的注入对象。使用JSR-330标准注解@Named，注入特定名称的AgentFinder，在AgentFinderModule中配置@Named绑定：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AgentFinderModule</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">AbstractModule</span> &#123;<br>	<span class="hljs-meta">@Override</span><br>	<span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">configure</span><span class="hljs-params">()</span> &#123;<br>		bind(AgentFinder.class)<br>            .annotatedWith(Names.named(<span class="hljs-string">&quot;primary&quot;</span>))<br>            .to(DevAgentFinder.class);<br>	&#125;<br>&#125;<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AgentFinderService</span> &#123;<br>	<span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> AgentFinder finder;<br>	<span class="hljs-meta">@Inject</span><br>	<span class="hljs-keyword">public</span> <span class="hljs-title function_">AgentFinderService</span><span class="hljs-params">(<span class="hljs-meta">@Named(&quot;primary&quot;)</span> AgentFinder finder)</span> &#123;<br>		<span class="hljs-built_in">this</span>.finder = finder;<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><a name="cMKDQ"></a></p>
+<h4 id="Provides和Provider：提供完全定制的对象"><a href="#Provides和Provider：提供完全定制的对象" class="headerlink" title="@Provides和Provider：提供完全定制的对象"></a>@Provides和Provider：提供完全定制的对象</h4><p>需要注入特别的AgentFinder，使用@Provides注解或在configure()方法中绑定，注入器会查看左右标记了@Provides注解方法的返回类型，决定 注入哪个对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AgentFinderModule</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">AbstractModule</span> &#123;<br>	<span class="hljs-meta">@Override</span><br>	<span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">configure</span><span class="hljs-params">()</span> &#123;...&#125;<br>	<span class="hljs-meta">@Provides</span><br>	AgentFinder <span class="hljs-title function_">provideAgentFinder</span><span class="hljs-params">()</span> &#123; <span class="hljs-comment">// 返回注入器需要的类型</span><br>		<span class="hljs-type">DevAgentFinder</span> <span class="hljs-variable">finder</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">DevAgentFinder</span>(); <span class="hljs-comment">// 创建实例并定制</span><br>		finder.setName(<span class="hljs-string">&quot;JavaFind&quot;</span>);<br>		<span class="hljs-keyword">return</span> finder;<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>@Provides方法会变得越来越大，为简化Module，需要把定制化代码拆分出去。使用toProvider方法绑定到Provider类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AgentFinderProvider</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Provider</span>&lt;AgentFinder&gt; &#123;<br>	<span class="hljs-meta">@Override</span><br>	<span class="hljs-keyword">public</span> AgentFinder <span class="hljs-title function_">get</span><span class="hljs-params">()</span> &#123;<br>		<span class="hljs-type">DevAgentFinder</span> <span class="hljs-variable">finder</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">DevAgentFinder</span>(); <span class="hljs-comment">// 创建实例并定制</span><br>		finder.setName(<span class="hljs-string">&quot;JavaFind&quot;</span>);<br>		<span class="hljs-keyword">return</span> finder;<br>	&#125;<br>&#125;<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AgentFinderModule</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">AbstractModule</span> &#123;<br>	<span class="hljs-meta">@Override</span><br>	<span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">configure</span><span class="hljs-params">()</span> &#123;<br>		bind(AgentFinder.class)<br>            .toProvider(AgentFinderProvider.class);<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+
+<p><a name="MLwOI"></a></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://jinnianshilongnian.iteye.com/blog/1413846">https://jinnianshilongnian.iteye.com/blog/1413846</a><br />《Java程序员修炼之道 Benjamin J.Evans》第3章</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Java/" class="category-chain-item">Java</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%BC%80%E5%8F%91/" class="print-no-link">#开发</a>
+      
+        <a href="/tags/java/" class="print-no-link">#java</a>
+      
+        <a href="/tags/java7/" class="print-no-link">#java7</a>
+      
+        <a href="/tags/IoC/" class="print-no-link">#IoC</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>依赖注入</div>
+      <div>https://blackist.org/2019-06-13-java-java7-ioc/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>董猿外</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2019年6月13日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019-06-26-java-hash/" title="Hash在Java中的应用">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Hash在Java中的应用</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019-05-22-distributed-outline/" title="分布式-开启SpringBoot微服务之旅">
+                        <span class="hidden-mobile">分布式-开启SpringBoot微服务之旅</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://lib.baomitu.com/gitalk/1.8.0/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"506775736a1ab7d38a56","clientSecret":"b1c3f0dc07680f22f07a585fc81cd5288adb6729","repo":"blackist.github.io","owner":"blackist","admin":["blackist"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '097390e05a9be8cd9196699fd47c1a2c'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a>
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

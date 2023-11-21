@@ -1,25 +1,23 @@
+
+
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
 <head>
   <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width">
-<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/Dong_small.ico">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/Dong_medium.ico">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/Dong_small.ico">
-  <link rel="mask-icon" href="/images/Dong_small.svg" color="#222">
-
-<link rel="stylesheet" href="/css/main.css">
-
-
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
-
-<script class="next-config" data-name="main" type="application/json">{"hostname":"blackist.org","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.12.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
-
+  <link rel="apple-touch-icon" sizes="76x76" href="/images/Dong_medium.ico">
+  <link rel="icon" href="/images/Dong_medium.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="董猿外">
+  <meta name="keywords" content="">
+  
     <meta name="description" content="校友录网站。作为毕业设计，为母校设计校友交流平台。基于javaWeb，由Maven构建管理，采用Spring+SpringMVC+MyBatis框架，用EhCache做数据缓存。门户网站采用BootStrap设计界面，后台管理网站用AmazeUI设计界面。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="校友录设计">
@@ -90,176 +88,200 @@
 <meta property="article:tag" content="spring">
 <meta property="article:tag" content="javaweb">
 <meta property="article:tag" content="校友录">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="file:///C:/Users/ADMINI~1/AppData/Local/Temp/msohtmlclip1/01/clip_image002.jpg">
+  
+  
+  
+  <title>校友录设计 - Thinking in Coding</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
 
-<link rel="canonical" href="https://blackist.org/java/2019-06-23-spring-ar-introduce">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"zh-CN","comments":true,"permalink":"https://blackist.org/java/2019-06-23-spring-ar-introduce.html","path":"java/2019-06-23-spring-ar-introduce.html","title":"校友录设计"}</script>
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
 
-<script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>校友录设计 | Thinking in Coding
-</title>
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
   
 
 
 
 
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blackist.org","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":100,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
 
-  <noscript>
-    <link rel="stylesheet" href="/css/noscript.css">
-  </noscript>
-</head>
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
 
-<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
-  <div class="headband"></div>
 
-  <main class="main">
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏" role="button">
-        <span class="toggle-line"></span>
-        <span class="toggle-line"></span>
-        <span class="toggle-line"></span>
-    </div>
-  </div>
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
 
-  <div class="site-meta">
 
-    <a href="/" class="brand" rel="start">
-      <i class="logo-line"></i>
-      <p class="site-title">Thinking in Coding</p>
-      <i class="logo-line"></i>
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 60vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>董猿外</strong>
     </a>
-  </div>
 
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
     </div>
   </div>
-</div>
-
-
-
-<nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
-  </ul>
 </nav>
 
-
-
-
-</div>
-        
   
-  <div class="toggle sidebar-toggle" role="button">
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-  </div>
 
-  <aside class="sidebar">
-
-    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
-      <ul class="sidebar-nav">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <div class="sidebar-panel-container">
-        <!--noindex-->
-        <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-1-%E9%99%A2%E6%A0%A1%E6%96%B0%E9%97%BB%E5%8F%91%E5%B8%83%E5%8A%9F%E8%83%BD"><span class="nav-text">2.2.1 院校新闻发布功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-2-%E7%8F%AD%E7%BA%A7%E7%AE%A1%E7%90%86%E5%8A%9F%E8%83%BD"><span class="nav-text">2.2.2 班级管理功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-3-%E9%99%A2%E6%A0%A1%E7%BB%84%E7%BB%87%E7%AE%A1%E7%90%86%E5%8A%9F%E8%83%BD"><span class="nav-text">2.2.3 院校组织管理功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-4-%E6%A0%A1%E5%8F%8B%E8%AE%BA%E5%9D%9B%E5%8A%9F%E8%83%BD"><span class="nav-text">2.2.4 校友论坛功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-5-%E9%99%A2%E6%A0%A1%E8%81%8C%E4%B8%9A%E6%8B%9B%E8%81%98%E5%8A%9F%E8%83%BD"><span class="nav-text">2.2.5 院校职业招聘功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-6-%E6%A0%A1%E5%9B%AD%E6%9C%8D%E5%8A%A1%E5%8A%9F%E8%83%BD"><span class="nav-text">2.2.6 校园服务功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-7-%E7%94%A8%E6%88%B7%E4%B8%AA%E4%BA%BA%E4%B8%AD%E5%BF%83%E5%8A%9F%E8%83%BD"><span class="nav-text">2.2.7 用户个人中心功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-1-%E7%B3%BB%E7%BB%9F%E7%99%BB%E5%BD%95"><span class="nav-text">3.1.1 系统登录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-2-%E6%96%B0%E9%97%BB%E4%B8%AD%E5%BF%83"><span class="nav-text">3.1.2 新闻中心</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-3-%E7%8F%AD%E7%BA%A7%E5%BD%95"><span class="nav-text">3.1.3 班级录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-4-%E6%A0%A1%E5%8F%8B%E7%BB%84%E7%BB%87"><span class="nav-text">3.1.4 校友组织</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-5-%E6%A0%A1%E5%8F%8B%E8%AE%BA%E5%9D%9B"><span class="nav-text">3.1.5 校友论坛</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-6-%E8%81%8C%E4%BD%8D%E6%8B%9B%E8%81%98"><span class="nav-text">3.1.6 职位招聘</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-7-%E6%A0%A1%E5%9B%AD%E6%9C%8D%E5%8A%A1"><span class="nav-text">3.1.7 校园服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-8-%E4%B8%AA%E4%BA%BA%E4%B8%AD%E5%BF%83"><span class="nav-text">3.1.8 个人中心</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-3-%E6%A0%A1%E5%8F%8B%E7%BB%84%E7%BB%87"><span class="nav-text">3.2.3 校友组织</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-5-%E8%81%8C%E4%B8%9A%E6%8B%9B%E8%81%98"><span class="nav-text">3.2.5 职业招聘</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-6-%E6%A0%A1%E5%9B%AD%E6%9C%8D%E5%8A%A1"><span class="nav-text">3.2.6 校园服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-7-%E4%B8%AA%E4%BA%BA%E4%B8%AD%E5%BF%83"><span class="nav-text">3.2.7 个人中心</span></a></li></ol></div>
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="校友录设计"></span>
+          
         </div>
-        <!--/noindex-->
 
-        <div class="site-overview-wrap sidebar-panel">
-          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="董猿外"
-      src="/images/avatar.png">
-  <p class="site-author-name" itemprop="name">董猿外</p>
-  <div class="site-description" itemprop="description">Coding in Thinking.</div>
-</div>
-<div class="site-state-wrap site-overview-item animated">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-        <a href="/archives/">
-          <span class="site-state-item-count">79</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
+        
       </div>
-      <div class="site-state-item site-state-categories">
-        <span class="site-state-item-count">15</span>
-        <span class="site-state-item-name">分类</span>
-      </div>
-      <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">80</span>
-        <span class="site-state-item-name">标签</span>
-      </div>
-  </nav>
-</div>
-  <div class="links-of-author site-overview-item animated">
-      <span class="links-of-author-item">
-        <a href="https://github.com/blackist" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;blackist" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="/liangl.dong@gmail.com" title="E-Mail → liangl.dong@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="https://twitter.com/liangl_dong" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;liangl_dong" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
-      </span>
-  </div>
 
-
-
-        </div>
-      </div>
+      
     </div>
-  </aside>
-  <div class="sidebar-dimmer"></div>
-
-
-    </header>
-
-    
-  <div class="back-to-top" role="button" aria-label="返回顶部">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
   </div>
-
-<noscript>
-  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
-</noscript>
-
-
-    <div class="main-inner page posts-expand">
-
-
-    
-    
-    
-    <div class="post-block" lang="zh-CN"><header class="post-header">
-
-<h1 class="post-title" itemprop="name headline">校友录设计
-</h1>
-
-<div class="post-meta-container">
 </div>
 
-</header>
+</div>
 
-      
-      
-      <div class="post-body">
-          <p>校友录网站。作为毕业设计，为母校设计校友交流平台。基于javaWeb，由Maven构建管理，采用Spring+SpringMVC+MyBatis框架，用EhCache做数据缓存。门户网站采用BootStrap设计界面，后台管理网站用AmazeUI设计界面。</p>
+  </header>
+
+  <main>
+    
+      <div class="container nopadding-x-md">
+        <div id="board"
+          >
+          
+          <div class="container">
+            <div class="row">
+              <div class="col-12 col-md-10 m-auto">
+                
+
+<article class="page-content">
+  <p>校友录网站。作为毕业设计，为母校设计校友交流平台。基于javaWeb，由Maven构建管理，采用Spring+SpringMVC+MyBatis框架，用EhCache做数据缓存。门户网站采用BootStrap设计界面，后台管理网站用AmazeUI设计界面。</p>
 <span id="more"></span>
 
 <p>项目地址：<a target="_blank" rel="noopener" href="https://github.com/blackist/ar">https://github.com/blackist/ar</a></p>
@@ -363,31 +385,31 @@
 <p>基于对校友录系统的需求分析，校友录系统有新闻中心功能，管理员发布管理图文信息，用户可以浏览、评论新闻信息。校友录系统设置班记录功能，给班级同学提供班级空间，班级空间内有交流平台、班级相册，这是同学比较关心的功能。同时，校友录系统具有校友组织功能，校友可以加入校内的组织和团体，组织有自己的空间给组织成员提供交流平台。为给广大校友提供更大的交流平台，校友录系统提供校友论坛功能，校友可以浏览话题并参与讨论。为满足院校对招聘信息推送的需求，校友录系统应加入职业招聘模块，院校管理员发布招聘信息，用户浏览并投递简历，用户也可以发布自己所在单位的招聘信息，经管理员审核后发不到招聘广场。为更好地微笑有提供入学、就业服务，校友录系统设有校园服务，为校友提供校园指南和就业服务。最后，校友录系统为用户提供个人中心功能，对个人信息以及在站内的应用进行管理。</p>
 <h3 id="2-2-1-院校新闻发布功能"><a href="#2-2-1-院校新闻发布功能" class="headerlink" title="2.2.1 院校新闻发布功能"></a>2.2.1 院校新闻发布功能</h3><p>1.新闻中心用例分析</p>
 <p>新闻中心包括新闻发布，后台管理发布图文信息到门户网站，可置顶、编辑、删除新闻信息。新闻评论，用户可以对新闻信息发表评论，回复评论，动态加载评论。新闻热度，用户喜欢可以新闻信息，系统根据信息的喜欢量、浏览流量推送新闻信息。新闻中心用例如图2-1所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image002.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image002.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图2-1 新闻中心用例图</p>
 <h3 id="2-2-2-班级管理功能"><a href="#2-2-2-班级管理功能" class="headerlink" title="2.2.2 班级管理功能"></a>2.2.2 班级管理功能</h3><p>1、班记录用例分析</p>
 <p>班记录包括班级检索，按入学年份查询，按照班级名称、校友姓名查询，综合检索班级；班级排名，根据班级人数、活跃时间对班级进行热度排名；班级主页，每个班级有自己的空间，包括班级主页、班级动态、班级留言、班级成员、班级通讯录、班级相册、班级事务管理等；班级管理，班级的新增、管理员的设置由后台管理员完成。班记录用例如图2-2所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image004.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image004.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图2-2 班记录用例图</p>
 <h3 id="2-2-3-院校组织管理功能"><a href="#2-2-3-院校组织管理功能" class="headerlink" title="2.2.3 院校组织管理功能"></a>2.2.3 院校组织管理功能</h3><p>1.校友组织用例分析</p>
 <p>校友组织包括：校友总会，院校总会；院系分会，各学院的校友组织；社团分会，院校内的各种社团、协会的组织；学生协会，院校内的各学生协会组织；组织主页，个组织有自己的空间，包括组织主页、动态消息、留言、成员列表、通讯录、相册、活动、组织事务管理；校友组织用例如图2-3所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image006.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image006.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图2-3 校友组织用例</p>
 <h3 id="2-2-4-校友论坛功能"><a href="#2-2-4-校友论坛功能" class="headerlink" title="2.2.4 校友论坛功能"></a>2.2.4 校友论坛功能</h3><p>1.校友论坛用例分析</p>
 <p>校友论坛包括：帖子浏览，按作者、主题检索帖子，查看详情，对帖子发表评论，回复评论、删除用户自己的评论，ajax动态加载评论；热帖推送，用户可以喜欢帖子，系统根据帖子的喜欢数量和浏览量进行推送；发布新帖，用户登录后可以发布帖子；贴子管理，管理员可审核、置顶、删除帖子；校友论坛用例如图2-4所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image008.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image008.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图2-4 校友论坛用例图</p>
 <h3 id="2-2-5-院校职业招聘功能"><a href="#2-2-5-院校职业招聘功能" class="headerlink" title="2.2.5 院校职业招聘功能"></a>2.2.5 院校职业招聘功能</h3><p>1.业招聘用例分析</p>
 <p>职位招聘包括：招聘广场。浏览招聘信息，根据公司名称、职位名称、工作地点检索并查看招聘信息；简历投送，用户可以向喜欢的招聘信息投送个人简历；简历管理，用户可以新增简历、编辑简历、删除简历；单位管理，用户可以登记、编辑自己所在单位的信息；发布招聘，用户登记单位信息后可以发布招聘信息，由管理员审核后推送到招聘广场。职业招聘用例如图2-5所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image010.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image010.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图2-5 职业招聘用例图</p>
 <h3 id="2-2-6-校园服务功能"><a href="#2-2-6-校园服务功能" class="headerlink" title="2.2.6 校园服务功能"></a>2.2.6 校园服务功能</h3><p>1.校园服务用例分析</p>
 <p>校园服务：校内服务，包括走进校园、校园行指南、学报编辑部、图书馆、档案馆、信息公开网等信息；招生就业服务，包括本科招生、成教招生、就业网、人才招聘、本站招聘等信息。校园服务用例如图2-6所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image012.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image012.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图2-6 职业招聘用例图</p>
 <h3 id="2-2-7-用户个人中心功能"><a href="#2-2-7-用户个人中心功能" class="headerlink" title="2.2.7 用户个人中心功能"></a>2.2.7 用户个人中心功能</h3><p>1.个人中心用例分析</p>
 <p>个人中心：个人资料，基本资料、 详细资料、 工作信息、 头像设置；账户设置，密码修改、邮箱绑定；我的班级，用户加入的班级相关信息；我的论坛，用户早论坛的相关信息；我的招聘，用户发布的招聘信息，用户投递的简历信息，用户个人简历管理。个人中心用例如图2-7所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image014.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image014.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图2-7 个人中心用例图</p>
 <p>2.4 技术路线</p>
 <p>本系统采用业内流行的SpringMVC+Spring+MyBatis框架（简称SSM），由项目构建工具Maven构建，并使用Git版本控制系统辅助项目开发。</p>
@@ -396,7 +418,7 @@
 <p>本系统充分利用Spring的IoC（控制反转）和AOP（面向切面）特性，将创建用户的SpringMVC控制器Controller、业务逻辑类Service、数据访问类Mapper交由Spring Container管理，生成对应的bean（也称组件）, 并把实现类的类名作为bean的id。当控制器、业务逻辑类、数据访问类需要Spring Container中bean对应的实现类时，Spring Container通过依赖注入机制为其注入对应的bean。通过这种配置，系统实现了控制器和业务逻辑类分离，业务逻辑类和数据访问类分离。SpringMVC中的DispatcherServlet接收请求，并交由控制器Controller处理，Controller接收参数、调用业务逻辑类中的方法，通过ModelAndView视图模型返回jsp页面、json数据。</p>
 <p>本系统的视图层采用jsp、HTML，通过事件触发机制向服务器端发送请求，并采用Bootstrap、AmazeUI、HTML5、CSS3等前台样式，通过c标签、javascript、jquery处理前台数据。</p>
 <p>技术路线如图2-8所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image016.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image016.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图2-8 技术路线图</p>
 <p>3 系统总体设计</p>
 <p>3.1 系统总体设计</p>
@@ -435,102 +457,102 @@
 <p>3.2 系统功能设计</p>
 <p>3.2.1 新闻中心</p>
 <p>新闻发布，后台管理发布图文信息到门户网站，可置顶、编辑、删除新闻信息；新闻评论，用户可以对新闻信息发表评论，回复评论，动态加载评论；新闻热度，用户喜欢可以新闻信息，系统根据信息的喜欢量、浏览流量推送新闻信息。新闻中心功能如图3-1所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image018.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image018.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图3-1 新闻中心功能图</p>
 <p>3.2.2 班记录</p>
 <p>班级录功能包括:班级检索，按入学年份查询，按照班级名称、校友姓名查询，综合检索班级；班级排名，根据班级人数、活跃时间对班级进行热度排名；班级主页，每个班级有自己的空间，包括班级主页、班级动态、班级留言、班级成员、班级通讯录、班级相册、班级事务管理等；班级管理，班级的新增、管理员的设置由后台管理员完成。班级录功能如图3-2所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image020.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image020.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图3-2 班记录功能图</p>
 <h3 id="3-2-3-校友组织"><a href="#3-2-3-校友组织" class="headerlink" title="3.2.3 校友组织"></a>3.2.3 校友组织</h3><p>校友组织包括：校友总会，院校总会；院系分会，各学院的校友组织；社团分会，院校内的各种社团、协会的组织；学生协会，院校内的各学生协会组织；组织主页，个组织有自己的空间，包括组织主页、动态消息、留言、成员列表、通讯录、相册、活动、组织事务管理。校友组织功能如图3-3所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image021.png" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image021.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图3-3 校友组织功能功能图</p>
 <p>3.2.4 校友论坛</p>
 <p>校友论坛：帖子浏览，按作者、主题检索帖子，查看详情，对帖子发表评论，回复评论、删除用户自己的评论，ajax动态加载评论；热帖推送，用户可以喜欢帖子，系统根据帖子的喜欢数量和浏览量进行推送；发布新帖，用户登录后可以发布帖子；贴子管理，管理员可审核、置顶、删除帖子。校友论坛功能如图3-4所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image023.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image023.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图3-4 校友论坛功能图</p>
 <h3 id="3-2-5-职业招聘"><a href="#3-2-5-职业招聘" class="headerlink" title="3.2.5 职业招聘"></a>3.2.5 职业招聘</h3><p>职位招聘：招聘广场。浏览招聘信息，根据公司名称、职位名称、工作地点检索并查看招聘信息；简历投送，用户可以向喜欢的招聘信息投送个人简历；简历管理，用户可以新增简历、编辑简历、删除简历；单位管理，用户可以登记、编辑自己所在单位的信息；发布招聘，用户登记单位信息后可以发布招聘信息，由管理员审核后推送到招聘广场。职业招聘功能如图3-5所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image025.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image025.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图3-5 职业招聘功能图</p>
 <h3 id="3-2-6-校园服务"><a href="#3-2-6-校园服务" class="headerlink" title="3.2.6 校园服务"></a>3.2.6 校园服务</h3><p>校园服务包括：校内服务，包括走进校园、校园行指南、学报编辑部、图书馆、档案馆、信息公开网等信息；招生就业服务，包括本科招生、成教招生、就业网、人才招聘、本站招聘等信息。校园服务功能如图3-6所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image027.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image027.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图3-6 校园服务功能图</p>
 <h3 id="3-2-7-个人中心"><a href="#3-2-7-个人中心" class="headerlink" title="3.2.7 个人中心"></a>3.2.7 个人中心</h3><p>个人中心：个人资料，基本资料、 详细资料、 工作信息、 头像设置；账户设置，密码修改、邮箱绑定；我的班级，用户加入的班级相关信息；我的论坛，用户在论坛的相关信息；我的招聘，用户发布的招聘信息，用户投递的简历信息，用户个人简历管理。个人中心功能如图3-7所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image029.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image029.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图3-7 个人中心功能图</p>
 <p>3.3 数据库设计</p>
 <p>3.3.1 概念模型设计</p>
 <p>根据系统总体设计和功能设计，设计出系统涉及到的实体信息，包括用户实体，个人信息实体，职业信息实体，简历实体，地址实体，留言实体，评论回复实体，年级实体，组织实体，活动实体，相册实体，图片实体，信息实体，评论实体，分享实体，收藏实体，订阅实体，招聘信息实体，招聘单位实体，附件实体，角色实体，权限实体，字典实体，字典数据实体，各实体信息的概念模型如下所示。</p>
 <p>（1）用户实体模型如图3-8所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image031.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image031.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图3-8 用户实体模型</p>
 <p>（2）职业信息实体模型如图3-9所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image033.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image033.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图3-9 职业信息实体模型</p>
 <p>（3）简历实体模型如图3-10所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image035.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image035.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图3-10 简历实体模型</p>
 <p>（4）地址实体模型如图3-11所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image037.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image037.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图3-11 地址实体模型</p>
 <p>（5）留言实体模型如图3-12所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image039.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image039.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图3-12  留言实体模型</p>
 <p>（6）评论回复实体模型如图3-13所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image041.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image041.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图3-13  回复实体模型</p>
 <p>（7）年级实体模型如图3-14所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image043.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image043.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图3-14 年级实体</p>
 <p>（8）组织实体模型如图3-15所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image045.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image045.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图3-15  组织实体模型</p>
 <p>（9）相册实体模型如图3-16所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image047.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image047.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图3-16 相册实体模型</p>
 <p>（10）活动实体模型如图3-17所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image049.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image049.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图3-17 活动实体模型</p>
 <p>（11）字典数据实体模型如图3-18所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image051.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image051.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图3-18 字典数据实体模型</p>
 <p>（12）图片实体模型如图3-19所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image053.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image053.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图3-19 图片实体模型</p>
 <p>（13）信息实体模型如图3-20所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image055.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image055.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图3-20 信息实体模型</p>
 <p>（14）评论实体模型如图3-21所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image057.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image057.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图3-21 评论实体模型</p>
 <p>（15）分享实体模型如图3-22所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image059.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image059.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图3-22 分享实体模型</p>
 <p>（16）收藏实体模型如图3-23所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image061.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image061.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图3-23 收藏实体模型</p>
 <p>（17）订阅实体模型如图3-24所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image063.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image063.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图3-24 订阅实体模型</p>
 <p>（18）招聘信息实体模型如图3-25所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image065.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image065.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图3-25 招聘实体模型</p>
 <p>（19）招聘单位实体模型如图3-26所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image067.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image067.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图3-26 招聘单位实体模型</p>
 <p>（20）附件实体模型如图3-27所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image069.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image069.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图3-27 附件实体模型</p>
 <p>（21）角色实体模型如图3-28所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image071.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image071.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图3-28  角色实体模型</p>
 <p>（22）权限实体模型如图3-29所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image073.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image073.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图3-29  权限实体模型</p>
 <p>（23）字典实体模型如图3-30所示</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image075.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image075.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图3-30 字典表模型</p>
 <p>（24）简历投递实体模型如图3-31所示</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image077.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image077.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图3-31 简历投递模型</p>
 <p>3.3.2 逻辑结构设计</p>
 <p>根据系统的概念模型设计，设计出适应大多数数据库的数据表逻辑结构，共设计31张表，如表3-1所示。</p>
@@ -2547,9 +2569,9 @@
 <p>点击班级录标签页，请求class.action访问到Class控制器中的index()方法，index()调用ClassService业务逻辑类中的getAll()，查询年级信息，返回List<Grade>类型的数据，添加到视图模型model中。Grade类对象中包含年级、班级个数等信息，index()方法跳转到class-index.jsp页面，展示年纪列表信息，并将年级列表加载到条件查询框中的下拉框中。页面加载时引入javascript，使用$.post()方法请求侧边栏数据。侧边栏数据包括班级录信息统计、班级排名、当前用户加入的班级、最近加入的校友等信息。在条件查询框中选择年级、填入校友姓名或专业关键字可以查询相关班级，提交查询时请求Class控制器中的queryClass()方法，传递grade、queryStr参数。queryClass()调用ClassService()业务逻辑类中的queryClasses()方法,queryClasses()方法的参数为Page&lt;&gt;类型的对象、grade、queryStr，queryClasses()执行查询,并返回 List&lt;Map&lt;String,Object&gt;&gt;类型的数据。类型为Page&lt;&gt;的参数是分页对象，分页对象中包含分页的所有信息，包括页码pageIndex、pageSize、beanList等，新建分页对象时，如果没有设置参数，则pageIndex默认为1，pageSize默认为10。将page对象加入到视图模型model中，queryClass()返回class-query.jsp页面。jsp页面将班级信息列表展示出来，并追加页码执行翻页功能。</p>
 <p>（3） 界面设计</p>
 <p>班级录总览界面如图4-1所示，总体分为导航栏、年级列表和侧边信息栏。班级查询界面如图4-2所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image002.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image002.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图4-1 班级录总览界面</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image004.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image004.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图4-2 班级查询界面</p>
 <p>4.1.1 班级首页</p>
 <p>（1）功能实现</p>
@@ -2558,7 +2580,7 @@
 <p>点击班级名称超链接，请求classroom.action，并传入班级id参数，Classroom控制器中index()方法接收参数,调用业务逻辑类ClassService中的classIndex()、classInfo()、classImage()、getAllMemberId()方法。clasIndex()方法查询班级的详细信息，返回Map&lt;String, Object&gt;类型的数据，赋值给classroom，将返回数据classroom添加到视图模型model中。classInfo()查询班级的动态消息，动态消息按照日期降序排列，以List&lt;Map&lt;String, Object&gt;&gt;类型返回日期最新的几条记录，赋值给infoList,将infoList添加到视图模型model中。classImage()方法查询班级成员上传的照片，照片按照上传日期降序排列，以List&lt;Map&lt;String, Object&gt;&gt;类型返回上传日期最新的几条记录，赋值给imageList，将imageList添加到视图模型model中。getAllMemberId()查询所有班级成员的id，以List&lt; Integer&gt;类型返回，赋值给classIds，并将classIds添加到视图模型model中。Classroom控制器方法index()跳转到classroomdex.jsp页面，将classroom、infoList、imageList中的信息遍历展示在jsp页面中,将SESSION_USER环境变量中的当前用户信息展示为当前用户信息，并将SESSION_USER中的userId与classIds中的数据进行比较，如果userId存在与classIds中,则显示用户已经加入班级，否则显示加入班级按钮。Classroom-index.jsp加载的时候引入javascript，使用$.post()方法请求班级官员信息，并返回到jsp页面进行展示。</p>
 <p>（3）界面设计</p>
 <p>班级主页界面设计如图4-3所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image006.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image006.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图4-3 班级主页界面</p>
 <p>4.1.2 班级动态</p>
 <p>1.班级动态列表</p>
@@ -2568,7 +2590,7 @@
 <p>点击班级动态标签页，请求classroom&#x2F;info.action，传递参数classId，Classroom控制器中的info()方法接收参数，info()调用ClassService业务逻辑类中的classIndex()、classInfo()方法。clasIndex()方法查询班级的详细信息，返回Map&lt;String, Object&gt;类型的数据，赋值给classroom，将返回数据classroom添加到视图模型model中。classInfo()方法参数为Page&lt;&gt;类型数据、班级id和信息类型（数据字典中的信息类型数据），方法返回List&lt;Map&lt;String, Object&gt;&gt;类型的数据。类型为Page&lt;&gt;的参数是分页对象，分页对象中包含分页的所有信息，包括页码pageIndex、pageSize、beanList等，新建分页对象时，如果没有设置参数，则pageIndex默认为1，pageSize默认为10。将page对象加入到视图模型model中，info()返回classroom-info.jsp页面。jsp页面将班级信息、班级动态信息列表展示出来，并追加页码执行翻页功能。</p>
 <p>（3） 界面设计</p>
 <p>班级动态列表界面如图4-4所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image008.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image008.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图4-4 班级动态界面</p>
 <p>2.班级动态详情</p>
 <p>（1）功能实现</p>
@@ -2577,9 +2599,9 @@
 <p>点击消息详情按钮，请求classroom&#x2F;infoDetail.action，传递班级id和消息id，Classroom控制器中的infoDetail()方法接收参数，调用ClassroomService业务类中的classInfoDetail()方法查询动态信息详情和作者信息，返回Map&lt;String, Object&gt;类型的数据，赋值给info，将info添加到视图模型model中。infoDetail()返回classroom-info-detail.jsp页面，将info中的信息展示，并引入javascript使用ajax方式加载评论和侧边栏信息。</p>
 <p>（3）界面设计</p>
 <p>班级动态信息详情界面和评论区界面如图4-5和图4-6所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image010.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image010.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图4-5 班级动态详情界面</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image012.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image012.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图4-6 班级动态消息评论区界面</p>
 <p>4.1.3 班级通讯录</p>
 <p>（1）功能实现</p>
@@ -2588,7 +2610,7 @@
 <p>点击通讯录标签页，请求classroom&#x2F;directory.action，传递参数班级id，Classroom控制器中的directory()方法接收参数，并调用ClassrommService业务类中的classDirector()方法。classDirectory()关联user表、user_origin表、origin表、user_info表、image表，查询用户信息、用户通讯信息，以List&lt;Map&lt;String, Object&gt;&gt;的形式返回通讯录列表，赋值给分页对象page中的beanList，并将page添加到视图模型model中。Directory()方法跳转classroom-directory.jsp页面，将beanList里的通讯录信息遍历出来。</p>
 <p>（3）界面设计</p>
 <p>班级通讯录的界面设计如图4-7所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image014.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image014.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图4-7 班级通讯录界面</p>
 <p>4.1.4 班级相册</p>
 <p>（1）功能实现</p>
@@ -2597,7 +2619,7 @@
 <p>点击班级相册标签页，请求classroom&#x2F;album.action，传递参数班级id，Classroom控制器中的album()方法接收参数，调用AlbumService业务类中的getAlbums()方法，以List<Album>形式返回相册信息，赋值给分页对象page的beanList属性，返回classroom-album.jsp界面，将相册列表分页显示。</p>
 <p>（3）界面设计</p>
 <p>班级相册界面设计如图4-8所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image016.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image016.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图4-8 班级相册界面</p>
 <p>4.2 职业招聘</p>
 <p>4.2.1 发布招聘</p>
@@ -2607,9 +2629,9 @@
 <p>点击发布招聘按钮，请求recruit&#x2F;addRecruit.action，Recruit控制器中的addRecruit()方法接收请求，首先调用UnitService业务类中的getUnitsByUserId()方法查询当前用户的公司信息。如果公司信息，则返回redirect:&#x2F;unit&#x2F;addUnit.action，重定向到公司信息登记界面，否则addRecruit()将招聘常量positionSalary、positionBenefit、positionProf添加到视图模型model中，跳转至招聘信息登记界面。招聘信息表单填写完成后，提交至recruit&#x2F;addRecruitSubmit.action，Recruit控制器调用RecruitService业务类中的createRecruit()方法，保存招聘信息，等待审核。</p>
 <p>（3）界面设计</p>
 <p>招聘单位信息登记界面设计如图4-9所示，招聘信息登记界面如图5-10所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image018.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image018.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图4-9 招聘单位登记界面</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image020.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image020.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图4-10 招聘信息登记界面</p>
 <p>4.2.2 查询招聘</p>
 <p>（1）功能实现</p>
@@ -2618,7 +2640,7 @@
 <p>点击职业招聘按钮，请求recruit.action，传递查询条件queryStr，Recruit控制器中的indexRecruit()方法，调用RecruitService业务类中的queryRecruit()方法执行查询，返回分页对象page，跳转到recruit-index.jsp页面，将招聘信息遍历出来并追加页码，执行翻页功能。</p>
 <p>（3）界面设计</p>
 <p>招聘查询界面如图4-11所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image022.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image022.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图4-11 招聘查询界面</p>
 <p>4.2.3 招聘详情</p>
 <p>（1）功能实现</p>
@@ -2627,7 +2649,7 @@
 <p>点击招聘信息标题超链接，请求recruit&#x2F;detailRecruit.action，传递招聘信息id，Recruit控制器中的detailRecruit()方法接收参数，调用RecruitService业务类中的getDetailRecruit()、loadResumesToPost()、postResumeRecord()、loadOtherRecruits()等方法。getDetailRecruit()方法查询招聘的详细信息，返回Map&lt;String,Object&gt;类型的数据，并添加到视图模型对象model中。postResumeRecord()方法关联recruit_post表、user表、image表查询出对此招聘信息投递简历的用户列表，返回List&lt;Map&lt;String,Object&gt;&gt;类型的数据，并添加到视图模型对象中。LoadOtherRecruits()方法关联recruit_post表、recruit表，查询出此招聘单位的相关招聘信息，返回List&lt;Map&lt;&gt;&gt;类型的数据，并添加到数图模型对象model中。</p>
 <p>（3）界面设计</p>
 <p>招聘查询界面如图4-12所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image024.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image024.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图4-12 招聘查询界面</p>
 <p>4.2.4 投递简历</p>
 <p>（1）功能实现</p>
@@ -2636,7 +2658,7 @@
 <p>如果用户已经申请当前职位，则显示已申请职位，否则显示申请职位按钮。点击申请职位按钮，页面弹出简历投递模态框，通过c标签将用户简历列表加载到下拉框中，选择一个简历，点击确认申请按钮，请求my&#x2F;resume&#x2F;postResume.action，传递招聘信息id，用户简历id，用户信息控制器中的postResume()接收参数，并调用ResumeService服务类中的postResume()方法，保存简历投递信息。</p>
 <p>（3）界面设计</p>
 <p>简历投递界面如图4-13所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image026.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image026.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图4-13 简历投递界面</p>
 <p>4.3 校友论坛</p>
 <p>4.3.1 论坛广场</p>
@@ -2646,7 +2668,7 @@
 <p>点击校友论坛，请求forum.action，Forum控制器中的index()方法接收请求，调用PostService中的queryPosts()方法，按日期降序排列并分页查询帖子，返回List&lt;Map&lt;String,Object&gt;&gt;类型的数据，赋值给分页对象page，将page添加到视图模型对象model中。返回forum-index.jsp页面，将page中beanList的帖子信息分页显示。</p>
 <p>（3）界面设计</p>
 <p>论坛广场界面设计如图4-14所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image028.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image028.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图4-14 校友论坛广场界面</p>
 <p>4.3.2 发布新帖</p>
 <p>（1）功能实现</p>
@@ -2655,7 +2677,7 @@
 <p>点击发布新贴按钮，请求post&#x2F;add.action，Post控制器中的addPost()方法接收请求，将环境变量themeList添加到视图模型对象model中，加载帖子发布界面。在帖子发布界面填写post表单并提交，post信息存储至数据库，重新加载招聘广场即可看到新发布的帖子。</p>
 <p>（3）界面设计</p>
 <p>发布新贴界面如图4-15所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image030.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image030.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图4-15 发布新贴界面</p>
 <p>4.3.3 帖子详情</p>
 <p>（1）功能实现</p>
@@ -2664,7 +2686,7 @@
 <p>用户点击帖子标题超链接，请求post&#x2F;detail.action，Post控制器中的detail()方法接收请求，调用PostService业务类中的postDetail()方法查询帖子详情，将返回的数据添加到视图模型对象model中，返回jsp页面显示帖子内容。页面加载完毕后，通过jquery的$.post()方法请求post&#x2F;commentList.action和post&#x2F;outLine.action加载评论区内容和侧边栏内容，Post控制器调用PostService业务类中的getOtherPost()f方法和CommentService业务类中的dynamicComment()方法查询信息，将返回的信息追加到页面，完成动态加载评论的功能。</p>
 <p>（3）界面设计</p>
 <p>帖子详情界面设计如图4-16所示。</p>
-<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image032.jpg" alt="img"></p>
+<p><img src="file:///C:\Users\ADMINI~1\AppData\Local\Temp\msohtmlclip1\01\clip_image032.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>图4-16 帖子详情界面</p>
 <p>结论</p>
 <p>经过持久层、数据访问层、业务逻辑层、系统控制层、视图层的设计和实现，本系统基本实现了对班级管理，用户可以加入自己所在的班级；对班级留言的管理，用户可以在班级里查看、添加或修改留言；对班级通讯录的管理，用户可以查看班级成员的相关信息。系统已经能够实现留言、上传照片、评论等功能，同时具有方便的后台管理功能。同学录系统能够实现同学们生活中的交流，拥有自己的空间。校友论坛为广大校友提供了更加宽阔的平台，促进校友们之间的交流。与此同时，通过职业招聘模块、校园服务模块，校方管理员能够了解毕业生的就业情况，并为毕业生提供就业服务，包括向毕业生投送招聘信息，接收毕业生所在单位的招聘信息。因此，此系统能够在促进高校专业教学改革、募集高校筹资办学途径、促进校企合作、加强毕业生感情交流、提升大学生就业质量等方面带来巨大效益。</p>
@@ -2691,57 +2713,127 @@
 <p>[13] 李运莉著,web数据库应用系统性能优化[M].北京人民邮电出版社,2011</p>
 <p>（完）</p>
 
+
+  
+
+</article>
+
+
+
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      
-      
-      
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
     </div>
-
-    
-    
-
-
-    <div class="comments gitalk-container"></div>
+  </div>
 </div>
+
+    
+
+    
   </main>
 
-  <footer class="footer">
+  <footer>
     <div class="footer-inner">
-
-
-<div class="copyright">
-  &copy; 
-  <span itemprop="copyrightYear">2023</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">自由转载-非商用-非衍生-保持署名（<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN/">创意共享4.0许可证</a>）</span>
-</div>
-  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
-  </div>
-
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a>
     </div>
+  
+  
+  
+  
+</div>
+
   </footer>
 
+  <!-- Scripts -->
   
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
-<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
 
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
   
 
 
 
 
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
 
   
 
-
-
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.7.2/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
-
-<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"blackist","repo":"blackist.github.io","client_id":"506775736a1ab7d38a56","client_secret":"b1c3f0dc07680f22f07a585fc81cd5288adb6729","admin_user":"blackist","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.7.2/gitalk.min.js","integrity":"sha256-Pmj85ojLaPOWwRtlMJwmezB/Qg8BzvJp5eTzvXaYAfA="},"path_md5":"8b36ebe1ccab9c37624ab677f02ad606"}</script>
-<script src="/js/third-party/comments/gitalk.js"></script>
-
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
 </body>
 </html>

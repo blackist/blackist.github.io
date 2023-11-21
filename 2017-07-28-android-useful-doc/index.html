@@ -1,0 +1,775 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/images/Dong_medium.ico">
+  <link rel="icon" href="/images/Dong_medium.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="董猿外">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="声明：本文转自作者coding小生的github开源项目AndroidSourceCodeXS，仅供自己学习备忘。 App 系列（高仿、练手等）SmartRecom：一款干货满满，助你进阶的 App 项目 Android 仿今日头条的开源项目 手把手教你从零开始做一个好看的 APP KeepGank.IO - 又一款开源 Gank.IO 客户端. 欢迎 star 一个用来巩固 Android 基础">
+<meta property="og:type" content="article">
+<meta property="og:title" content="android useful doc">
+<meta property="og:url" content="https://blackist.org/2017-07-28-android-useful-doc/index.html">
+<meta property="og:site_name" content="Thinking in Coding">
+<meta property="og:description" content="声明：本文转自作者coding小生的github开源项目AndroidSourceCodeXS，仅供自己学习备忘。 App 系列（高仿、练手等）SmartRecom：一款干货满满，助你进阶的 App 项目 Android 仿今日头条的开源项目 手把手教你从零开始做一个好看的 APP KeepGank.IO - 又一款开源 Gank.IO 客户端. 欢迎 star 一个用来巩固 Android 基础">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-07-28T07:10:28.000Z">
+<meta property="article:modified_time" content="2022-08-24T03:09:53.353Z">
+<meta property="article:author" content="董猿外">
+<meta property="article:tag" content="UI">
+<meta property="article:tag" content="android">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>android useful doc - Thinking in Coding</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blackist.org","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":100,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>董猿外</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="android useful doc"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2017-07-28 15:10" pubdate>
+          2017年7月28日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          19 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">android useful doc</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>声明：本文转自作者<a target="_blank" rel="noopener" href="https://github.com/Android-Mu">coding小生</a>的github开源项目<a target="_blank" rel="noopener" href="https://github.com/Android-Mu/AndroidSourceCodeXS">AndroidSourceCodeXS</a>，仅供自己学习备忘。</p>
+<h3 id="App-系列（高仿、练手等）"><a href="#App-系列（高仿、练手等）" class="headerlink" title="App 系列（高仿、练手等）"></a>App 系列（高仿、练手等）</h3><p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/u8oo7cdb-sqtge4jVw8lbg"><strong>SmartRecom：一款干货满满，助你进阶的 App 项目</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/xdFskas_X4FwCqUES-JAjQ"><strong>Android 仿今日头条的开源项目</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/jOW40fpAlNGvrOfQe9vJyA"><strong>手把手教你从零开始做一个好看的 APP</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/twunvTc8IY9tSoC7kc-SXg"><strong>KeepGank.IO - 又一款开源 Gank.IO 客户端. 欢迎 star</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/K6wVgsn4MI0mx2cwKWFPUw"><strong>一个用来巩固 Android 基础的 APP</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/8QcXFaBLsgUiSRH2Gy_szQ"><strong>jsoup爬虫简书首页数据做个小Demo</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/gMzDv_sCJS6Vzx76liI-Rg"><strong>快毕业了，撸一个小项目(新闻段子客户端)</strong></a></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/0hMV7IMei74LTuUmFQ1Snw"><strong>Android 一款十分简洁、优雅的日记APP</strong></a></p>
+<h3 id="自定义-x2F-仿系列"><a href="#自定义-x2F-仿系列" class="headerlink" title="自定义 &#x2F; 仿系列"></a>自定义 &#x2F; 仿系列</h3><p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/XBM7eYuFl7I8mNCTizKuyA"><strong>仿 Nice 首页图片列表 9 图样式，并实现拖拽效果</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/YIYDVyDLeevHRJ0tZfs1_A"><strong>仿简书动态 searchview 的实现，代码就这么多点</strong></a><br><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/76yng2hofs0DBaKq55Ufjg"><br><strong>Android 使用 Path 仿支付宝支付成功失败动画</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/mgU5M9mR_gZa5K-L92ZjBA"><strong>Android 仿 QQ 侧滑菜单</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/dmGzlEYn7fOk1LakiIrEAw"><strong>京东快报轮播公告的实现</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/0WSfWzoX9MnUOj79_P7pig"><strong>[Android] 自定义 View 之仿 QQ 讨论组头像</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/1YjGkgGKpMSYDdkSu18ZUQ"><strong>一步步教你画股票图,K 线图,高仿雪球股票</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/zxSd9AMAItocZJczW4FxDA"><strong>Android 自定义控件(仿天猫搜索框)</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/1IYsvApJERkPU-10keJ8-w"><strong>自定义圆环百分占比 view （label 文字支持自动换行和设置显示行数）</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/Ii1brow3qiEOxrdCHehImw"><strong>Android 仿 instagram 和微博的头像点击加载动画</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/xtw6OjMhn1o4eW8tiHQD5g"><strong>真正的画廊，左右条目可点击居中，左右条目可滑动</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/5eZxtu-_O0_hqW2b_prK_g"><strong>从未如此惊艳！你好，SuperTextView</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/jwxfcvgnoIFViJ6Bcb8V1w"><strong>Android 撸起袖子，自己封装 DialogFragment</strong></a></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/e7otNLqCSBW9rz4ChLx_cg"><strong>类似 QQ 的文件管理器</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/e5cG1soYm7m2KMB2PnTiqw"><strong>Android 模仿微信选择图片</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/ZK7BDlK8dE2oRqieGvBXew"><strong>教你手写一个贝塞尔曲线效果的 Loading View</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/sSIrHOChrgi6ccFKWm80uQ"><strong>仿简书长按文章生成图片效果</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/9AvvuKkiW8tveiEVQ0y5oA"><strong>Android自定义view之属性动画熟悉</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/-Up4UwJiS2UQ_hS5yefd4Q"><strong>Android自定义控件之天气视图</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/SCaWJFRMI4oVIJLOvGYw7Q"><strong>手把手教你打造RecyclerView滚动特效</strong></a></p>
+<h3 id="框架-x2F-库（封装使用）"><a href="#框架-x2F-库（封装使用）" class="headerlink" title="框架&#x2F;库（封装使用）"></a>框架&#x2F;库（封装使用）</h3><p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/VJHbdNc4HmEvk0LNK8tftg"><strong>一步一步带你认识 MVP+Retrofit+Rxjava 并封装（一）</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/7VK9CLvJ-ZMW0dLHs6qJVg"><strong>Android 基于 glide 4.0 封装图片加载库</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/r47F32QY9olF6wVAF3d-0Q"><strong>MVP+多线程+断点续传 实现 app 在线升级库 (手把手教你打造自己的 lib)</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/Dx7u7sxI-lBSCbokKWUHHg"><strong>教你打造 Android 揭面水波动画库-AnimationHelper</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/mbZsvdImJE_RszoK1vMjGg"><strong>【Android】Realm 详解</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/JMd8_62yNhN9VCzlt13PZg"><strong>Retrofit2+okhttp3缓存设置</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/BYtF_Kzy7OWePJRNpfoHWQ"><strong>阿里巴巴推出超强针对布局方案和布局复用的开源框架（vlayout）</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/9WYNEhQ2NpK_dh6fOXeuFQ"><strong>Android 实现一个简单的下载工具</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/Q-H30R1jQinbaB3jYowOZQ"><strong>Android架构那些事之第三方库的隔离</strong></a></p>
+<h3 id="求职"><a href="#求职" class="headerlink" title="求职"></a>求职</h3><p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/N8EcP9dV1LWzkQDNRF2YOg"><strong>2017 年 Android 曲折的求职之路</strong></a></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/HjUOj7M9b94w97ROh8T91g"><strong>2017 Android 暑期实习生面试经验谈</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/86ejicK5BBo3LYoAEBlhaA"><strong>杭州找 Android 工作的点点滴滴</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/wd2vaDa1Pi3DpAXDjbebgA"><strong>那些IT培训出来的Android工程师，希望你面试时涨点记性</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/NiRoLfuN4B2PeNLlQpieNw"><strong>为跳槽的你献计献策（Android）</strong></a></p>
+<h3 id="干货"><a href="#干货" class="headerlink" title="干货"></a>干货</h3><p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/GuiP2dmkM9z8rzzxdn3Pww"><strong>瓶颈：没有技术深度的苦恼</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/0U733-oOv6HTW-tmhWi4Vw"><strong>良心推荐：总结 Android 开发中必备的代码 Review 清单</strong></a></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/bRKqNu6AntHAooCJg2VZJg"><strong>想编程，是勤奋自学还是去培训班学习？</strong></a></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/TBhccRDmI47e2vl8TcX4SA"><strong>编程之旅，致新入行的朋友</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/M6vd26jO4-IccS-DX8k59A"><strong>程序员，你还没有软技能吗？难怪你不幸福</strong></a></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/-O8G1wInED5PhMOo_d6KOg"><strong>2017，你绝对想尝试的新安卓库</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/w_NiEJLx0AECepZ8cRhzsg"><strong>[干货]Android 中的 Calendar，听说你有这样的需求</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/B_I5Q75Bp1z0am-5wqKeXQ"><strong>变革者——献给所有软件开发自学者</strong></a></p>
+<h3 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h3><p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/mkSJKT7zbzcSlY4GQ_v-9Q"><strong>Android 之 Context 底层原理</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/pPrfIq-8yV5CnbIIKprm7Q"><strong>可能是讲解 Binder 机制最好的文章</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/vZsqyfL4ss2sMLr_nZLcow"><strong>全栈级别梳理-Android系统启动流程</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/eZnhFc-U6QW2bfGz3ppYOA"><strong>浅析HandlerThread</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/Xkx4OJ2ed-itqGfzD-538Q"><strong>源码分析之LayoutInflater</strong></a></p>
+<h3 id="职场"><a href="#职场" class="headerlink" title="职场"></a>职场</h3><p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/u9xrlRvSPrH9KYpVWYIxcQ"><strong>程序员如何选择未来的职业路线</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/8jMnBGEoHegQ-rMIj1C2kA"><strong>【转】程序员该如何定位？看这四大方向</strong></a></p>
+<h3 id="经验分享"><a href="#经验分享" class="headerlink" title="经验分享"></a>经验分享</h3><p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/0U3DHX60c2rYHUX01iagMw"><strong>程序员之路-学习经验总结分享</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/0azo-znEXajF2R54g_0q3g"><strong>如何提升你的能力？给年轻程序员的几条建议</strong></a></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/z-BbaMOYkGU0AF8_x6EpJg"><strong>给一年左右经验想去大厂的同学们的一些建议</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/o4ac8J8gC60__9hFkOzvkw"><strong>Android 技术总监应该干的那些事</strong></a></p>
+<h3 id="完整系列"><a href="#完整系列" class="headerlink" title="完整系列"></a>完整系列</h3><h4 id="NDK"><a href="#NDK" class="headerlink" title="NDK"></a>NDK</h4><p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/Lhtk02a3tVeM5Zn5Hrv6Nw"><strong>Android NDK 开发之旅 1–C 语言基础–基本数据类型</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/6VGYIzs32A1KmiNIGrqqQg"><strong>Android NDK 开发之旅 2–C 语言基础–指针</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/-GpOZQaMspA_uNvef0UwnQ"><strong>Android NDK 开发之旅 3 – C 语言基础–内存分配</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/ULWt4FxksS2BvPnkN2745A"><strong>Android NDK 开发之旅 4–C 语言基础–字符串</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/JHA3dZd6YprJtWhRYMLsFA"><strong>Android NDK 开发之旅 5–C 语言基础–结构体</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/_OyWzA1iCRiw2zTamQlOjw"><strong>Android NDK 开发之旅 6–C 语言基础–联合体与枚举</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/uOZ5TGaaGVWgs8lvLn9F-g"><strong>Android NDK 开发之旅 7–C 语言基础–IO</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/xlmo7xypqvDLVoM5H8_Uhg"><strong>Android NDK 开发之旅 8–C 语言基础–预编译</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/LhhLa2x_vG6qRtNb3mek_w"><strong>Android NDK 开发之旅 9–JNI–JNI 开发流程</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/-lhGXHhPIpQ9G1Bo7-5rmw"><strong>Android NDK 开发之旅 10—14</strong></a></p>
+<h4 id="RxJava"><a href="#RxJava" class="headerlink" title="RxJava"></a>RxJava</h4><p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/Az0RzhKCPA0YQUym7RyIcQ"><strong>给初学者的 RxJava2.0 教程</strong></a></p>
+<h4 id="设计模式"><a href="#设计模式" class="headerlink" title="设计模式"></a>设计模式</h4><p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/XpJMsamUYz0YpKjXIcbR3A"><strong>开发中的设计模式总结</strong></a></p>
+<h3 id="项目中的技术"><a href="#项目中的技术" class="headerlink" title="项目中的技术"></a>项目中的技术</h3><p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/D_zp1036eufuYCjPpR4FDw"><strong>Android Kotlin&amp;BLE(低功耗蓝牙) 笔记</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/JTvj6srNjvy4Ex-_ZfVY9Q"><strong>Kotlin Primer·第六章·集合泛型与操作符</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/NXiLi3nGa2sCAUtzzHjurQ"><strong>优雅地刷新 RecyclerView</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/_9D38SOYReTCHzYnpd0tVg"><strong>App 竞品技术分析（系列）</strong></a></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/QNk4UrTfPc9CkiF3b3fdQA"><strong>Glide 加载图片实现进度条效果</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/A9uVEyXEZJ-z7wOSTS5_0Q"><strong>Android 模块化探索与实践</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/j-uSXSVh8bLLuiBH6dk1sA"><strong>Android 让你的布局飞起来</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/6CbpduZKUCgHiy0pp1cahA"><strong>项目需求讨论-RecycleView 分页加载实现分析</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/u0e0OlJuhiJz3ca_fTJgzQ"><strong>Android 搜索结果显示高亮(有数据滑动底部自动刷新)</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/t53INi1kEZggXwLGCioqqA"><strong>Android 通用的下拉刷新，重温事件传递</strong></a></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/W8wRz_qtTTldslVpzgcu0A"><strong>Android 检查版本升级应该怎么做？</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/WcG_LKwPy-qQ-NaY1JyUKg"><strong>Android 夜间模式换肤</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/0nfnbCZMM5bKpaG3169CBw"><strong>Android 选择图片上传功能【支持多选拍照预览等】</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/oz0d5mOfqhgkCe6fjVmvMw"><strong>聊聊安卓 App 里的搜索</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/Oivap3YCeT5IXsVpl7n-lQ"><strong>分享一种 RecyclerView 滑动到底部自动加载的实现方案</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/DMksgHOuGWhztESGfDgucA"><strong>Android 中使用 RecyclerView + SnapHelper 实现类似 ViewPager 效果</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/TYBDXB-cYwkn8fQGSNTu3g"><strong>加快 apk 的构建速度，如何把编译时间从 130 秒降到 17 秒</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/2PoLfcnDYmVRSuhImHJDRQ"><strong>Android 优化 APP 构建速度的 17 条建议</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/EEuhjTWkLNrUBnS_WIISmw"><strong>Android应用瘦身，从18MB到12.5MB</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/kFPDThFZo7ZGOBLUv22myQ"><strong>细细品读！深入浅出，官方文档看ConstraintLayout</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/tRCtm6xf48ujVyjrK71BeA"><strong>安卓中如何给按钮添加点击音效</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/2IIx-KMET2hN5wVi1X86pA"><strong>知乎和简书的夜间模式实现套路</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/IO-nDY_gMBpSRAOqFPKwCg"><strong>学会这两招，再敲代码，才给力</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/RfFIxjHvjodCiihaUpeorw"><strong>使用 Scalpel 3D展示界面布局</strong></a></p>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s/pJlXVmlPrfcvOPBqqaFvXA"><strong>Android 时间轴的实现（RecyclerView更简单）</strong></a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Android/" class="category-chain-item">Android</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/UI/" class="print-no-link">#UI</a>
+      
+        <a href="/tags/android/" class="print-no-link">#android</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>android useful doc</div>
+      <div>https://blackist.org/2017-07-28-android-useful-doc/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>董猿外</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2017年7月28日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2017-09-11-android-awesome-ui/" title="Android UI库">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Android UI库</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2017-07-16-js-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" title="js 基础知识">
+                        <span class="hidden-mobile">js 基础知识</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://lib.baomitu.com/gitalk/1.8.0/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"506775736a1ab7d38a56","clientSecret":"b1c3f0dc07680f22f07a585fc81cd5288adb6729","repo":"blackist.github.io","owner":"blackist","admin":["blackist"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: 'ca6e3bd7ff44c9c371a5297bbf7c80c2'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a>
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
