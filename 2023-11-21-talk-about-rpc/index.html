@@ -18,23 +18,25 @@
   <meta name="author" content="董猿外">
   <meta name="keywords" content="">
   
-    <meta name="description" content="读到两句关于创造与商业的话：1.世界上最值得肯定的行为是，你创造了一些东西，然后你销售它们。2.世界上第二值得肯定的行为是，别人创造出你一直想要的东西，然后别人销售它们。">
+    <meta name="description" content="远程服务调用（Remote Procedure Call, RPC）是分布式系统架构的基础，但作为一项拥有四十年历史的计算机技术，它仍备受关注、技术持续更迭，不可谓不是一个奇观。 RPC 在解决什么问题、如何解决这些问题？本文先讨论 RPC 解决什么问题。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="价值与销售">
-<meta property="og:url" content="https://blackist.org/2023-11-21-product-and-business/index.html">
+<meta property="og:title" content="RPC 解决什么问题">
+<meta property="og:url" content="https://blackist.org/2023-11-21-talk-about-rpc/index.html">
 <meta property="og:site_name" content="Thinking in Coding">
-<meta property="og:description" content="读到两句关于创造与商业的话：1.世界上最值得肯定的行为是，你创造了一些东西，然后你销售它们。2.世界上第二值得肯定的行为是，别人创造出你一直想要的东西，然后别人销售它们。">
+<meta property="og:description" content="远程服务调用（Remote Procedure Call, RPC）是分布式系统架构的基础，但作为一项拥有四十年历史的计算机技术，它仍备受关注、技术持续更迭，不可谓不是一个奇观。 RPC 在解决什么问题、如何解决这些问题？本文先讨论 RPC 解决什么问题。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-11-21T01:46:27.000Z">
-<meta property="article:modified_time" content="2023-11-21T02:03:57.652Z">
+<meta property="og:image" content="https://blogres.blackist.org/rpc-concept.png">
+<meta property="article:published_time" content="2023-11-21T14:36:21.000Z">
+<meta property="article:modified_time" content="2023-11-22T00:56:28.519Z">
 <meta property="article:author" content="董猿外">
-<meta property="article:tag" content="运营">
-<meta property="article:tag" content="商业">
+<meta property="article:tag" content="开发">
+<meta property="article:tag" content="RPC">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://blogres.blackist.org/rpc-concept.png">
   
   
   
-  <title>价值与销售 - Thinking in Coding</title>
+  <title>RPC 解决什么问题 - Thinking in Coding</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -200,7 +202,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="价值与销售"></span>
+            <span id="subtitle" data-typed-text="RPC 解决什么问题"></span>
           
         </div>
 
@@ -211,8 +213,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-11-21 09:46" pubdate>
-          2023年11月21日 上午
+        <time datetime="2023-11-21 22:36" pubdate>
+          2023年11月21日 晚上
         </time>
       </span>
     
@@ -223,7 +225,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          655 字
+          2.7k 字
         
       </span>
     
@@ -234,7 +236,7 @@
         
         
         
-          6 分钟
+          23 分钟
         
       </span>
     
@@ -271,20 +273,90 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">价值与销售</h1>
+            <h1 id="seo-header">RPC 解决什么问题</h1>
             
             
               <div class="markdown-body">
                 
-                <p>读到两句关于创造与商业的话：<br>1.世界上最值得肯定的行为是，你创造了一些东西，然后你销售它们。<br>2.世界上第二值得肯定的行为是，别人创造出你一直想要的东西，然后别人销售它们。</p>
+                <p>远程服务调用（Remote Procedure Call, RPC）是分布式系统架构的基础，但作为一项拥有四十年历史的计算机技术，它仍备受关注、技术持续更迭，不可谓不是一个奇观。</p>
+<p>RPC 在解决什么问题、如何解决这些问题？本文先讨论 RPC 解决什么问题。</p>
 <span id="more"></span>
-<p>——来自 <a target="_blank" rel="noopener" href="https://news.ycombinator.com/item?id=31354675">HackerNews</a></p>
-<p>创业这件事情，其核心无外乎创造价值。价值是相对于人来说的，即有需要的人。让有需要的人得到你创造的东西，这就创造出了最大的价值。</p>
-<p>对于一般生产者而言，往往可以通过工作创造出成果、产品或服务，但并不通晓市场、营销类的知识。产品、服务不被知晓、售卖，边没有发挥出它的价值，对于有需要的人、生产者来说都是如此。</p>
-<p>以前遇到公司的销售同事，总觉得他们是在搞虚头巴脑的东西、不误事，对于用户是纯纯的大忽悠，颇有轻视之的心态。试想，没有他们在市场上的营销，给公司带来现金流，恐怕作为程序员的我们连薪资都拿不到，更别提加薪了。</p>
-<p>况且，销售人员本身也是有自己的销售技巧与市场资源，这也是其自身的能力与价值的体现。</p>
-<p>联想到现在电动汽车行业的竞争，各种品牌如雨后春笋般进入市场。这得益于国内生产力、供应链的完备，车企具备一定的资金和设计能力，便可找到厂商代工生产。因此，在产品差距不大的情况下，各品牌的营销能力显得很重要。足够多的宣传、出奇营销，带来足够的订单，保证一定的现金流，那么这个品牌就能做下去。</p>
-<p>现在的开发工具、中间件免费Saas平台都挺完善，只要开发者有一定的产品想法，实现这个产品不是极其困难的事情。作出 MVP 产品后，在市场上被知晓、被安装，得到反馈，便是事业的开始。稳定版本、完善版本则是收费的开始、持续产生价值的开始。</p>
+
+<h2 id="进程间通信"><a href="#进程间通信" class="headerlink" title="进程间通信"></a>进程间通信</h2><p>分布式系统在当下应用很广泛，但它的起源并非是解决高并发问题。在原始分布式时代，计算机的单机计算能力有限，为了完成一个复杂计算，计算机科学家提出了分布式系统，使多台单机共同执行计算。</p>
+<p>由此，也产生了计算机之间的远程方法调用问题，RPC 的提出正是为了让计算机能够<strong>跟调用本地方法一样</strong>去调用远程方法。</p>
+<p>首先，看一下<strong>本地方法调用</strong>的几个步骤：</p>
+<ol>
+<li>传递方法参数</li>
+<li>确定方法版本</li>
+<li>执行被调方法</li>
+<li>返回执行结果</li>
+</ol>
+<p>若远程方法调用与之相似，面临两个主要问题：</p>
+<ul>
+<li>第 1、3 两步传递参数、传回结果都依赖于栈内存，而计算机之间的不同进程无法拥有相同的栈内存；</li>
+<li>第 2 步的方法版本选择，依赖编程语言的规则定义，若两端语言不一致，那么方法版本选择就是不可知的行为。</li>
+</ul>
+<p>讨论下第一个问题，两个进程之间如何交换数据？这是便是计算机科学中的<strong>进程间通信</strong>（Inter-Process Communication, IPC）。</p>
+<ul>
+<li>消息队列（Message Queue）用于进程间数据量较多的通信：进程可以向队列添加消息，被赋予读权 限的进程则可以从队列消费消息；</li>
+<li>共享内存（Shared Memory）：允许多个进程访问同一块公共的内存空间，这是效率最高的进程间通信形式。</li>
+</ul>
+<p>消息队列和共享内存只适合单机多进程间的通信，<strong>套接字接口</strong>（Socket）是更为普适的进程间通信机制，可用于不同机器之间的进程通信。</p>
+<h2 id="忽略通信成本的八宗罪"><a href="#忽略通信成本的八宗罪" class="headerlink" title="忽略通信成本的八宗罪"></a>忽略通信成本的八宗罪</h2><p>由于 Socket 是网络栈的统一接口，它也理所当然地能支持<strong>基于网络的跨机器的进程间通信</strong>。</p>
+<p>因此，早期分布式系统的 RPC 就是奔着<strong>透明调用</strong>的方向去做的（作为 IPC 的一种形式），把远程方法调用的通信细节<strong>隐藏在操作系统底层</strong>，从应用层面上看来可以做到远程调用与本地的进程间通信在编码上完全一致这。</p>
+<p>但是，这种透明的调用形式却反而造成了程序员误以为 Socket 编程的<strong>通信是无成本</strong>的假象，因而被滥用以致于显著降低了分布式系统的性能；而且，这也增加了程序员工作的复杂度。</p>
+<p>后来，几位计算机科学家共同总结了<strong>通过网络进行分布式运算</strong>的八宗罪 （8 Fallacies of Distributed Computing）：</p>
+<ol>
+<li>The network is reliable —— 网络是可靠的。</li>
+<li>Latency is zero —— 延迟是不存在的。</li>
+<li>Bandwidth is infinite —— 带宽是无限的。</li>
+<li>The network is secure —— 网络是安全的。</li>
+<li>Topology doesn’t change —— 拓扑结构是一成不变的。</li>
+<li>There is one administrator —— 总会有一个管理员。</li>
+<li>Transport cost is zero —— 不必考虑传输成本。</li>
+<li>The network is homogeneous —— 网络是同质化的。</li>
+</ol>
+<p>如果 RPC 以透明的方式实现，则程序员很容易酿成以上的罪过，并为之买单。</p>
+<p>至此，也确定了一种基本的观点：RPC 应该是一种高层次的或者说语言层次的特征，而不是像 IPC 那样，是低层次的或者说操作系统层次的特征。</p>
+<h2 id="RPC-的三个基本问题"><a href="#RPC-的三个基本问题" class="headerlink" title="RPC 的三个基本问题"></a>RPC 的三个基本问题</h2><p>一般仍认为 RPC 概念的定义最早是由施乐公司首次提出的，也是完全符合以上结论的：</p>
+<blockquote>
+<p>Remote procedure call is the synchronous language-level transfer of control between prog rams in disjoint address spaces whose primary communication medium is a narrow channel.<br>远程服务调用是指位于互不重合的内存地址空间中的两个程序，在语言层面上，以同步的 方式使用带宽有限的信道来传输程序控制信息。<br>—— Bruce Jay Nelson，Remote Procedure Call ，Xerox PARC，1981</p>
+</blockquote>
+<p><img src="https://blogres.blackist.org/rpc-concept.png" srcset="/img/loading.gif" lazyload alt="RPC 概念"></p>
+<p>几十年来，流行过的、当下流行的 RPC 协议不外乎地在解决三个基本问题：</p>
+<ul>
+<li>如何表示数据</li>
+<li>如何传递数据</li>
+<li>如何确定方法</li>
+</ul>
+<h3 id="如何表示数据"><a href="#如何表示数据" class="headerlink" title="如何表示数据"></a>如何表示数据</h3><p>数据包括了传递给方法的参数，以及方法执行后的返回值。无论是将参数传递给另外一个进程，还是从另外一个进程中取回执行结果，都涉及到它们应该如何表示。</p>
+<p>RPC 交互双方可能各自使用不同的程序语言，或者同样的数据类型在不同硬件指令集、不同操作系统下，也可能存在数据宽度、字节序等等的差异。</p>
+<p>有效的做法是将交互双方所涉及的数据转换为某种事先<strong>约定好的中立数据流格式</strong>来进行传 输，将数据流转换回不同语言中对应的数据类型来进行使用，这就是<strong>序列化与反序列化</strong>。</p>
+<p>每种 RPC 协议都应该要有对应的序列化协议：</p>
+<ul>
+<li>Java RMI 的 <strong>Java Object Serialization Stream Protocol</strong>.</li>
+<li>gRPC 的 <strong>Protocol Buffers</strong>.</li>
+<li>Web Service 的 <strong>XML Serialization</strong>.</li>
+<li>众多轻量级 RPC 支持的 <strong>JSON Serialization</strong>.</li>
+</ul>
+<h3 id="如何传递数据"><a href="#如何传递数据" class="headerlink" title="如何传递数据"></a>如何传递数据</h3><p>指如何通过网络，在两个服务的 Endpoint 之间相互<strong>操作</strong>、<strong>交换</strong>数据。</p>
+<p>“交换数据”通常指的是应用层协议，实际传输一般是基于标准的 TCP、UDP 等标准的传输层协议来完成的。RPC 双方信息交换的需求除了序列化的数据，还包括异常、超时、安全、认证、授权、事务等。</p>
+<p>“Wire Protocol” 来用于表示两个 Endpoint 之间交换这类数据的行为，常见的协议：</p>
+<ul>
+<li>Java RMI 的 Java Remote Message Protocol（JRMP）</li>
+<li>Web Service 的 Simple Object Access Protocol（SOAP）</li>
+<li>若要求足够简单，双方都是 HTTP Endpoint，直接使用 HTTP 协议即可（如 JSON-RPC）</li>
+</ul>
+<h3 id="如何确定方法"><a href="#如何确定方法" class="headerlink" title="如何确定方法"></a>如何确定方法</h3><p>语言无关的接口描述语言 （Interface Description Language，IDL），是许多 RPC 参考或依赖的基础。</p>
+<ul>
+<li>Android 的Android Interface Definition Language （AIDL）</li>
+<li>Web Service 的Web Service Description Language （WSDL） </li>
+<li>JSON-RPC 的JSON Web Service Protocol （JSON-WSP）</li>
+</ul>
+<p>尽管 RPC 早已不再追求实现成与本地方法调用完全一致，但其设计思路仍然带有本地方法调用的深刻烙印，抓住两者间的联系来类比，对我们更深刻地理解 RPC 的本质会很有好处。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li>周志明，《凤凰架构》</li>
+</ul>
 <p>（正文完）</p>
 
                 
@@ -307,13 +379,6 @@
   <a href="/categories/%E5%BC%80%E5%8F%91/" class="category-chain-item">开发</a>
   
   
-    <span>></span>
-    
-  <a href="/categories/%E5%BC%80%E5%8F%91/%E8%BF%90%E8%90%A5/" class="category-chain-item">运营</a>
-  
-  
-
-  
 
       </span>
     
@@ -326,9 +391,9 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E8%BF%90%E8%90%A5/" class="print-no-link">#运营</a>
+        <a href="/tags/%E5%BC%80%E5%8F%91/" class="print-no-link">#开发</a>
       
-        <a href="/tags/%E5%95%86%E4%B8%9A/" class="print-no-link">#商业</a>
+        <a href="/tags/RPC/" class="print-no-link">#RPC</a>
       
     </div>
   
@@ -340,8 +405,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>价值与销售</div>
-      <div>https://blackist.org/2023-11-21-product-and-business/</div>
+      <div>RPC 解决什么问题</div>
+      <div>https://blackist.org/2023-11-21-talk-about-rpc/</div>
     </div>
     <div class="license-meta">
       
@@ -385,18 +450,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023-11-21-talk-about-rpc/" title="RPC 解决什么问题">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">RPC 解决什么问题</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022-12-13-punctuation-en/" title="标点符号及数学符号的中英文表达">
-                        <span class="hidden-mobile">标点符号及数学符号的中英文表达</span>
+                      <a href="/2023-11-21-product-and-business/" title="价值与销售">
+                        <span class="hidden-mobile">价值与销售</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -419,7 +478,7 @@
         var options = Object.assign(
           {"clientID":"506775736a1ab7d38a56","clientSecret":"b1c3f0dc07680f22f07a585fc81cd5288adb6729","repo":"blackist.github.io","owner":"blackist","admin":["blackist"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
           {
-            id: 'da86e158a02ef02764a954668a11ba64'
+            id: 'db955d13f68d438b75a49692af508ef3'
           }
         )
         var gitalk = new Gitalk(options);
